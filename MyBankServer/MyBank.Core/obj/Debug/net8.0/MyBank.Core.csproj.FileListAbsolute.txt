@@ -1,0 +1,13 @@
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.AssemblyInfoInputs.cache
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.AssemblyInfo.cs
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\bin\Debug\net8.0\MyBank.Core.deps.json
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\bin\Debug\net8.0\MyBank.Core.dll
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\bin\Debug\net8.0\MyBank.Core.pdb
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.dll
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\refint\MyBank.Core.dll
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.pdb
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\ref\MyBank.Core.dll
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.sourcelink.json
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.csproj.AssemblyReference.cache
