@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyBank.Application.Services;
 using MyBank.API.Records;
+using MyBank.Application.Interfaces.Services;
 
 namespace MyBank.API.Controllers;
 
@@ -8,19 +9,24 @@ namespace MyBank.API.Controllers;
 [Route("api/[controller]/[action]")]
 public class UserController : ControllerBase
 {
-    [HttpPost]
-    public async Task<IResult> Register(RegisterUserRequest request, UserService userService)
+    private IUserService _userService;
+    public UserController(IUserService userService)
     {
-        await userService.Register(request.Email, request.Password, request.Nickname, 
+        _userService = userService;
+    }
+    [HttpPost]
+    public async Task<IResult> Register([FromBody] RegisterUserRequest request)
+    {
+        await _userService.Register(request.Email, request.Password, request.Nickname, 
             request.Name, request.Surname, request.PassportSeries, request.PassportNumber);
 
         return Results.Ok();
     }
 
     [HttpPost]
-    public async Task<IResult> Login(LoginUserRequest request, UserService userService)
+    public async Task<IResult> Login(LoginUserRequest request)
     {
-        var token = await userService.Login(request.Email, request.Password);
+        var token = await _userService.Login(request.Email, request.Password);
 
         return Results.Ok(token);
     }

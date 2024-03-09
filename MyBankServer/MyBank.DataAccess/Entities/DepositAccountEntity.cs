@@ -2,7 +2,7 @@
 
 public class DepositAccountEntity
 {
-    public DepositAccountEntity(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, string interestPaymentType, bool hasCapitalisation, bool hasInterestWithdrawalOption, int userId, UserEntity? userOwner, int currencyId, CurrencyEntity? currency)
+    public DepositAccountEntity(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, string interestPaymentType, bool hasCapitalisation, bool hasInterestWithdrawalOption)
     {
         Id = id;
         Name = name;
@@ -20,10 +20,6 @@ public class DepositAccountEntity
         InterestPaymentType = interestPaymentType;
         HasCapitalisation = hasCapitalisation;
         HasInterestWithdrawalOption = hasInterestWithdrawalOption;
-        UserId = userId;
-        UserOwner = userOwner;
-        CurrencyId = currencyId;
-        Currency = currency;
     }
 
     public int Id { get; set; }

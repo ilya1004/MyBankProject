@@ -2,7 +2,7 @@
 
 public class PersonalAccountEntity
 {
-    public PersonalAccountEntity(int id, string name, string number, decimal currentBalance, DateTime creationDate, DateTime closingDate, bool isActive, bool isForTransfersByNickname, int userId, UserEntity? userOwner, int currencyId, CurrencyEntity? currency)
+    public PersonalAccountEntity(int id, string name, string number, decimal currentBalance, DateTime creationDate, DateTime closingDate, bool isActive, bool isForTransfersByNickname)
     {
         Id = id;
         Name = name;
@@ -12,10 +12,6 @@ public class PersonalAccountEntity
         ClosingDate = closingDate;
         IsActive = isActive;
         IsForTransfersByNickname = isForTransfersByNickname;
-        UserId = userId;
-        UserOwner = userOwner;
-        CurrencyId = currencyId;
-        Currency = currency;
     }
 
     public int Id { get; set; }

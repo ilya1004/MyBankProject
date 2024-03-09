@@ -20,5 +20,6 @@ public class Moderator
     public DateTime CreationDate { get; set; }
     public bool IsActive { get; set; }
     public List<Message> Messages { get; set; } = [];
-    public List<CreditAccount> CreditAccountsApproved { get; set; } = [];
+    public List<CreditRequest> CreditRequestsReplied { get; set; } = [];
+    public List<CreditAccount> CreditsApproved { get; set; } = [];
 }

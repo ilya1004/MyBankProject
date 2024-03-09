@@ -1,10 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using MyBank.DataAccess.Configurations;
 using MyBank.DataAccess.Entities;
 
 namespace MyBank.DataAccess;
 
 public class MyBankDbContext : DbContext
 {
+    public MyBankDbContext(DbContextOptions<MyBankDbContext> options):
+        base(options) { }
+    public DbSet<AdminEntity> Admins { get; set; }
     public DbSet<CardEntity> Cards { get; set; }
     public DbSet<CardPackageEntity> CardPackages { get; set; }
     public DbSet<CreditAccountEntity> Credits { get; set; }
@@ -21,10 +26,20 @@ public class MyBankDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CardEntity>()
-            .HasOne(c => c.PersonalAccount)
-            .WithMany(pa => pa.Cards)
-            .HasForeignKey(c => c.PersonalAccountId);
+        modelBuilder.ApplyConfiguration(new AdminConfiguration());
+        modelBuilder.ApplyConfiguration(new CardConfiguration());
+        modelBuilder.ApplyConfiguration(new CardPackageConfiguration());
+        modelBuilder.ApplyConfiguration(new CreditAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new CreditPaymentConfiguration());
+        modelBuilder.ApplyConfiguration(new CreditRequestConfiguration());
+        modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
+        modelBuilder.ApplyConfiguration(new DepositAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new DepositAccrualConfiguration());
+        modelBuilder.ApplyConfiguration(new MessageConfiguration());
+        modelBuilder.ApplyConfiguration(new ModeratorConfiguration());
+        modelBuilder.ApplyConfiguration(new PersonalAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

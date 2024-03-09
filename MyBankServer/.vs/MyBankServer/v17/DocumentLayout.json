@@ -3,44 +3,44 @@
   "WorkspaceRootPath": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\configurations\\creditpaymentconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\configurations\\creditpaymentconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{53E57E14-2211-4C62-B91F-5DDF35C1170C}|MyBank.API\\MyBank.API.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.api\\mybank.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{53E57E14-2211-4C62-B91F-5DDF35C1170C}|MyBank.API\\MyBank.API.csproj|solutionrelative:mybank.api\\mybank.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\entities\\creditpaymententity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\entities\\creditpaymententity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{71B3AE9D-5E80-4608-8379-2793C3773FA5}|MyBank.Core\\MyBank.Core.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.core\\mybank.core.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{71B3AE9D-5E80-4608-8379-2793C3773FA5}|MyBank.Core\\MyBank.Core.csproj|solutionrelative:mybank.core\\mybank.core.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{71B3AE9D-5E80-4608-8379-2793C3773FA5}|MyBank.Core\\MyBank.Core.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.core\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{71B3AE9D-5E80-4608-8379-2793C3773FA5}|MyBank.Core\\MyBank.Core.csproj|solutionrelative:mybank.core\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\mapping\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\mapping\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{53E57E14-2211-4C62-B91F-5DDF35C1170C}|MyBank.API\\MyBank.API.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{53E57E14-2211-4C62-B91F-5DDF35C1170C}|MyBank.API\\MyBank.API.csproj|solutionrelative:mybank.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9795176C-0D60-44AB-8715-78B904D4DB1F}|MyBank.Application\\MyBank.Application.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.application\\interfaces\\services\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9795176C-0D60-44AB-8715-78B904D4DB1F}|MyBank.Application\\MyBank.Application.csproj|solutionrelative:mybank.application\\interfaces\\services\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\entities\\userentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\entities\\userentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\configurations\\creditaccountconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\configurations\\creditaccountconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\entities\\depositaccrualentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\entities\\depositaccrualentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\entities\\creditaccountentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\entities\\creditaccountentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{71B3AE9D-5E80-4608-8379-2793C3773FA5}|MyBank.Core\\MyBank.Core.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.core\\models\\moderator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{71B3AE9D-5E80-4608-8379-2793C3773FA5}|MyBank.Core\\MyBank.Core.csproj|solutionrelative:mybank.core\\models\\moderator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\entities\\moderatorentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\entities\\moderatorentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\configurations\\currencyconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\configurations\\currencyconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\entities\\currencyentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\entities\\currencyentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|c:\\users\\user\\source\\repos\\oop_project\\mybankserver\\mybank.dataaccess\\entities\\depositaccountentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}|MyBank.DataAccess\\MyBank.DataAccess.csproj|solutionrelative:mybank.dataaccess\\entities\\depositaccountentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,8 +50,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MyBank.API.csproj",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.API\\MyBank.API.csproj",
+              "RelativeDocumentMoniker": "MyBank.API\\MyBank.API.csproj",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.API\\MyBank.API.csproj",
+              "RelativeToolTip": "MyBank.API\\MyBank.API.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAABDAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-03-09T16:39:18.236Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MyBank.Core",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Core\\MyBank.Core.csproj",
+              "RelativeDocumentMoniker": "MyBank.Core\\MyBank.Core.csproj",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Core\\MyBank.Core.csproj",
+              "RelativeToolTip": "MyBank.Core\\MyBank.Core.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-03-09T16:33:15.052Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -60,126 +86,100 @@
               "RelativeDocumentMoniker": "MyBank.Core\\Models\\User.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Core\\Models\\User.cs",
               "RelativeToolTip": "MyBank.Core\\Models\\User.cs",
-              "ViewState": "AQIAABgAAAAAAAAAAAA7wCcAAAAdAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T20:06:39.369Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UserEntity.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\UserEntity.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\UserEntity.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\UserEntity.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Entities\\UserEntity.cs",
-              "ViewState": "AQIAABgAAAAAAAAAAAA6wCcAAABHAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T20:05:56.78Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CreditPaymentConfiguration.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Configurations\\CreditPaymentConfiguration.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Configurations\\CreditPaymentConfiguration.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Configurations\\CreditPaymentConfiguration.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Configurations\\CreditPaymentConfiguration.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAiAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T20:02:38.578Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CreditPaymentEntity.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\CreditPaymentEntity.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\CreditPaymentEntity.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\CreditPaymentEntity.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Entities\\CreditPaymentEntity.cs",
-              "ViewState": "AQIAAAcAAAAAAAAAAAAQwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T20:02:08.63Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Moderator.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Core\\Models\\Moderator.cs",
-              "RelativeDocumentMoniker": "MyBank.Core\\Models\\Moderator.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Core\\Models\\Moderator.cs",
-              "RelativeToolTip": "MyBank.Core\\Models\\Moderator.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAdAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T19:55:43.731Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ModeratorEntity.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\ModeratorEntity.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\ModeratorEntity.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\ModeratorEntity.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Entities\\ModeratorEntity.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAABPAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T19:55:10.244Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "CurrencyConfiguration.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Configurations\\CurrencyConfiguration.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Configurations\\CurrencyConfiguration.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Configurations\\CurrencyConfiguration.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Configurations\\CurrencyConfiguration.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T19:52:50.193Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "CurrencyEntity.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\CurrencyEntity.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\CurrencyEntity.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\CurrencyEntity.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Entities\\CurrencyEntity.cs",
-              "ViewState": "AQIAAAgAAAAAAAAAAAAxwBYAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T19:51:02.951Z",
+              "WhenOpened": "2024-03-09T16:31:50.335Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "CreditAccountConfiguration.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Configurations\\CreditAccountConfiguration.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Configurations\\CreditAccountConfiguration.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Configurations\\CreditAccountConfiguration.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Configurations\\CreditAccountConfiguration.cs",
-              "ViewState": "AQIAABsAAAAAAAAAAAAUwCQAAAAAAAAA",
+              "Title": "MappingProfile.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Mapping\\MappingProfile.cs",
+              "RelativeDocumentMoniker": "MyBank.DataAccess\\Mapping\\MappingProfile.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Mapping\\MappingProfile.cs",
+              "RelativeToolTip": "MyBank.DataAccess\\Mapping\\MappingProfile.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAGAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T19:30:06.327Z",
+              "WhenOpened": "2024-03-09T16:24:16.42Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IUserService.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Application\\Interfaces\\Services\\IUserService.cs",
+              "RelativeDocumentMoniker": "MyBank.Application\\Interfaces\\Services\\IUserService.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Application\\Interfaces\\Services\\IUserService.cs",
+              "RelativeToolTip": "MyBank.Application\\Interfaces\\Services\\IUserService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T16:23:47.046Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UserEntity.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\UserEntity.cs",
+              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\UserEntity.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\UserEntity.cs",
+              "RelativeToolTip": "MyBank.DataAccess\\Entities\\UserEntity.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAAcwCAAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T16:23:31.932Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "CreditAccountEntity.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\CreditAccountEntity.cs",
-              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\CreditAccountEntity.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\CreditAccountEntity.cs",
-              "RelativeToolTip": "MyBank.DataAccess\\Entities\\CreditAccountEntity.cs",
-              "ViewState": "AQIAACMAAAAAAAAAAAA9wC8AAAAnAAAA",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.API\\Program.cs",
+              "RelativeDocumentMoniker": "MyBank.API\\Program.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.API\\Program.cs",
+              "RelativeToolTip": "MyBank.API\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-08T19:28:41.221Z",
+              "WhenOpened": "2024-03-09T16:06:13.24Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DepositAccrualEntity.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\DepositAccrualEntity.cs",
+              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\DepositAccrualEntity.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\DepositAccrualEntity.cs",
+              "RelativeToolTip": "MyBank.DataAccess\\Entities\\DepositAccrualEntity.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T15:23:13.093Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DepositAccountEntity.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\DepositAccountEntity.cs",
+              "RelativeDocumentMoniker": "MyBank.DataAccess\\Entities\\DepositAccountEntity.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Entities\\DepositAccountEntity.cs",
+              "RelativeToolTip": "MyBank.DataAccess\\Entities\\DepositAccountEntity.cs",
+              "ViewState": "AQIAAAoAAAAAAAAAAAAgwAQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T15:16:03.887Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "MyBank.DataAccess\\Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.DataAccess\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "MyBank.DataAccess\\Repositories\\UserRepository.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAA6wBoAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T12:42:16.103Z",
               "EditorCaption": ""
             },
             {
@@ -189,6 +189,10 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             }
           ]
         }

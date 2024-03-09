@@ -11,7 +11,7 @@ public class UserService : IUserService
     private IPasswordHasher _passwordHasher;
     private IUserRepository _userRepository;
     private IJwtProvider _jwtProvider;
-    public UserService(IPasswordHasher passwordHasher, IUserRepository userRepository, JwtProvider jwtProvider)
+    public UserService(IPasswordHasher passwordHasher, IUserRepository userRepository, IJwtProvider jwtProvider)
     {
         _passwordHasher = passwordHasher;
         _userRepository = userRepository;

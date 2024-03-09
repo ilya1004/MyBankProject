@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
+﻿
 namespace MyBank.DataAccess.Entities;
 
 public class ModeratorEntity
@@ -21,5 +20,6 @@ public class ModeratorEntity
     public DateTime CreationDate { get; set; }
     public bool IsActive { get; set; }
     public List<MessageEntity> Messages { get; set; } = [];
-    public List<CreditAccountEntity> CreditAccountsApproved { get; set; } = [];
+    public List<CreditRequestEntity> CreditRequestsReplied { get; set; } = [];
+    public List<CreditAccountEntity> CreditsApproved { get; set; } = [];
 }

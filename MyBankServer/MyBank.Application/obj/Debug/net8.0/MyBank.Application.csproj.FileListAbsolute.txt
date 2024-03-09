@@ -16,3 +16,5 @@ C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Application\bin\Debug
 C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Application\bin\Debug\net8.0\MyBank.Core.pdb
 C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Application\bin\Debug\net8.0\MyBank.DataAccess.pdb
 C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Application\obj\Debug\net8.0\MyBank.A.B8377B33.Up2Date
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Application\bin\Debug\net8.0\MyBank.Application.runtimeconfig.json
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Application\obj\Debug\net8.0\MyBank.Application.genruntimeconfig.cache

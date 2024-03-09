@@ -11,3 +11,5 @@ C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0
 C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\ref\MyBank.Core.dll
 C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.sourcelink.json
 C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.csproj.AssemblyReference.cache
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\bin\Debug\net8.0\MyBank.Core.runtimeconfig.json
+C:\Users\user\source\repos\OOP_Project\MyBankServer\MyBank.Core\obj\Debug\net8.0\MyBank.Core.genruntimeconfig.cache

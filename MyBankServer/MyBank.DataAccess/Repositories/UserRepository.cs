@@ -26,8 +26,11 @@ public class UserRepository : IUserRepository
 
     public async Task AddUser(User user)
     {
-        var userEntity = new UserEntity(user.Id, user.Email, user.HashedPassword, user.Nickname, user.IsActive, user.Name, user.Surname, user.Patronymic, user.PhoneNumber, user.PassportSeries, user.PassportNumber, user.RegistrationDate, user.Citizenship); ;
-
+        var userEntity = new UserEntity();
+        //UserEntity userEntity = _mapper.Map<UserEntity>(user);
+        //var userEntity = new UserEntity(user.Id, user.Email, user.HashedPassword, user.Nickname, user.IsActive, user.Name, user.Surname, user.Patronymic, user.PhoneNumber, user.PassportSeries, user.PassportNumber, user.RegistrationDate, user.Citizenship);
         
+        await _dbContext.Users.AddAsync(userEntity);
+        await _dbContext.SaveChangesAsync();
     }
 }

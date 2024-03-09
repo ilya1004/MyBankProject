@@ -50,4 +50,5 @@ public class CreditAccount
     public Moderator? ModeratorApproved { get; set; } = null;
     public Card? Card { get; set; }
     public List<CreditPayment> Payments { get; set; } = [];
+    public List<Transaction> Transactions { get; set; } = [];
 }

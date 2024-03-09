@@ -22,7 +22,7 @@ public class CreditAccountConfiguration : IEntityTypeConfiguration<CreditAccount
             
         builder
             .HasOne(ca => ca.ModeratorApproved)
-            .WithMany(m => m.CreditAccountsApproved)
+            .WithMany(m => m.CreditsApproved)
             .HasForeignKey(ca => ca.ModeratorApprovedId);
 
         builder
@@ -31,6 +31,12 @@ public class CreditAccountConfiguration : IEntityTypeConfiguration<CreditAccount
 
         builder
             .HasMany(ca => ca.Payments)
-            .WithOne(p => p.CreditAccount);
+            .WithOne(p => p.CreditAccount)
+            .HasForeignKey(p => p.CreditAccountId);
+
+        builder
+            .HasMany(ca => ca.Transactions)
+            .WithOne(t => t.CreditAccount)
+            .HasForeignKey(t => t.CreditAccountId);
     }
 }

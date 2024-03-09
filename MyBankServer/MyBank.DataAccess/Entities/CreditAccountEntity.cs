@@ -4,7 +4,7 @@ namespace MyBank.DataAccess.Entities;
 
 public class CreditAccountEntity
 {
-    public CreditAccountEntity(int id, string name, string number, decimal currentBalance, decimal creditStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, int madePaymentsNumber, bool hasPrepaymentOption, int userId, UserEntity? userOwner, int currencyId, CurrencyEntity? currency, int moderatorApprovedId, ModeratorEntity? moderatorApproved, CardEntity? card)
+    public CreditAccountEntity(int id, string name, string number, decimal currentBalance, decimal creditStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, int madePaymentsNumber, bool hasPrepaymentOption)
     {
         Id = id;
         Name = name;
@@ -20,13 +20,6 @@ public class CreditAccountEntity
         TotalPaymentsNumber = totalPaymentsNumber;
         MadePaymentsNumber = madePaymentsNumber;
         HasPrepaymentOption = hasPrepaymentOption;
-        UserId = userId;
-        UserOwner = userOwner;
-        CurrencyId = currencyId;
-        Currency = currency;
-        ModeratorApprovedId = moderatorApprovedId;
-        ModeratorApproved = moderatorApproved;
-        Card = card;
     }
 
     public int Id { get; set; }
@@ -44,11 +37,12 @@ public class CreditAccountEntity
     public int MadePaymentsNumber { get; set; }
     public bool HasPrepaymentOption { get; set; }
     public int UserId { get; set; }
-    public UserEntity? UserOwner { get; set; }
+    public UserEntity? UserOwner { get; set; } = null;
     public int CurrencyId { get; set; }
-    public CurrencyEntity? Currency { get; set; }
+    public CurrencyEntity? Currency { get; set; } = null;
     public int ModeratorApprovedId { get; set; }
-    public ModeratorEntity? ModeratorApproved { get; set; }
-    public CardEntity? Card { get; set; }
+    public ModeratorEntity? ModeratorApproved { get; set; } = null;
+    public CardEntity? Card { get; set; } = null;
     public List<CreditPaymentEntity> Payments { get; set; } = [];
+    public List<TransactionEntity> Transactions { get; set; } = [];
 }

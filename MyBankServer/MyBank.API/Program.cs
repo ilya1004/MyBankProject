@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyBank.Application.Interfaces.Services;
 using MyBank.Application.Interfaces.Utils;
@@ -6,33 +7,26 @@ using MyBank.Application.Utils;
 using MyBank.DataAccess;
 using MyBank.DataAccess.Enterfaces;
 using MyBank.DataAccess.Repositories;
+using MyBank.DataAccess.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
-//builder.Services.AddDbContext<MyBankDbContext>(
-//	options =>
-//	{
+builder.Services.AddDbContext<MyBankDbContext>(
+	options => options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(MyBankDbContext))));
 
-//	});
-
-builder.Services.AddSwaggerGen(c =>
-{
-	c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyBank API", Version = "v1" });
-
-	//c.CustomOperationIds(apiDesc =>
-	//{
-	//	 return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null;
-	//});
-});
+builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyBank API", Version = "v1" }));
 
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+//builder.Services.AddScoped<PasswordHasher>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 

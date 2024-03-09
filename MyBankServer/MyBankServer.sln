@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank.Core", "MyBank.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank.DataAccess", "MyBank.DataAccess\MyBank.DataAccess.csproj", "{3CB5226E-EAD1-45C2-A9E2-FDA16D117F4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBank.Application", "MyBank.Application\MyBank.Application.csproj", "{9795176C-0D60-44AB-8715-78B904D4DB1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank.Application", "MyBank.Application\MyBank.Application.csproj", "{9795176C-0D60-44AB-8715-78B904D4DB1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

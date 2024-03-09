@@ -1,4 +1,6 @@
-﻿namespace MyBank.Core.Models;
+﻿using MyBank
+
+namespace MyBank.Core.Models;
 
 public class User
 {
@@ -39,4 +41,9 @@ public class User
     public List<CreditRequest> CreditRequests { get; set; } = [];
     public List<CreditPayment> CreditPayments { get; set; } = [];
     public List<Message> Messages { get; set; } = [];
+
+    public UserEntity ToUserEntity()
+    {
+
+    }
 }

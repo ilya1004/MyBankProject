@@ -2,7 +2,7 @@
 
 public class DepositAccrual
 {
-    public DepositAccrual(int id, decimal accrualAmount, DateTime datetime, string status, int depositAccountId, DepositAccount? depositAccount, int userId, User? user)
+    public DepositAccrual(int id, decimal accrualAmount, DateTime datetime, string status, int depositAccountId, DepositAccount? depositAccount)
     {
         Id = id;
         AccrualAmount = accrualAmount;
@@ -10,8 +10,6 @@ public class DepositAccrual
         Status = status;
         DepositAccountId = depositAccountId;
         DepositAccount = depositAccount;
-        UserId = userId;
-        User = user;
     }
 
     public int Id { get; set; }
@@ -20,6 +18,4 @@ public class DepositAccrual
     public string Status { get; set; } = string.Empty;
     public int DepositAccountId { get; set; }
     public DepositAccount? DepositAccount { get; set; }
-    public int UserId { get; set; }
-    public User? User { get; set; }
 }
