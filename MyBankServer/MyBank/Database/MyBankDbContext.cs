@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyBank.Database.Entities;
 using MyBank.Database.Configurations;
+using MyBank.Database.Entities;
 
 namespace MyBank.Database;
 
@@ -12,11 +12,11 @@ public class MyBankDbContext : DbContext
     public DbSet<AdminEntity> Admins { get; set; }
     public DbSet<CardEntity> Cards { get; set; }
     public DbSet<CardPackageEntity> CardPackages { get; set; }
-    public DbSet<CreditAccountEntity> Credits { get; set; }
+    public DbSet<CreditAccountEntity> CreditAccounts { get; set; }
     public DbSet<CreditPaymentEntity> CreditPayments { get; set; }
     public DbSet<CreditRequestEntity> CreditRequests { get; set; }
     public DbSet<CurrencyEntity> Currencies { get; set; }
-    public DbSet<DepositAccountEntity> Deposits { get; set; }
+    public DbSet<DepositAccountEntity> DepositAccounts { get; set; }
     public DbSet<DepositAccrualEntity> DepositAccruals { get; set; }
     public DbSet<MessageEntity> Messages { get; set; }
     public DbSet<ModeratorEntity> Moderators { get; set; }

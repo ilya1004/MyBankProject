@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyBank.Database.Entities;
+﻿namespace MyBank.Database.Entities;
 
 public class CardPackageEntity
 {
+    public CardPackageEntity() { }
     public CardPackageEntity(int id, string name, decimal price, int operationsNumber, decimal operationsSum, decimal averageAccountBalance, decimal monthPayroll)
     {
         Id = id;

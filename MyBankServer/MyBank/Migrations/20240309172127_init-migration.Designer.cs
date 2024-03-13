@@ -13,7 +13,9 @@ namespace MyBank.Migrations
 {
     [DbContext(typeof(MyBankDbContext))]
     [Migration("20240309172127_init-migration")]
+#pragma warning disable CS8981 // Имя типа содержит только строчные символы ASCII. Такие имена могут резервироваться для языка.
     partial class initmigration
+#pragma warning restore CS8981 // Имя типа содержит только строчные символы ASCII. Такие имена могут резервироваться для языка.
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

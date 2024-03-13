@@ -1,4 +1,4 @@
-﻿namespace MyBank.Application.Interfaces.Utils
+﻿namespace MyBank.Application.Interfaces
 {
     public interface IPasswordHasher
     {

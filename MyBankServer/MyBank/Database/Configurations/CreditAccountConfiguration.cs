@@ -26,17 +26,8 @@ public class CreditAccountConfiguration : IEntityTypeConfiguration<CreditAccount
             .HasForeignKey(ca => ca.ModeratorApprovedId);
 
         builder
-            .HasOne(ca => ca.Card)
-            .WithOne(c => c.CreditAccount);
-
-        builder
             .HasMany(ca => ca.Payments)
             .WithOne(p => p.CreditAccount)
             .HasForeignKey(p => p.CreditAccountId);
-
-        builder
-            .HasMany(ca => ca.Transactions)
-            .WithOne(t => t.CreditAccount)
-            .HasForeignKey(t => t.CreditAccountId);
     }
 }

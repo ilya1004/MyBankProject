@@ -59,14 +59,11 @@ namespace MyBank.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("CardPackageId")
+                    b.Property<int?>("CardPackageId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("CreditAccountId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("CvvCode")
                         .IsRequired()
@@ -93,15 +90,12 @@ namespace MyBank.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CardPackageId");
-
-                    b.HasIndex("CreditAccountId")
-                        .IsUnique();
 
                     b.HasIndex("PersonalAccountId");
 
@@ -156,13 +150,16 @@ namespace MyBank.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<decimal>("CreditGrantedAmount")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("CreditStartBalance")
                         .HasColumnType("numeric");
 
                     b.Property<int>("CreditTermInDays")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CurrencyId")
+                    b.Property<int?>("CurrencyId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CurrentBalance")
@@ -184,7 +181,7 @@ namespace MyBank.Migrations
                     b.Property<int>("MadePaymentsNumber")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ModeratorApprovedId")
+                    b.Property<int?>("ModeratorApprovedId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -198,7 +195,7 @@ namespace MyBank.Migrations
                     b.Property<int>("TotalPaymentsNumber")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -209,7 +206,7 @@ namespace MyBank.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Credits");
+                    b.ToTable("CreditAccounts");
                 });
 
             modelBuilder.Entity("MyBank.Database.Entities.CreditPaymentEntity", b =>
@@ -220,7 +217,7 @@ namespace MyBank.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreditAccountId")
+                    b.Property<int?>("CreditAccountId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Datetime")
@@ -236,7 +233,7 @@ namespace MyBank.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -269,10 +266,10 @@ namespace MyBank.Migrations
                     b.Property<decimal>("InterestRate")
                         .HasColumnType("numeric");
 
-                    b.Property<bool>("IsApproved")
+                    b.Property<bool?>("IsApproved")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ModeratorId")
+                    b.Property<int?>("ModeratorId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("StartBalance")
@@ -281,7 +278,7 @@ namespace MyBank.Migrations
                     b.Property<int>("TotalPaymentsNumber")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -305,7 +302,7 @@ namespace MyBank.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("DateRate")
+                    b.Property<DateTime>("LastDateRateUpdate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
@@ -337,7 +334,7 @@ namespace MyBank.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CurrencyId")
+                    b.Property<int?>("CurrencyId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CurrentBalance")
@@ -354,10 +351,6 @@ namespace MyBank.Migrations
 
                     b.Property<bool>("HasInterestWithdrawalOption")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("InterestPaymentType")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<decimal>("InterestRate")
                         .HasColumnType("numeric");
@@ -382,7 +375,7 @@ namespace MyBank.Migrations
                     b.Property<int>("TotalAccrualsNumber")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -391,7 +384,7 @@ namespace MyBank.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Deposits");
+                    b.ToTable("DepositAccounts");
                 });
 
             modelBuilder.Entity("MyBank.Database.Entities.DepositAccrualEntity", b =>
@@ -408,7 +401,7 @@ namespace MyBank.Migrations
                     b.Property<DateTime>("Datetime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("DepositAccountId")
+                    b.Property<int?>("DepositAccountId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Status")
@@ -516,7 +509,7 @@ namespace MyBank.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CurrencyId")
+                    b.Property<int?>("CurrencyId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CurrentBalance")
@@ -536,7 +529,7 @@ namespace MyBank.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -559,9 +552,6 @@ namespace MyBank.Migrations
                     b.Property<string>("AccountReceiverNumber")
                         .HasColumnType("text");
 
-                    b.Property<int?>("CreditAccountId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("Datetime")
                         .HasColumnType("timestamp with time zone");
 
@@ -580,8 +570,6 @@ namespace MyBank.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreditAccountId");
 
                     b.HasIndex("PersonalAccountId");
 
@@ -651,13 +639,7 @@ namespace MyBank.Migrations
                 {
                     b.HasOne("MyBank.Database.Entities.CardPackageEntity", "CardPackage")
                         .WithMany("Cards")
-                        .HasForeignKey("CardPackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyBank.Database.Entities.CreditAccountEntity", "CreditAccount")
-                        .WithOne("Card")
-                        .HasForeignKey("MyBank.Database.Entities.CardEntity", "CreditAccountId");
+                        .HasForeignKey("CardPackageId");
 
                     b.HasOne("MyBank.Database.Entities.PersonalAccountEntity", "PersonalAccount")
                         .WithMany("Cards")
@@ -665,13 +647,9 @@ namespace MyBank.Migrations
 
                     b.HasOne("MyBank.Database.Entities.UserEntity", "User")
                         .WithMany("Cards")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("CardPackage");
-
-                    b.Navigation("CreditAccount");
 
                     b.Navigation("PersonalAccount");
 
@@ -682,21 +660,15 @@ namespace MyBank.Migrations
                 {
                     b.HasOne("MyBank.Database.Entities.CurrencyEntity", "Currency")
                         .WithMany("CreditAccounts")
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CurrencyId");
 
                     b.HasOne("MyBank.Database.Entities.ModeratorEntity", "ModeratorApproved")
                         .WithMany("CreditsApproved")
-                        .HasForeignKey("ModeratorApprovedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ModeratorApprovedId");
 
                     b.HasOne("MyBank.Database.Entities.UserEntity", "UserOwner")
                         .WithMany("CreditAccounts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Currency");
 
@@ -709,15 +681,11 @@ namespace MyBank.Migrations
                 {
                     b.HasOne("MyBank.Database.Entities.CreditAccountEntity", "CreditAccount")
                         .WithMany("Payments")
-                        .HasForeignKey("CreditAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreditAccountId");
 
                     b.HasOne("MyBank.Database.Entities.UserEntity", "User")
                         .WithMany("CreditPayments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("CreditAccount");
 
@@ -728,15 +696,11 @@ namespace MyBank.Migrations
                 {
                     b.HasOne("MyBank.Database.Entities.ModeratorEntity", "Moderator")
                         .WithMany("CreditRequestsReplied")
-                        .HasForeignKey("ModeratorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ModeratorId");
 
                     b.HasOne("MyBank.Database.Entities.UserEntity", "User")
                         .WithMany("CreditRequests")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Moderator");
 
@@ -747,15 +711,11 @@ namespace MyBank.Migrations
                 {
                     b.HasOne("MyBank.Database.Entities.CurrencyEntity", "Currency")
                         .WithMany("DepositAccounts")
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CurrencyId");
 
                     b.HasOne("MyBank.Database.Entities.UserEntity", "UserOwner")
                         .WithMany("DepositAccounts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Currency");
 
@@ -766,9 +726,7 @@ namespace MyBank.Migrations
                 {
                     b.HasOne("MyBank.Database.Entities.DepositAccountEntity", "DepositAccount")
                         .WithMany("Accruals")
-                        .HasForeignKey("DepositAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepositAccountId");
 
                     b.Navigation("DepositAccount");
                 });
@@ -798,15 +756,11 @@ namespace MyBank.Migrations
                 {
                     b.HasOne("MyBank.Database.Entities.CurrencyEntity", "Currency")
                         .WithMany("PersonalAccounts")
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CurrencyId");
 
                     b.HasOne("MyBank.Database.Entities.UserEntity", "UserOwner")
                         .WithMany("PersonalAccounts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Currency");
 
@@ -815,15 +769,9 @@ namespace MyBank.Migrations
 
             modelBuilder.Entity("MyBank.Database.Entities.TransactionEntity", b =>
                 {
-                    b.HasOne("MyBank.Database.Entities.CreditAccountEntity", "CreditAccount")
-                        .WithMany("Transactions")
-                        .HasForeignKey("CreditAccountId");
-
                     b.HasOne("MyBank.Database.Entities.PersonalAccountEntity", "PersonalAccount")
                         .WithMany("Transactions")
                         .HasForeignKey("PersonalAccountId");
-
-                    b.Navigation("CreditAccount");
 
                     b.Navigation("PersonalAccount");
                 });
@@ -840,11 +788,7 @@ namespace MyBank.Migrations
 
             modelBuilder.Entity("MyBank.Database.Entities.CreditAccountEntity", b =>
                 {
-                    b.Navigation("Card");
-
                     b.Navigation("Payments");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("MyBank.Database.Entities.CurrencyEntity", b =>

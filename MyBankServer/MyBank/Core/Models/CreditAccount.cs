@@ -42,13 +42,14 @@ public class CreditAccount
     public int TotalPaymentsNumber { get; set; }
     public int MadePaymentsNumber { get; set; }
     public bool HasPrepaymentOption { get; set; }
-    public int UserId { get; set; }
+    public int? UserId { get; set; } = null;
     public User? UserOwner { get; set; } = null;
-    public int CurrencyId { get; set; }
+    public int? CurrencyId { get; set; } = null;
     public Currency? Currency { get; set; } = null;
-    public int ModeratorApprovedId { get; set; }
+    public int? ModeratorApprovedId { get; set; } = null;
     public Moderator? ModeratorApproved { get; set; } = null;
-    public Card? Card { get; set; }
+    public int? CardId { get; set; } = null;
+    public Card? Card { get; set; } = null;
     public List<CreditPayment> Payments { get; set; } = [];
     public List<Transaction> Transactions { get; set; } = [];
 }

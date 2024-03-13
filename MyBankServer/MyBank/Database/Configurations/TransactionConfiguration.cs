@@ -14,10 +14,5 @@ public class TransactionConfiguration : IEntityTypeConfiguration<TransactionEnti
             .HasOne(t => t.PersonalAccount)
             .WithMany(pa => pa.Transactions)
             .HasForeignKey(t => t.PersonalAccountId);
-
-        builder
-            .HasOne(t => t.CreditAccount)
-            .WithMany(pa => pa.Transactions)
-            .HasForeignKey(t => t.CreditAccountId);
     }
 }

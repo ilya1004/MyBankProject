@@ -24,10 +24,5 @@ public class CardConfiguration : IEntityTypeConfiguration<CardEntity>
             .HasOne(c => c.PersonalAccount)
             .WithMany(pa => pa.Cards)
             .HasForeignKey(c => c.PersonalAccountId);
-
-        builder
-           .HasOne(c => c.CreditAccount)
-           .WithOne(ca => ca.Card)
-           .HasForeignKey<CardEntity>(c => c.CreditAccountId);
     }
 }

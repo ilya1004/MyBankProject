@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyBank.Database.Entities;
-using System.Runtime.ConstrainedExecution;
 
 namespace MyBank.Database.Configurations;
 

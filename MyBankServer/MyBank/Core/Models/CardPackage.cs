@@ -3,6 +3,7 @@ namespace MyBank.Core.Models;
 
 public class CardPackage
 {
+    public CardPackage () { }
     public CardPackage(int id, string name, decimal price, int operationsNumber, decimal operationsSum, decimal averageAccountBalance, decimal monthPayroll)
     {
         Id = id;

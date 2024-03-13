@@ -2,6 +2,7 @@
 
 public class MessageEntity
 {
+    public MessageEntity() { }
     public MessageEntity(int id, string title, string text, int recepientId, string recepientRole, DateTime creationDatetime, bool isRead)
     {
         Id = id;

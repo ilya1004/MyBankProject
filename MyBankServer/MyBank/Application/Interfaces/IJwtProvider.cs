@@ -1,6 +1,6 @@
 ﻿using MyBank.Core.Models;
 
-namespace MyBank.Application.Interfaces.Utils
+namespace MyBank.Application.Interfaces
 {
     public interface IJwtProvider
     {

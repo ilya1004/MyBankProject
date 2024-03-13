@@ -2,6 +2,7 @@
 
 public class TransactionEntity
 {
+    public TransactionEntity() { }
     public TransactionEntity(int id, decimal paymentAmount, DateTime datetime, string status, string information, string? accountReceiverNumber)
     {
         Id = id;
@@ -20,6 +21,4 @@ public class TransactionEntity
     public string? AccountReceiverNumber { get; set; } = null;
     public int? PersonalAccountId { get; set; } = null;
     public PersonalAccountEntity? PersonalAccount { get; set; } = null;
-    public int? CreditAccountId { get; set; } = null;
-    public CreditAccountEntity? CreditAccount { get; set; } = null;
 }

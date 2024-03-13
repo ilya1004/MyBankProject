@@ -1,4 +1,4 @@
-﻿using MyBank.Application.Interfaces.Utils;
+﻿using MyBank.Application.Interfaces;
 
 namespace MyBank.Application.Utils;
 

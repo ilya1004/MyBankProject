@@ -2,6 +2,7 @@
 
 public class AdminEntity
 {
+    public AdminEntity() { }
     public AdminEntity(int id, string login, string hashedPassword, string nickname)
     {
         Id = id;

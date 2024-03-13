@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
-using MyBank.Application.Interfaces.Utils;
+using MyBank.Application.Interfaces;
 using MyBank.Core.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
