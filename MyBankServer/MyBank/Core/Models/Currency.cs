@@ -3,6 +3,7 @@ namespace MyBank.Core.Models;
 
 public class Currency
 {
+    public Currency() { }
     public Currency(int id, string code, string name, int scale, DateTime lastDateRateUpdate, decimal officialRate)
     {
         Id = id;
@@ -14,8 +15,8 @@ public class Currency
     }
 
     public int Id { get; set; }
-    public string Code { get; set; }
-    public string Name { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     public int Scale { get; set; }
     public DateTime LastDateRateUpdate { get; set; }
     public decimal OfficialRate { get; set; }

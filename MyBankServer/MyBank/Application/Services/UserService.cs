@@ -1,4 +1,6 @@
 ﻿using MyBank.Application.Interfaces;
+using MyBank.Application.Utils;
+using MyBank.Core.DataTransferObjects.UserDto;
 using MyBank.Core.Models;
 using MyBank.Database.Enterfaces;
 
@@ -9,65 +11,148 @@ public class UserService : IUserService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IUsersRepository _userRepository;
     private readonly IJwtProvider _jwtProvider;
-    public UserService(IPasswordHasher passwordHasher, IUsersRepository userRepository, IJwtProvider jwtProvider)
+    private readonly IModeratorsRepository _moderatorRepository;
+
+    public UserService(IPasswordHasher passwordHasher, IUsersRepository userRepository,  IJwtProvider jwtProvider, IModeratorsRepository moderatorRepository)
     {
         _passwordHasher = passwordHasher;
         _userRepository = userRepository;
         _jwtProvider = jwtProvider;
-    }
-    public async Task<int> Register(string email, string password, string nickname,
-        string name, string surname, string passportSeries, string passportNumber)
-    {
-        var hashedPassword = _passwordHasher.GenerateHash(password);
-
-        var user = new User(0, email, hashedPassword, nickname, true, name, surname, string.Empty, string.Empty, passportSeries, passportNumber, DateTime.UtcNow, string.Empty);
-
-        return await _userRepository.Add(user);
+        _moderatorRepository = moderatorRepository;
     }
 
-    public async Task<(bool, string)> Login(string email, string password)
+    public async Task<ServiceResponse<int>> Register(RegisterUserDto registerUserDto)
     {
+        var isExist = await _userRepository.IsExistByEmail(registerUserDto.Email);
+
+        if (isExist)
+        {
+            return new ServiceResponse<int> { Status = false, Message = "User with given email already exists", Data = 0 };
+        }
+        
+        var hashedPassword = _passwordHasher.GenerateHash(registerUserDto.Password);
+
+        var user = new User
+        {
+            Id = 0,
+            Email = registerUserDto.Email,
+            HashedPassword = hashedPassword,
+            Nickname = registerUserDto.Nickname,
+            IsActive = true,
+            Name = registerUserDto.Name,
+            Surname = registerUserDto.Surname,
+            Patronymic = string.Empty,
+            PhoneNumber = string.Empty,
+            PassportSeries = registerUserDto.PassportSeries,
+            PassportNumber = registerUserDto.PassportNumber,
+            RegistrationDate = DateTime.UtcNow,
+            Citizenship = registerUserDto.Citizenship
+        };
+
+        var userId = await _userRepository.Add(user);
+
+        return new ServiceResponse<int> { Status = true, Message = "Success", Data = userId };
+    }
+
+    // Структуры логинов
+    // user@mybank.com
+    // #moderator#234fk09k
+    // #admin#234f234ffr
+
+    public async Task<ServiceResponse<string>> Login(string email, string password)
+    {
+        if (email[0] == '#' && !email.Contains('@'))
+        {
+            if (email.Substring(1, 9) == "moderator")
+            {
+                var moderator = await _moderatorRepository.GetByLogin(email);
+            } 
+            else if (email.Substring(1, 5) == "admin") 
+            {
+                var moderator = await _moderatorRepository.GetByLogin(email);
+            }
+        };
+
         var user = await _userRepository.GetByEmail(email);
 
         var res = _passwordHasher.VerifyPassword(password, user.HashedPassword);
 
         if (res == false)
         {
-            return (false, "");
+            return new ServiceResponse<string> { Status = false, Message = "Invalid credentials", Data = ""};
         }
 
         var token = _jwtProvider.GenerateToken(user);
 
-        return (true, token);
+        return new ServiceResponse<string> { Status = true, Message = "Success", Data = token };
     }
 
-    public async Task<User> GetById(int id)
+    public async Task<ServiceResponse<User>> GetById(int id)
     {
-        return await _userRepository.GetById(id);
+        var user = await _userRepository.GetById(id);
+
+        if (user == null)
+        {
+            return new ServiceResponse<User> { Status = false, Message = $"User with given id ({id}) not found", Data = default };
+        }
+
+        return new ServiceResponse<User> { Status = true, Message = "Success", Data = user };
     }
 
-    public async Task<List<User>> GetAll()
+    public async Task<ServiceResponse<List<User>>> GetAll()
     {
-        return await _userRepository.GetAll();
+        var list = await _userRepository.GetAll();
+
+        return new ServiceResponse<List<User>> { Status = true, Message = "Success", Data = list };
     }
 
-    public async Task<bool> UpdateAccountInfo(int id, string email, string hashedPassword)
+    public async Task<ServiceResponse<bool>> UpdateAccountInfo(int id, string email, string password)
     {
-        return await _userRepository.UpdateAccountInfo(id, email, hashedPassword);
+        var hashedPassword = _passwordHasher.GenerateHash(password);
+
+        var status = await _userRepository.UpdateAccountInfo(id, email, hashedPassword);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+        }
+
+        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
     }
 
-    public async Task<bool> UpdatePersonalInfo(int id, string nickname, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, string citizenship)
+    public async Task<ServiceResponse<bool>> UpdatePersonalInfo(int id, string nickname, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, string citizenship)
     {
-        return await _userRepository.UpdatePersonalInfo(id, nickname, name, surname, patronymic, phoneNumber, passportSeries, passportNumber, citizenship);
+        var status = await _userRepository.UpdatePersonalInfo(id, nickname, name, surname, patronymic, phoneNumber, passportSeries, passportNumber, citizenship);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+        }
+
+        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
     }
 
-    public async Task<bool> UpdateStatus(int id, bool isActive)
+    public async Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive)
     {
-        return await _userRepository.UpdateStatus(id, isActive);
+        var status = await _userRepository.UpdateStatus(id, isActive);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+        }
+
+        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<ServiceResponse<bool>> Delete(int id)
     {
-        return await _userRepository.Delete(id);
+        var status = await _userRepository.Delete(id);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+        }
+
+        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
     }
 }

@@ -16,7 +16,7 @@ public class CreditRequestsRepository : ICreditRequestsRepository
         _mapper = mapper;
     }
 
-    public async Task<bool> Add(CreditRequest creditRequest, int moderatorId, int userId)
+    public async Task<int> Add(CreditRequest creditRequest, int moderatorId, int userId)
     {
 
         var moderatorEntity = await _dbContext.Moderators
@@ -41,9 +41,9 @@ public class CreditRequestsRepository : ICreditRequestsRepository
             User = userEntity,
         };
 
-        await _dbContext.CreditRequests.AddAsync(creditRequestEntity);
-        var number = await _dbContext.SaveChangesAsync();
-        return number == 0 ? false : true;
+        var item = await _dbContext.CreditRequests.AddAsync(creditRequestEntity);
+        await _dbContext.SaveChangesAsync();
+        return item.Entity.Id;
     }
 
     public async Task<CreditRequest> GetById(int id)

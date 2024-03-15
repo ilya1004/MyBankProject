@@ -1,9 +1,10 @@
-﻿using MyBank.Core.Models;
+﻿using MyBank.Application.Interfaces;
+using MyBank.Core.Models;
 using MyBank.Database.Enterfaces;
 
 namespace MyBank.Application.Services;
 
-public class CardPackagesService
+public class CardPackagesService : ICardPackagesService
 {
     private readonly ICardPackagesRepository _cardPackagesRepository;
     public CardPackagesService(ICardPackagesRepository cardPackagesRepository)

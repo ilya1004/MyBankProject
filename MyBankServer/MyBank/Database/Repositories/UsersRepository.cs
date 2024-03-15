@@ -52,6 +52,11 @@ public class UsersRepository : IUsersRepository
         return _mapper.Map<List<User>>(userEntitiesList);
     }
 
+    public async Task<bool> IsExistByEmail(string email)
+    {
+        return await _dbContext.Users.AnyAsync(u => u.Email == email);
+    }
+
     public async Task<bool> UpdateAccountInfo(int id, string email, string hashedPassword)
     {
         var number = await _dbContext.Users

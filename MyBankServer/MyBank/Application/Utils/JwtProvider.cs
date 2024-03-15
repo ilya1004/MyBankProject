@@ -15,9 +15,55 @@ public class JwtProvider : IJwtProvider
     {
         _options = options.Value;
     }
+
     public string GenerateToken(User user)
     {
-        Claim[] claims = [new("userId", user.Id.ToString())];
+        Claim[] claims = [
+            new("userId", user.Id.ToString()),
+            new("User", "true")
+            ];
+
+        var signingCredentials = new SigningCredentials(
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
+            SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            claims: claims,
+            signingCredentials: signingCredentials,
+            expires: DateTime.UtcNow.AddHours(_options.ExpiresHours));
+
+        var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return tokenValue;
+    }
+
+    public string GenerateToken(Moderator moderator)
+    {
+        Claim[] claims = [
+            new("moderatorId", moderator.Id.ToString()),
+            new("Moderator", "true")
+            ];
+
+        var signingCredentials = new SigningCredentials(
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
+            SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            claims: claims,
+            signingCredentials: signingCredentials,
+            expires: DateTime.UtcNow.AddHours(_options.ExpiresHours));
+
+        var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return tokenValue;
+    }
+
+    public string GenerateToken(Admin admin)
+    {
+        Claim[] claims = [
+            new("adminId", admin.Id.ToString()),
+            new("Admin", "true")
+            ];
 
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),

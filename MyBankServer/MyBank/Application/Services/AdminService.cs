@@ -4,7 +4,7 @@ using MyBank.Database.Enterfaces;
 
 namespace MyBank.Application.Services;
 
-public class AdminService
+public class AdminService : IAdminService
 {
     private readonly IAdminRepository _adminRepository;
     public AdminService(IAdminRepository adminRepository)

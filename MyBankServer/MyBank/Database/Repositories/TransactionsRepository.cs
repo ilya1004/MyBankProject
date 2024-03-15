@@ -16,7 +16,7 @@ public class TransactionsRepository : ITransactionsRepository
         _mapper = mapper;
     }
 
-    public async Task<bool> Add(Transaction transaction, int personalAccountId)
+    public async Task<int> Add(Transaction transaction, int personalAccountId)
     {
         var personalAccountEntity = await _dbContext.PersonalAccounts
                 .FirstOrDefaultAsync(pa => pa.Id == personalAccountId);
@@ -33,9 +33,9 @@ public class TransactionsRepository : ITransactionsRepository
             PersonalAccount = personalAccountEntity
         };
 
-        await _dbContext.Transactions.AddAsync(transactionEntity);
-        var number = await _dbContext.SaveChangesAsync();
-        return number == 0 ? false : true;
+        var item = await _dbContext.Transactions.AddAsync(transactionEntity);
+        await _dbContext.SaveChangesAsync();
+        return item.Entity.Id;
     }
 
     public async Task<List<Transaction>> GetAllByPersonalAccountId(int personalAccountId)
@@ -48,7 +48,7 @@ public class TransactionsRepository : ITransactionsRepository
         return _mapper.Map<List<Transaction>>(transationEntitiesList);
     }
 
-    public async Task<List<Transaction>> GetAllByPersonalAccountId(int personalAccountId, DateTime dateTimeStart, DateTime dateTimeEnd)
+    public async Task<List<Transaction>> GetAllByPersonalAccountDate(int personalAccountId, DateTime dateTimeStart, DateTime dateTimeEnd)
     {
         var transationEntitiesList = await _dbContext.Transactions
             .AsNoTracking()
@@ -58,5 +58,4 @@ public class TransactionsRepository : ITransactionsRepository
 
         return _mapper.Map<List<Transaction>>(transationEntitiesList);
     }
-
 }

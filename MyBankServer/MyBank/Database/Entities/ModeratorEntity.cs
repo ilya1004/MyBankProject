@@ -2,6 +2,7 @@
 
 public class ModeratorEntity
 {
+    public ModeratorEntity() { }
     public ModeratorEntity(int id, string login, string hashedPassword, string nickname, DateTime creationDate, bool isActive)
     {
         Id = id;

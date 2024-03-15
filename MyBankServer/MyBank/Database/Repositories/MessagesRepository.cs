@@ -54,7 +54,7 @@ public class MessagesRepository : IMessagesRepository
         }
 
         var item = await _dbContext.Messages.AddAsync(messageEntity);
-        var number = await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
         return item.Entity.Id;
     }
 

@@ -7,7 +7,7 @@ using MyBank.Database.Entities;
 
 namespace MyBank.Database.Repositories;
 
-public class PersonalAccountsRepository : AccountsRepository, IPersonalAccountsRepository
+public class PersonalAccountsRepository : IPersonalAccountsRepository
 {
     private readonly MyBankDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -44,7 +44,7 @@ public class PersonalAccountsRepository : AccountsRepository, IPersonalAccountsR
         };
 
         var item = await _dbContext.PersonalAccounts.AddAsync(personalAccountEntity);
-        var number = await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
         return item.Entity.Id;
     }
 
@@ -57,10 +57,11 @@ public class PersonalAccountsRepository : AccountsRepository, IPersonalAccountsR
         return _mapper.Map<PersonalAccount>(personalAccountEntity);
     }
 
-    public async Task<List<PersonalAccount>> GetAll()
+    public async Task<List<PersonalAccount>> GetAllByUser(int userId)
     {
         var personalAccountEntitiesList = await _dbContext.PersonalAccounts
             .AsNoTracking()
+            .Where(pa => pa.UserId == userId)
             .ToListAsync();
 
         return _mapper.Map<List<PersonalAccount>>(personalAccountEntitiesList);
@@ -78,12 +79,12 @@ public class PersonalAccountsRepository : AccountsRepository, IPersonalAccountsR
         return (number == 0) ? false : true;
     }
 
-    public async Task<bool> UpdateBalance(int id, decimal newBalance)
+    public async Task<bool> UpdateBalance(int id, decimal deltaNumber)
     {
         var number = await _dbContext.PersonalAccounts
             .Where(pa => pa.Id == id)
             .ExecuteUpdateAsync(s => s
-                .SetProperty(pa => pa.CurrentBalance, newBalance));
+                .SetProperty(pa => pa.CurrentBalance, pa => pa.CurrentBalance + deltaNumber));
 
         return (number == 0) ? false : true;
     }

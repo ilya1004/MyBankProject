@@ -16,7 +16,7 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
         _mapper = mapper;
     }
 
-    public async Task<bool> Add(CreditPayment creditPayment, int creditAccountId, int userId)
+    public async Task<int> Add(CreditPayment creditPayment, int creditAccountId, int userId)
     {
         var creditAccountEntity = await _dbContext.CreditAccounts
            .FirstOrDefaultAsync(ca => ca.Id == creditAccountId);
@@ -37,9 +37,9 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
             User = userEntity
         };
 
-        await _dbContext.CreditPayments.AddAsync(сreditPaymentEntity);
-        var number = await _dbContext.SaveChangesAsync();
-        return number == 0 ? false : true;
+        var item = await _dbContext.CreditPayments.AddAsync(сreditPaymentEntity);
+        await _dbContext.SaveChangesAsync();
+        return item.Entity.Id;
     }
 
     public async Task<CreditPayment> GetById(int id)
@@ -51,10 +51,11 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
         return _mapper.Map<CreditPayment>(creditPaymentEntity);
     }
 
-    public async Task<List<CreditPayment>> GetAll()
+    public async Task<List<CreditPayment>> GetAllByUserCredit(int userId, int creditAccountId)
     {
         var creditPaymentEntitiesList = await _dbContext.CreditPayments
             .AsNoTracking()
+            .Where(cp => cp.UserId == userId && cp.CreditAccountId == creditAccountId)
             .ToListAsync();
 
         return _mapper.Map<List<CreditPayment>>(creditPaymentEntitiesList);
