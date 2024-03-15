@@ -32,7 +32,7 @@ public class DepositAccrualsRepository : IDepositAccrualsRepository
         };
 
         var item = await _dbContext.DepositAccounts.AddAsync(depositAccountEntity!);
-        var number = await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
         return item.Entity.Id;
     }
 

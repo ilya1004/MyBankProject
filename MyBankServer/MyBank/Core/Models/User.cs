@@ -1,9 +1,8 @@
-﻿using MyBank.Database.Entities;
-
-namespace MyBank.Core.Models;
+﻿namespace MyBank.Core.Models;
 
 public class User
 {
+    public User() { }
     public User(int id, string email, string hashedPassword, string nickname, bool isActive, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, DateTime registrationDate, string citizenship)
     {
         Id = id;
@@ -41,9 +40,4 @@ public class User
     public List<CreditRequest> CreditRequests { get; set; } = [];
     public List<CreditPayment> CreditPayments { get; set; } = [];
     public List<Message> Messages { get; set; } = [];
-
-    public UserEntity ToUserEntity()
-    {
-        return new UserEntity(Id, Email, HashedPassword, Nickname, IsActive, Name, Surname, Patronymic, PhoneNumber, PassportSeries, PassportNumber, RegistrationDate, Citizenship);
-    }
 }

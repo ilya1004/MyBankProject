@@ -1,32 +1,111 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyBank.Application.Interfaces;
+using MyBank.Core.DataTransferObjects;
+using MyBank.Core.DataTransferObjects.CurrencyDto;
 using MyBank.Core.Models;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-[Authorize]
 public class CurrencyController : ControllerBase
 {
-    public List<Currency> listCurrencies = [];
-
-
-    [HttpGet]
-    //[Authorize]
-    public List<Currency> GetAllCurencies()
+    private readonly ICurrencyService _currencyService;
+    public CurrencyController(ICurrencyService currencyService)
     {
-        //var (currency, info) = Currency.CreateInstance(1, "qwe", "qwe1", 12, (decimal)1.23);
-
-        return listCurrencies;
+        _currencyService = currencyService;
     }
 
     [HttpPost]
-    public string? AddCurrency([FromBody] Currency currency)
+    [Authorize]
+    public async Task<IResult> Add([FromBody] CurrencyDto currencyDto)
     {
-        listCurrencies.Add(currency);
-        return currency?.Name;
+        var serviceResponse = await _currencyService.Add(currencyDto);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CurrencyController",
+                Message = serviceResponse.Message,
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
     }
 
-}
+    [HttpGet]
+    public async Task<IResult> GetInfoById(int currencyId)
+    {
+        var serviceResponse = await _currencyService.GetById(currencyId);
 
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CurrencyController",
+                Message = serviceResponse.Message,
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpGet]
+    public async Task<IResult> GetInfoByCode(string currencyCode)
+    {
+        var serviceResponse = await _currencyService.GetByCode(currencyCode);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CurrencyController",
+                Message = serviceResponse.Message,
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpGet]
+    public async Task<IResult> GetAllInfo()
+    {
+        var serviceResponse = await _currencyService.GetAll();
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CurrencyController",
+                Message = serviceResponse.Message,
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpDelete]
+    [Authorize]
+    public async Task<IResult> Delete(int currencyId)
+    {
+        var serviceResponse = await _currencyService.Delete(currencyId);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CurrencyController",
+                Message = serviceResponse.Message,
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+    }
+}

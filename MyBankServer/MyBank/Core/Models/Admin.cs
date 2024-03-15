@@ -1,5 +1,4 @@
-﻿
-namespace MyBank.Core.Models;
+﻿namespace MyBank.Core.Models;
 
 public class Admin
 {

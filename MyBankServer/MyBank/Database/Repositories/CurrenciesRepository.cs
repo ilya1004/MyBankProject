@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MyBank.Core.DataTransferObjects.CurrencyDto;
 using MyBank.Core.Models;
 using MyBank.Database.Enterfaces;
 using MyBank.Database.Entities;
@@ -16,7 +17,7 @@ public class CurrenciesRepository : ICurrenciesRepository
         _mapper = mapper;
     }
 
-    public async Task<bool> Add(Currency currency)
+    public async Task<int> Add(CurrencyDto currency)
     {
         var currencyEntity = new CurrencyEntity
         {
@@ -31,9 +32,9 @@ public class CurrenciesRepository : ICurrenciesRepository
             DepositAccounts = []
         };
 
-        await _dbContext.Currencies.AddAsync(currencyEntity);
-        var number = await _dbContext.SaveChangesAsync();
-        return number == 0 ? false : true;
+        var item = await _dbContext.Currencies.AddAsync(currencyEntity);
+        await _dbContext.SaveChangesAsync();
+        return item.Entity.Id;
     }
 
     public async Task<Currency> GetById(int id)
@@ -63,7 +64,7 @@ public class CurrenciesRepository : ICurrenciesRepository
         return _mapper.Map<List<Currency>>(currencyEntitiesList);
     }
 
-    public async Task<bool> UpdateInfo(int id, DateTime lastDateRateUpdate, decimal officialRate)
+    public async Task<bool> UpdateRate(int id, DateTime lastDateRateUpdate, decimal officialRate)
     {
         var number = await _dbContext.Currencies
             .Where(c => c.Id == id)

@@ -16,7 +16,7 @@ public class CardsRepository : ICardsRepository
         _mapper = mapper;
     }
 
-    public async Task<bool> Add(Card card, int cardPackageId, int userId, int personalAccountId)
+    public async Task<int> Add(Card card, int cardPackageId, int userId, int personalAccountId)
     {
 
         var cardPackageEntity = await _dbContext.CardPackages
@@ -48,8 +48,8 @@ public class CardsRepository : ICardsRepository
         };
 
         await _dbContext.Cards.AddAsync(cardEntity);
-        var number = await _dbContext.SaveChangesAsync();
-        return number == 0 ? false : true;
+        await _dbContext.SaveChangesAsync();
+        return cardEntity.Id;
     }
 
     public async Task<Card> GetById(int id)
