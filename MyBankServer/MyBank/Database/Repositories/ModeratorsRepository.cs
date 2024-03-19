@@ -24,6 +24,8 @@ public class ModeratorsRepository : IModeratorsRepository
             Login = moderator.Login,
             HashedPassword = moderator.HashedPassword,
             Nickname = moderator.Nickname,
+            CreationDate = moderator.CreationDate,
+            IsActive = moderator.IsActive,
             Messages = []
         };
 

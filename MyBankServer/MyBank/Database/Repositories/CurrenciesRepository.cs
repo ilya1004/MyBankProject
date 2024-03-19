@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using MyBank.Core.DataTransferObjects.CurrencyDto;
+using MyBank.Core.DataTransferObjects.CurrencyDtos;
 using MyBank.Core.Models;
 using MyBank.Database.Enterfaces;
 using MyBank.Database.Entities;

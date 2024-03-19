@@ -1,7 +1,7 @@
 ﻿using MyBank.Application.Interfaces;
 using MyBank.Application.Utils;
-using MyBank.Core.DataTransferObjects.ModeratorDto;
-using MyBank.Core.DataTransferObjects.UserDto;
+using MyBank.Core.DataTransferObjects.ModeratorDtos;
+using MyBank.Core.DataTransferObjects.UserDtos;
 using MyBank.Core.Models;
 using MyBank.Database.Enterfaces;
 using MyBank.Database.Repositories;
@@ -43,9 +43,9 @@ public class ModeratorsService : IModeratorsService
             CreationDate = DateTime.UtcNow,
         };
 
-        var userId = await _moderatorRepository.Add(moderator);
+        var moderatorId = await _moderatorRepository.Add(moderator);
 
-        return new ServiceResponse<int> { Status = true, Message = "Success", Data = userId };
+        return new ServiceResponse<int> { Status = true, Message = "Success", Data = moderatorId };
     }
 
     public async Task<ServiceResponse<string>> Login(string login, string password)

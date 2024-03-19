@@ -1,6 +1,6 @@
 ﻿using MyBank.Application.Interfaces;
 using MyBank.Application.Utils;
-using MyBank.Core.DataTransferObjects.UserDto;
+using MyBank.Core.DataTransferObjects.UserDtos;
 using MyBank.Core.Models;
 using MyBank.Database.Enterfaces;
 
@@ -61,17 +61,17 @@ public class UserService : IUserService
 
     public async Task<ServiceResponse<string>> Login(string email, string password)
     {
-        if (email[0] == '#' && !email.Contains('@'))
-        {
-            if (email.Substring(1, 9) == "moderator")
-            {
-                var moderator = await _moderatorRepository.GetByLogin(email);
-            } 
-            else if (email.Substring(1, 5) == "admin") 
-            {
-                var moderator = await _moderatorRepository.GetByLogin(email);
-            }
-        };
+        //if (email[0] == '#' && !email.Contains('@'))
+        //{
+        //    if (email.Substring(1, 9) == "moderator")
+        //    {
+        //        var moderator = await _moderatorRepository.GetByLogin(email);
+        //    } 
+        //    else if (email.Substring(1, 5) == "admin") 
+        //    {
+        //        var moderator = await _moderatorRepository.GetByLogin(email);
+        //    }
+        //};
 
         var user = await _userRepository.GetByEmail(email);
 

@@ -1,10 +1,11 @@
-﻿using MyBank.Core.Models;
+﻿using MyBank.Application.Utils;
+using MyBank.Core.Models;
 
-namespace MyBank.Application.Interfaces
+namespace MyBank.Application.Interfaces;
+
+public interface IAdminService
 {
-    public interface IAdminService
-    {
-        Task<Admin> GetById(int id);
-        Task<bool> UpdateInfo(int id, string nickname);
-    }
+    Task<ServiceResponse<string>> Login(string login, string password);
+    Task<Admin> GetById(int id);
+    Task<bool> UpdateInfo(int id, string nickname);
 }

@@ -41,6 +41,15 @@ public class AdminRepository : IAdminRepository
         return _mapper.Map<Admin>(adminEntity);
     }
 
+    public async Task<Admin> GetByLogin(string login)
+    {
+        var adminEntity = await _dbContext.Admins
+            .AsNoTracking()
+            .FirstOrDefaultAsync(а => а.Login == login);
+
+        return _mapper.Map<Admin>(adminEntity);
+    }
+
     public async Task<List<Admin>> GetAll()
     {
         var adminEntitiesList = await _dbContext.Admins

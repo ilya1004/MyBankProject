@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyBank.Application.Interfaces;
 using MyBank.Core.DataTransferObjects;
-using MyBank.Core.DataTransferObjects.UserDto;
+using MyBank.Core.DataTransferObjects.UserDtos;
 
 namespace MyBank.API.Controllers;
 
@@ -74,7 +74,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Policy = "UserAndModeratorPolicy")]
     public async Task<IResult> GetAllInfo()
     {
         var serviceResponse  = await _userService.GetAll();

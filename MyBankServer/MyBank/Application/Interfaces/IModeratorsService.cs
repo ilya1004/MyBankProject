@@ -1,5 +1,5 @@
 ﻿using MyBank.Application.Utils;
-using MyBank.Core.DataTransferObjects.ModeratorDto;
+using MyBank.Core.DataTransferObjects.ModeratorDtos;
 using MyBank.Core.Models;
 
 namespace MyBank.Application.Interfaces

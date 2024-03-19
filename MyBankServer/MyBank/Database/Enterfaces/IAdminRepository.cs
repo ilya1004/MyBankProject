@@ -11,6 +11,8 @@ public interface IAdminRepository
 
     Task<Admin> GetById(int id);
 
+    Task<Admin> GetByLogin(string login);
+
     Task<List<Admin>> GetAll();
 
     Task<bool> UpdateInfo(int id, string nickname);

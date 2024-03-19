@@ -41,16 +41,33 @@ public static class ApiExtensions
         services.AddAuthorizationBuilder()
             .AddPolicy("UserPolicy", policy =>
             {
-                policy.RequireClaim("User", "true");
+                policy.RequireClaim("Role", "User");
             })
             .AddPolicy("ModeratorPolicy", policy =>
             {
-                policy.RequireClaim("Moderator", "true");
+                policy.RequireClaim("Role", "Moderator");
             })
             .AddPolicy("AdminPolicy", policy =>
             {
-                policy.RequireClaim("Admin", "true");
+                policy.RequireClaim("Role", "Admin");
+            })
+            .AddPolicy("UserAndModeratorPolicy", policy =>
+            {
+                policy.RequireClaim("Role", "User", "Moderator");
+            })
+            .AddPolicy("ModeratorAndAdminPolicy", policy =>
+            {
+                policy.RequireClaim("Role", "Moderator", "Admin");
+            })
+            .AddPolicy("UserAndAdminPolicy", policy =>
+            {
+                policy.RequireClaim("Role", "User", "Admin");
+            })
+            .AddPolicy("UserAndModeratorAndAdminPolicy", policy =>
+            {
+                policy.RequireClaim("Role", "User", "Moderator", "Admin");
             });
+
         return services;
     }
 }

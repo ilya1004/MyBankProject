@@ -1,5 +1,5 @@
 ﻿using MyBank.Application.Utils;
-using MyBank.Core.DataTransferObjects.UserDto;
+using MyBank.Core.DataTransferObjects.UserDtos;
 using MyBank.Core.Models;
 
 namespace MyBank.Application.Interfaces;

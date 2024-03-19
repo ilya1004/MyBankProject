@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyBank.Application.Interfaces;
 using MyBank.Core.DataTransferObjects;
-using MyBank.Core.DataTransferObjects.CurrencyDto;
-using MyBank.Core.Models;
+using MyBank.Core.DataTransferObjects.CurrencyDtos;
 
 namespace MyBank.API.Controllers;
 
@@ -18,7 +17,7 @@ public class CurrencyController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Policy = "AdminPolicy")]
     public async Task<IResult> Add([FromBody] CurrencyDto currencyDto)
     {
         var serviceResponse = await _currencyService.Add(currencyDto);
@@ -91,7 +90,7 @@ public class CurrencyController : ControllerBase
     }
 
     [HttpDelete]
-    [Authorize]
+    [Authorize(Policy = "Admin")]
     public async Task<IResult> Delete(int currencyId)
     {
         var serviceResponse = await _currencyService.Delete(currencyId);

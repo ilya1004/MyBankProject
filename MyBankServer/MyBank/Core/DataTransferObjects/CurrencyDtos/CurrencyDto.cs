@@ -1,4 +1,4 @@
-﻿namespace MyBank.Core.DataTransferObjects.CurrencyDto;
+﻿namespace MyBank.Core.DataTransferObjects.CurrencyDtos;
 
 public class CurrencyDto
 {

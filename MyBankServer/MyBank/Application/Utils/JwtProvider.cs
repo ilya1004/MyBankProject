@@ -20,7 +20,7 @@ public class JwtProvider : IJwtProvider
     {
         Claim[] claims = [
             new("userId", user.Id.ToString()),
-            new("User", "true")
+            new("Role", "User")
             ];
 
         var signingCredentials = new SigningCredentials(
@@ -41,7 +41,7 @@ public class JwtProvider : IJwtProvider
     {
         Claim[] claims = [
             new("moderatorId", moderator.Id.ToString()),
-            new("Moderator", "true")
+            new("Role", "Moderator")
             ];
 
         var signingCredentials = new SigningCredentials(
