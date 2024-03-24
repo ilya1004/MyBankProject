@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyBank.Persistence.Migrations
 {
     [DbContext(typeof(MyBankDbContext))]
-    [Migration("20240319222303_migration-1")]
+    [Migration("20240324222712_migration-1")]
     partial class migration1
     {
         /// <inheritdoc />
@@ -57,10 +57,6 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountType")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int?>("CardPackageId")
                         .HasColumnType("integer");
@@ -343,9 +339,6 @@ namespace MyBank.Persistence.Migrations
                     b.Property<decimal>("CurrentBalance")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("DepositStartBalance")
-                        .HasColumnType("numeric");
-
                     b.Property<int>("DepositTermInDays")
                         .HasColumnType("integer");
 
@@ -374,6 +367,9 @@ namespace MyBank.Persistence.Migrations
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("StartBalance")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("TotalAccrualsNumber")
                         .HasColumnType("integer");
@@ -552,7 +548,10 @@ namespace MyBank.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountReceiverNumber")
+                    b.Property<string>("AccountRecipientNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AccountSenderNumber")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Datetime")
@@ -565,16 +564,16 @@ namespace MyBank.Persistence.Migrations
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("PersonalAccountId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<string>("UserRecipientNickname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserSenderNickname")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PersonalAccountId");
 
                     b.ToTable("Transactions");
                 });
@@ -770,15 +769,6 @@ namespace MyBank.Persistence.Migrations
                     b.Navigation("UserOwner");
                 });
 
-            modelBuilder.Entity("MyBank.Persistence.Entities.TransactionEntity", b =>
-                {
-                    b.HasOne("MyBank.Persistence.Entities.PersonalAccountEntity", "PersonalAccount")
-                        .WithMany("Transactions")
-                        .HasForeignKey("PersonalAccountId");
-
-                    b.Navigation("PersonalAccount");
-                });
-
             modelBuilder.Entity("MyBank.Persistence.Entities.AdminEntity", b =>
                 {
                     b.Navigation("Messages");
@@ -820,8 +810,6 @@ namespace MyBank.Persistence.Migrations
             modelBuilder.Entity("MyBank.Persistence.Entities.PersonalAccountEntity", b =>
                 {
                     b.Navigation("Cards");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("MyBank.Persistence.Entities.UserEntity", b =>

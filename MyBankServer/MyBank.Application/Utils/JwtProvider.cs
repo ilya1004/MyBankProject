@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using MyBank.Application.Interfaces;
-using MyBank.Domain.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -62,7 +60,7 @@ public class JwtProvider : IJwtProvider
     {
         Claim[] claims = [
             new("adminId", admin.Id.ToString()),
-            new("Admin", "true")
+            new("Role", "Admin")
             ];
 
         var signingCredentials = new SigningCredentials(

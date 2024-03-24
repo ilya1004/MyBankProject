@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class CreditAccountsRepository : ICreditAccountsRepository
 {
@@ -16,41 +10,22 @@ public class CreditAccountsRepository : ICreditAccountsRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(CreditAccount creditAccount, int userId, int currencyId, int moderatorId)
+    public async Task<int> Add(CreditAccount creditAccount)
     {
         var userEntity = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == creditAccount.UserId);
 
         var currencyEntity = await _dbContext.Currencies
-            .FirstOrDefaultAsync(c => c.Id == currencyId);
+            .FirstOrDefaultAsync(c => c.Id == creditAccount.CurrencyId);
 
         var moderatorEntity = await _dbContext.Moderators
-            .FirstOrDefaultAsync(m => m.Id == moderatorId);
+            .FirstOrDefaultAsync(m => m.Id == creditAccount.ModeratorApprovedId);
 
-        var creditAccountEntity = new CreditAccountEntity
-        {
-            Id = 0,
-            Name = creditAccount.Name,
-            Number = creditAccount.Number,
-            CurrentBalance = creditAccount.CurrentBalance,
-            CreditStartBalance = creditAccount.CreditStartBalance,
-            CreationDate = creditAccount.CreationDate,
-            ClosingDate = creditAccount.ClosingDate,
-            IsActive = creditAccount.IsActive,
-            InterestRate = creditAccount.InterestRate,
-            InterestCalculationType = creditAccount.InterestCalculationType,
-            CreditTermInDays = creditAccount.CreditTermInDays,
-            TotalPaymentsNumber = creditAccount.TotalPaymentsNumber,
-            MadePaymentsNumber = creditAccount.MadePaymentsNumber,
-            HasPrepaymentOption = creditAccount.HasPrepaymentOption,
-            UserId = userId,
-            UserOwner = userEntity,
-            CurrencyId = currencyId,
-            Currency = currencyEntity,
-            ModeratorApprovedId = moderatorId,
-            ModeratorApproved = moderatorEntity,
-            Payments = []
-        };
+        var creditAccountEntity = _mapper.Map<CreditAccountEntity>(creditAccount);
+
+        creditAccountEntity.UserOwner = userEntity;
+        creditAccountEntity.Currency = currencyEntity;
+        creditAccountEntity.ModeratorApproved = moderatorEntity;
 
         var item = await _dbContext.CreditAccounts.AddAsync(creditAccountEntity);
         await _dbContext.SaveChangesAsync();

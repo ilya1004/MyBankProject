@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MyBank.Application.Interfaces;
-using MyBank.Persistence.Interfaces;
-using MyBank.Domain.DataTransferObjects.UserDtos;
-using MyBank.Domain.DataTransferObjects;
+﻿using MyBank.API.DataTransferObjects.UserDtos;
 
 namespace MyBank.API.Controllers;
 
@@ -18,10 +13,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IResult> Register([FromBody] RegisterUserDto request)
+    public async Task<IResult> Register([FromBody] RegisterUserDto dto)
     {
-        var serviceResponse = await _userService.Register(request);
-
+        var serviceResponse = await _userService.Register(dto.Email, dto.Password, dto.Nickname,
+            dto.Name, dto.Surname, dto.Patronymic, dto.PassportSeries, dto.PassportNumber, dto.Citizenship);
+        
         if (serviceResponse.Status == false)
         {
             return Results.Json(new ErrorDto
@@ -50,13 +46,13 @@ public class UserController : ControllerBase
             statusCode: 400); 
         }
 
-        Response.Cookies.Append("my-cookie", serviceResponse.Data!, new CookieOptions { SameSite = SameSiteMode.Lax });
+        Response.Cookies.Append("my-cookie", serviceResponse.Data.Item2, new CookieOptions { SameSite = SameSiteMode.Lax });
 
-        return Results.Json(new { jwtToken = serviceResponse.Data! }, statusCode: 200);
+        return Results.Json(new { id = serviceResponse.Data.Item1 }, statusCode: 200);
     }
 
     [HttpGet]
-    [Authorize(Policy = "UserPolicy")]         // как сделать для модератора тоже??
+    [Authorize(Policy = AuthorizationPolicies.UserAndModeratorAndAdminPolicy)]
     public async Task<IResult> GetInfoById(int userId)
     {
         var serviceResponse = await _userService.GetById(userId);
@@ -75,7 +71,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Policy = "UserAndModeratorPolicy")]
+    [Authorize(Policy = AuthorizationPolicies.UserAndModeratorAndAdminPolicy)]
     public async Task<IResult> GetAllInfo()
     {
         var serviceResponse  = await _userService.GetAll();
@@ -94,10 +90,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize]
-    public async Task<IResult> UpdateAccountInfo([FromBody] UserDto request)
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> UpdateAccountInfo([FromBody] UpdateUserAccountInfoDto dto)
     {
-        var serviceResponse = await _userService.UpdateAccountInfo(request.Id, request.Email, request.HashedPassword); // this password is not hashed!
+        var serviceResponse = await _userService.UpdateAccountInfo(dto.Id, dto.Email, dto.Password);
 
         if (serviceResponse.Status == false)
         {
@@ -112,10 +108,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize]
-    public async Task<IResult> UpdatePersonalInfo([FromBody] UserDto request)
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> UpdatePersonalInfo([FromBody] UpdateUserPersonalInfoDto dto)
     {
-        var serviceResponse = await _userService.UpdatePersonalInfo(request.Id, request.Nickname, request.Name, request.Surname, request.Patronymic, request.PhoneNumber, request.PassportSeries, request.PassportNumber, request.Citizenship);
+        var serviceResponse = await _userService.UpdatePersonalInfo(dto.Id, dto.Nickname, dto.Name, 
+            dto.Surname, dto.Patronymic, dto.PhoneNumber, dto.PassportSeries, dto.PassportNumber, dto.Citizenship);
 
         if (serviceResponse.Status == false)
         {
@@ -130,7 +127,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize]  // для админа
+    [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
     public async Task<IResult> UpdateStatus(int userId, bool isActive)
     {
         var serviceResponse = await _userService.UpdateStatus(userId, isActive);
@@ -148,7 +145,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
-    [Authorize]
+    [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
     public async Task<IResult> Delete(int userId)
     {
         var serviceResponse = await _userService.Delete(userId);

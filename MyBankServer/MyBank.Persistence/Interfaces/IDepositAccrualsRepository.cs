@@ -1,10 +1,8 @@
-﻿using MyBank.Domain.Models;
-
-namespace MyBank.Persistence.Interfaces;
+﻿namespace MyBank.Persistence.Interfaces;
 
 public interface IDepositAccrualsRepository
 {
-    Task<int> Add(DepositAccrual depositAccrual, int depositAccountId);
+    Task<int> Add(DepositAccrual depositAccrual);
 
     Task<DepositAccrual> GetById(int id);
 

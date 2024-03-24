@@ -1,10 +1,8 @@
-﻿using MyBank.Domain.Models;
-
-namespace MyBank.Persistence.Interfaces;
+﻿namespace MyBank.Persistence.Interfaces;
 
 public interface IMessagesRepository
 {
-    Task<int> Add(Message message, int adminId, int moderatorId, int userId);
+    Task<int> Add(Message message);
 
     Task<Message> GetById(int id);
 

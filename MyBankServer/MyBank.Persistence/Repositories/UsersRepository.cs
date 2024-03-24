@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class UsersRepository : IUsersRepository
 {
@@ -20,9 +14,9 @@ public class UsersRepository : IUsersRepository
     {
         var userEntity = _mapper.Map<UserEntity>(user);
 
-        await _dbContext.Users.AddAsync(userEntity);
+        var item = await _dbContext.Users.AddAsync(userEntity);
         await _dbContext.SaveChangesAsync();
-        return userEntity.Id;
+        return item.Entity.Id;
     }
 
     public async Task<User> GetById(int id)

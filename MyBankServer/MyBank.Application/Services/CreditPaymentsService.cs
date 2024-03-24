@@ -1,10 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 
 public class CreditPaymentsService : ICreditPaymentsService
@@ -15,9 +9,9 @@ public class CreditPaymentsService : ICreditPaymentsService
         _creditPaymentsRepository = creditPaymentsRepository;
     }
 
-    public async Task<ServiceResponse<int>> Add(CreditPayment creditPayment, int creditAccountId, int userId)
+    public async Task<ServiceResponse<int>> Add(CreditPayment creditPayment)
     {
-        var id = await _creditPaymentsRepository.Add(creditPayment, creditAccountId, userId);
+        var id = await _creditPaymentsRepository.Add(creditPayment);
 
         return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
     }

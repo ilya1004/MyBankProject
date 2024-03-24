@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class CardPackagesRepository : ICardPackagesRepository
 {
@@ -18,21 +12,11 @@ public class CardPackagesRepository : ICardPackagesRepository
 
     public async Task<int> Add(CardPackage cardPackage)
     {
-        var cardPackageEntity = new CardPackageEntity
-        {
-            Id = 0,
-            Name = cardPackage.Name,
-            Price = cardPackage.Price,
-            OperationsNumber = cardPackage.OperationsNumber,
-            OperationsSum = cardPackage.OperationsSum,
-            AverageAccountBalance = cardPackage.AverageAccountBalance,
-            MonthPayroll = cardPackage.MonthPayroll,
-            Cards = []
-        };
+        var cardPackageEntity = _mapper.Map<CardPackageEntity>(cardPackage);
 
-        await _dbContext.CardPackages.AddAsync(cardPackageEntity);
+        var item = await _dbContext.CardPackages.AddAsync(cardPackageEntity);
         await _dbContext.SaveChangesAsync();
-        return cardPackageEntity.Id;
+        return item.Entity.Id;
     }
 
     public async Task<CardPackage> GetById(int id)

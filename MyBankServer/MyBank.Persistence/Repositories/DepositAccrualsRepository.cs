@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class DepositAccrualsRepository : IDepositAccrualsRepository
 {
@@ -16,20 +10,14 @@ public class DepositAccrualsRepository : IDepositAccrualsRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(DepositAccrual depositAccrual, int depositAccountId)
+    public async Task<int> Add(DepositAccrual depositAccrual)
     {
         var depositAccountEntity = await _dbContext.DepositAccounts
-            .FirstOrDefaultAsync(da => da.Id == depositAccountId);
+            .FirstOrDefaultAsync(da => da.Id == depositAccrual.DepositAccountId);
 
-        var depositAccrualEntity = new DepositAccrualEntity
-        {
-            Id = 0,
-            AccrualAmount = depositAccrual.AccrualAmount,
-            Datetime = depositAccrual.Datetime,
-            Status = depositAccrual.Status,
-            DepositAccountId = depositAccountId,
-            DepositAccount = depositAccountEntity,
-        };
+        var depositAccrualEntity = _mapper.Map<DepositAccrualEntity>(depositAccrual);
+        
+        depositAccrualEntity.DepositAccount = depositAccountEntity;
 
         var item = await _dbContext.DepositAccounts.AddAsync(depositAccountEntity!);
         await _dbContext.SaveChangesAsync();

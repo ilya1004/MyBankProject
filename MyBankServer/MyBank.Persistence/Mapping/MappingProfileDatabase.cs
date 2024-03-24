@@ -1,12 +1,8 @@
-﻿using AutoMapper;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Entities;
+﻿namespace MyBank.Persistence.Mapping;
 
-namespace MyBank.Persistence.Mapping;
-
-public class MappingProfile : Profile
+public class MappingProfileDatabase : Profile
 {
-    public MappingProfile()
+    public MappingProfileDatabase()
     {
         CreateMap<Admin, AdminEntity>();
         CreateMap<AdminEntity, Admin>();
@@ -50,20 +46,5 @@ public class MappingProfile : Profile
         CreateMap<UserEntity, User>();
         CreateMap<User, UserEntity>();
 
-        //CreateMap<User, UserEntity>()
-        //    .ForMember(dest => dest.PersonalAccounts,
-        //    src => src.MapFrom(x => x.PersonalAccounts))
-        //    .ForMember(dest => dest.CreditAccounts,
-        //    src => src.MapFrom(x => x.CreditAccounts))
-        //    .ForMember(dest => dest.DepositAccounts,
-        //    src => src.MapFrom(x => x.DepositAccounts))
-        //    .ForMember(dest => dest.Cards,
-        //    src => src.MapFrom(x => x.Cards))
-        //    .ForMember(dest => dest.CreditRequests,
-        //    src => src.MapFrom(x => x.CreditRequests))
-        //    .ForMember(dest => dest.CreditPayments,
-        //    src => src.MapFrom(x => x.CreditPayments))
-        //    .ForMember(dest => dest.Messages,
-        //    src => src.MapFrom(x => x.Messages));
     }
 }

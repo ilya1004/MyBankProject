@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class MessagesRepository : IMessagesRepository
 {
@@ -16,41 +10,24 @@ public class MessagesRepository : IMessagesRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(Message message, int adminId, int moderatorId, int userId)
+    public async Task<int> Add(Message message)
     {
-        var messageEntity = new MessageEntity
-        {
-            Id = 0,
-            Title = message.Title,
-            Text = message.Text,
-            RecepientId = message.RecepientId,
-            RecepientRole = message.RecepientRole,
-            IsRead = message.IsRead
-        };
+        var messageEntity = _mapper.Map<MessageEntity>(message);
 
-        if (adminId != -1)
+        if (message.SenderAdminId != -1)
         {
-            var adminEntity = await _dbContext.Admins
-                .FirstOrDefaultAsync(a => a.Id == adminId);
-
-            messageEntity.SenderAdminId = adminId;
-            messageEntity.SenderAdmin = adminEntity;
+            messageEntity.SenderAdmin = await _dbContext.Admins
+                .FirstOrDefaultAsync(a => a.Id == message.SenderAdminId);
         }
-        else if (moderatorId != -1)
+        else if (message.SenderModeratorId != -1)
         {
-            var moderatorEntity = await _dbContext.Moderators
-                .FirstOrDefaultAsync(m => m.Id == moderatorId);
-
-            messageEntity.SenderModeratorId = moderatorId;
-            messageEntity.SenderModerator = moderatorEntity;
+            messageEntity.SenderModerator = await _dbContext.Moderators
+                .FirstOrDefaultAsync(m => m.Id == message.SenderModeratorId);
         }
-        else if (userId != -1)
+        else if (message.SenderUserId != -1)
         {
-            var userEntity = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            messageEntity.SenderUserId = userId;
-            messageEntity.SenderUser = userEntity;
+            messageEntity.SenderUser = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Id == message.SenderUserId);
         }
 
         var item = await _dbContext.Messages.AddAsync(messageEntity);

@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class CurrenciesRepository : ICurrenciesRepository
 {
@@ -18,18 +12,7 @@ public class CurrenciesRepository : ICurrenciesRepository
 
     public async Task<int> Add(Currency currency)
     {
-        var currencyEntity = new CurrencyEntity
-        {
-            Id = 0,
-            Code = currency.Code,
-            Name = currency.Name,
-            Scale = currency.Scale,
-            LastDateRateUpdate = currency.LastDateRateUpdate,
-            OfficialRate = currency.OfficialRate,
-            PersonalAccounts = [],
-            CreditAccounts = [],
-            DepositAccounts = []
-        };
+        var currencyEntity = _mapper.Map<CurrencyEntity>(currency);
 
         var item = await _dbContext.Currencies.AddAsync(currencyEntity);
         await _dbContext.SaveChangesAsync();

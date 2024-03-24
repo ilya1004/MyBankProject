@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyBank.Domain.DataTransferObjects.ModeratorDtos;
+namespace MyBank.API.DataTransferObjects.AdminDtos;
 
-public record LoginModeratorDto
+public record LoginAdminDto
 {
     [Required] public string Login { get; init; } = string.Empty;
     [Required] public string Password { get; init; } = string.Empty;

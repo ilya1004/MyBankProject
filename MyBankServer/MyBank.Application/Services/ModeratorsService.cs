@@ -1,71 +1,66 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.DataTransferObjects.ModeratorDtos;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-
-namespace MyBank.Application.Services;
-
+﻿namespace MyBank.Application.Services;
 
 public class ModeratorsService : IModeratorsService
 {
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtProvider _jwtProvider;
-    private readonly IModeratorsRepository _moderatorRepository;
+    private readonly IModeratorsRepository _moderatorsRepository;
 
-    public ModeratorsService(IPasswordHasher passwordHasher, IJwtProvider jwtProvider, IModeratorsRepository moderatorRepository)
+    public ModeratorsService(IPasswordHasher passwordHasher, IJwtProvider jwtProvider, IModeratorsRepository moderatorsRepository)
     {
         _passwordHasher = passwordHasher;
         _jwtProvider = jwtProvider;
-        _moderatorRepository = moderatorRepository;
+        _moderatorsRepository = moderatorsRepository;
     }
 
-    public async Task<ServiceResponse<int>> Add(RegisterModeratorDto registerModeratorDto)
+    public async Task<ServiceResponse<int>> Add(string login, string password, string nickname)
     {
-        var isExist = await _moderatorRepository.IsExistByLogin(registerModeratorDto.Login);
+        var isExist = await _moderatorsRepository.IsExistByLogin(login);
 
         if (isExist)
-        {
             return new ServiceResponse<int> { Status = false, Message = "Moderator with given login already exists", Data = 0 };
-        }
 
-        var hashedPassword = _passwordHasher.GenerateHash(registerModeratorDto.Password);
+        var hashedPassword = _passwordHasher.GenerateHash(password);
 
         var moderator = new Moderator
         {
             Id = 0,
-            Login = registerModeratorDto.Login,
+            Login = login,
             HashedPassword = hashedPassword,
-            Nickname = registerModeratorDto.Nickname,
+            Nickname = nickname,
             IsActive = true,
             CreationDate = DateTime.UtcNow,
         };
 
-        var moderatorId = await _moderatorRepository.Add(moderator);
+        var moderatorId = await _moderatorsRepository.Add(moderator);
 
         return new ServiceResponse<int> { Status = true, Message = "Success", Data = moderatorId };
     }
 
-    public async Task<ServiceResponse<string>> Login(string login, string password)
+    public async Task<ServiceResponse<(int, string)>> Login(string login, string password)
     {
-        var moderator = await _moderatorRepository.GetByLogin(login);
+        var isExist = await _moderatorsRepository.IsExistByLogin(login);
+
+        if (!isExist)
+            return new ServiceResponse<(int, string)> { Status = false, Message = "Модератора с данным логином не найдено", Data = (-1, string.Empty) };
+
+        var moderator = await _moderatorsRepository.GetByLogin(login);
 
         var res = _passwordHasher.VerifyPassword(password, moderator.HashedPassword);
 
         if (res == false)
         {
-            return new ServiceResponse<string> { Status = false, Message = "Invalid credentials", Data = "" };
+            return new ServiceResponse<(int, string)> { Status = false, Message = "Неверный логин или пароль", Data = (-1, string.Empty) };
         }
 
         var token = _jwtProvider.GenerateToken(moderator);
 
-        return new ServiceResponse<string> { Status = true, Message = "Success", Data = token };
+        return new ServiceResponse<(int, string)> { Status = true, Message = "Success", Data = (moderator.Id, token) };
     }
 
     public async Task<ServiceResponse<Moderator>> GetById(int id)
     {
-        var moderator = await _moderatorRepository.GetById(id);
+        var moderator = await _moderatorsRepository.GetById(id);
 
         if (moderator == null)
         {
@@ -75,9 +70,28 @@ public class ModeratorsService : IModeratorsService
         return new ServiceResponse<Moderator> { Status = true, Message = "Success", Data = moderator };
     }
 
+    public async Task<ServiceResponse<List<Moderator>>> GetAll()
+    {
+        var list = await _moderatorsRepository.GetAll();
+
+        return new ServiceResponse<List<Moderator>> { Status = true, Message = "Success", Data = list };
+    }
+
     public async Task<ServiceResponse<bool>> UpdateInfo(int id, string nickname)
     {
-        var status = await _moderatorRepository.UpdateInfo(id, nickname);
+        var status = await _moderatorsRepository.UpdateInfo(id, nickname);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe moderator with given id ({id}) not found", Data = default };
+        }
+
+        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+    }
+
+    public async Task<ServiceResponse<bool>> Delete(int id)
+    {
+        var status = await _moderatorsRepository.Delete(id);
 
         if (status == false)
         {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyBank.Domain.DataTransferObjects.ModeratorDtos;
+namespace MyBank.API.DataTransferObjects.ModeratorDtos;
 
 public record RegisterModeratorDto
 {

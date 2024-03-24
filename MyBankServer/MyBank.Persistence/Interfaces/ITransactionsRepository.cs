@@ -1,12 +1,10 @@
-﻿using MyBank.Domain.Models;
-
-namespace MyBank.Persistence.Interfaces;
+﻿namespace MyBank.Persistence.Interfaces;
 
 public interface ITransactionsRepository
 {
-    Task<int> Add(Transaction transaction, int personalAccountId);
+    Task<int> Add(Transaction transaction);
 
-    Task<List<Transaction>> GetAllByPersonalAccountId(int personalAccountId);
+    Task<List<Transaction>> GetAllByPersonalAccountNumber(string personalAccountNumber);
 
-    Task<List<Transaction>> GetAllByPersonalAccountDate(int personalAccountId, DateTime dateTimeStart, DateTime dateTimeEnd);
+    Task<List<Transaction>> GetAllByPersonalAccountDate(string personalAccountNumber, DateTime dateTimeStart, DateTime dateTimeEnd);
 }

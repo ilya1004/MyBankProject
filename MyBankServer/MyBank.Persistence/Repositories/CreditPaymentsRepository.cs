@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class CreditPaymentsRepository : ICreditPaymentsRepository
 {
@@ -16,26 +10,18 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(CreditPayment creditPayment, int creditAccountId, int userId)
+    public async Task<int> Add(CreditPayment creditPayment)
     {
         var creditAccountEntity = await _dbContext.CreditAccounts
-           .FirstOrDefaultAsync(ca => ca.Id == creditAccountId);
+           .FirstOrDefaultAsync(ca => ca.Id == creditPayment.CreditAccountId);
 
         var userEntity = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == creditPayment.UserId);
 
-        var сreditPaymentEntity = new CreditPaymentEntity
-        {
-            Id = 0,
-            PaymentAmount = creditPayment.PaymentAmount,
-            PaymentNumber = creditPayment.PaymentNumber,
-            Datetime = creditPayment.Datetime,
-            Status = creditPayment.Status,
-            CreditAccountId = creditAccountId,
-            CreditAccount = creditAccountEntity,
-            UserId = userId,
-            User = userEntity
-        };
+        var сreditPaymentEntity = _mapper.Map<CreditPaymentEntity>(creditPayment);
+
+        сreditPaymentEntity.CreditAccount = creditAccountEntity;
+        сreditPaymentEntity.User = userEntity;
 
         var item = await _dbContext.CreditPayments.AddAsync(сreditPaymentEntity);
         await _dbContext.SaveChangesAsync();

@@ -1,10 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.DataTransferObjects.UserDtos;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 public class UserService : IUserService
 {
@@ -21,32 +15,33 @@ public class UserService : IUserService
         _moderatorRepository = moderatorRepository;
     }
 
-    public async Task<ServiceResponse<int>> Register(RegisterUserDto registerUserDto)
+    public async Task<ServiceResponse<int>> Register(string email, string password, string nickname, 
+        string name, string surname, string patronymic, string passportSeries, string passportNumber, string citizenship)
     {
-        var isExist = await _userRepository.IsExistByEmail(registerUserDto.Email);
+        var isExist = await _userRepository.IsExistByEmail(email);
 
         if (isExist)
         {
             return new ServiceResponse<int> { Status = false, Message = "User with given email already exists", Data = 0 };
         }
         
-        var hashedPassword = _passwordHasher.GenerateHash(registerUserDto.Password);
+        var hashedPassword = _passwordHasher.GenerateHash(password);
 
         var user = new User
         {
             Id = 0,
-            Email = registerUserDto.Email,
+            Email = email,
             HashedPassword = hashedPassword,
-            Nickname = registerUserDto.Nickname,
+            Nickname = nickname,
             IsActive = true,
-            Name = registerUserDto.Name,
-            Surname = registerUserDto.Surname,
-            Patronymic = string.Empty,
+            Name = name,
+            Surname = surname,
+            Patronymic = patronymic,
             PhoneNumber = string.Empty,
-            PassportSeries = registerUserDto.PassportSeries,
-            PassportNumber = registerUserDto.PassportNumber,
+            PassportSeries = passportSeries,
+            PassportNumber = passportNumber,
             RegistrationDate = DateTime.UtcNow,
-            Citizenship = registerUserDto.Citizenship
+            Citizenship = citizenship
         };
 
         var userId = await _userRepository.Add(user);
@@ -59,20 +54,25 @@ public class UserService : IUserService
     // #moderator#234fk09k
     // #admin#234f234ffr
 
-    public async Task<ServiceResponse<string>> Login(string email, string password)
+    public async Task<ServiceResponse<(int, string)>> Login(string email, string password)
     {
+        var isExist = await _userRepository.IsExistByEmail(email);
+
+        if (!isExist)
+            return new ServiceResponse<(int, string)> { Status = false, Message = "Пользователя с данной электронной почтой не найдено", Data = (-1, string.Empty) };
+
         var user = await _userRepository.GetByEmail(email);
 
         var res = _passwordHasher.VerifyPassword(password, user.HashedPassword);
 
         if (res == false)
         {
-            return new ServiceResponse<string> { Status = false, Message = "Invalid credentials", Data = ""};
+            return new ServiceResponse<(int, string)> { Status = false, Message = "Неверная электронная почта или пароль", Data = (-1, string.Empty)};
         }
 
         var token = _jwtProvider.GenerateToken(user);
 
-        return new ServiceResponse<string> { Status = true, Message = "Success", Data = token };
+        return new ServiceResponse<(int, string)> { Status = true, Message = "Success", Data = (user.Id, token) };
     }
 
     public async Task<ServiceResponse<User>> GetById(int id)

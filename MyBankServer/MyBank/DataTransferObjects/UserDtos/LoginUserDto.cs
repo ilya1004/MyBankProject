@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyBank.Domain.DataTransferObjects.UserDtos;
+namespace MyBank.API.DataTransferObjects.UserDtos;
 
 public record LoginUserDto
 {

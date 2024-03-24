@@ -1,7 +1,4 @@
-﻿using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-
-namespace MyBank.Application.Interfaces;
+﻿namespace MyBank.Application.Interfaces;
 
 public interface ICardPackagesService
 {

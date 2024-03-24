@@ -1,4 +1,5 @@
-obj/
-bin/
-vs/
-.vs
+**/obj
+!obj/MyBankServer.EntityFrameworkCore.targets
+
+**/bin
+**/.vs

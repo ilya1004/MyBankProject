@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class AdminRepository : IAdminRepository
 {
@@ -16,20 +10,13 @@ public class AdminRepository : IAdminRepository
         _mapper = mapper;
     }
 
-    public async Task<bool> Add(Admin admin)
+    public async Task<int> Add(Admin admin)
     {
-        var adminEntity = new AdminEntity
-        {
-            Id = 0,
-            Login = admin.Login,
-            HashedPassword = admin.HashedPassword,
-            Nickname = admin.Nickname,
-            Messages = []
-        };
+        var adminEntity = _mapper.Map<AdminEntity>(admin);
 
-        await _dbContext.Admins.AddAsync(adminEntity);
+        var item = await _dbContext.Admins.AddAsync(adminEntity);
         var number = await _dbContext.SaveChangesAsync();
-        return number == 0 ? false : true;
+        return item.Entity.Id;
     }
 
     public async Task<Admin> GetById(int id)
@@ -76,5 +63,10 @@ public class AdminRepository : IAdminRepository
             .ExecuteDeleteAsync();
 
         return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> IsExistByLogin(string login)
+    {
+        return await _dbContext.Admins.AnyAsync(a => a.Login == login);
     }
 }

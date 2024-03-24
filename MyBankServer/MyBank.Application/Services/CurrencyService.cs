@@ -1,10 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.DataTransferObjects.CurrencyDtos;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 public class CurrencyService : ICurrencyService
 {
@@ -14,7 +8,7 @@ public class CurrencyService : ICurrencyService
 		_currenciesRepository = currenciesRepository;
 	}
 
-	public async Task<ServiceResponse<int>> Add(CurrencyDto currency)
+	public async Task<ServiceResponse<int>> Add(Currency currency)
 	{
 		var id = await _currenciesRepository.Add(
 			new Currency(0, currency.Code, currency.Name, currency.Scale, currency.LastDateRateUpdate, currency.OfficialRate));

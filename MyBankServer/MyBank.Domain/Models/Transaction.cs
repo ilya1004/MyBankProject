@@ -1,30 +1,28 @@
-﻿
-namespace MyBank.Domain.Models;
+﻿namespace MyBank.Domain.Models;
 
 public class Transaction
 {
-    public Transaction(int id, decimal paymentAmount, DateTime datetime, string status, string information, string? accountReceiverNumber, int? personalAccountId, PersonalAccount? personalAccount, int? creditAccountId, CreditAccount? creditAccount)
+    public Transaction() { }
+    public Transaction(int id, decimal paymentAmount, DateTime datetime, bool status, string information, string? accountSenderNumber, string? userSenderNickname, string? accountRecipientNumber, string? userRecipientNickname)
     {
         Id = id;
         PaymentAmount = paymentAmount;
         Datetime = datetime;
         Status = status;
         Information = information;
-        AccountReceiverNumber = accountReceiverNumber;
-        PersonalAccountId = personalAccountId;
-        PersonalAccount = personalAccount;
-        CreditAccountId = creditAccountId;
-        CreditAccount = creditAccount;
+        AccountSenderNumber = accountSenderNumber;
+        UserSenderNickname = userSenderNickname;
+        AccountRecipientNumber = accountRecipientNumber;
+        UserRecipientNickname = userRecipientNickname;
     }
 
     public int Id { get; set; }
     public decimal PaymentAmount { get; set; }
-    public DateTime Datetime { get; set; } = DateTime.UtcNow;
-    public string Status { get; set; } = string.Empty;
+    public DateTime Datetime { get; set; }
+    public bool Status { get; set; }
     public string Information { get; set; } = string.Empty;
-    public string? AccountReceiverNumber { get; set; } = null;
-    public int? PersonalAccountId { get; set; } = null;
-    public PersonalAccount? PersonalAccount { get; set; } = null;
-    public int? CreditAccountId { get; set; } = null;
-    public CreditAccount? CreditAccount { get; set; } = null;
+    public string? AccountSenderNumber { get; set; } = null;
+    public string? UserSenderNickname { get; set; } = null;
+    public string? AccountRecipientNumber { get; set; } = null;
+    public string? UserRecipientNickname { get; set; } = null;
 }

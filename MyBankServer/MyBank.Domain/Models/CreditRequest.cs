@@ -26,8 +26,8 @@ public class CreditRequest
     public int TotalPaymentsNumber { get; set; }
     public bool HasPrepaymentOption { get; set; }
     public bool IsApproved { get; set; }
-    public int ModeratorId { get; set; }
+    public int? ModeratorId { get; set; }
     public Moderator? Moderator { get; set; } = null;
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
     public User? User { get; set; } = null;
 }

@@ -3,13 +3,13 @@
 public class DepositAccountEntity
 {
     public DepositAccountEntity() { }
-    public DepositAccountEntity(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption)
+    public DepositAccountEntity(int id, string name, string number, decimal currentBalance, decimal startBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption)
     {
         Id = id;
         Name = name;
         Number = number;
         CurrentBalance = currentBalance;
-        DepositStartBalance = depositStartBalance;
+        StartBalance = startBalance;
         CreationDate = creationDate;
         ClosingDate = closingDate;
         IsActive = isActive;
@@ -26,7 +26,7 @@ public class DepositAccountEntity
     public string Name { get; set; } = string.Empty;
     public string Number { get; set; } = string.Empty;
     public decimal CurrentBalance { get; set; }
-    public decimal DepositStartBalance { get; set; }
+    public decimal StartBalance { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime ClosingDate { get; set; }
     public bool IsActive { get; set; }

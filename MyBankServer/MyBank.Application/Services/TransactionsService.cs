@@ -1,10 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 
 public class TransactionsService : ITransactionsService
@@ -15,23 +9,24 @@ public class TransactionsService : ITransactionsService
         _transactionsRepository = transactionsRepository;
     }
 
-    public async Task<ServiceResponse<int>> Add(Transaction transaction, int personalAccountId)
+    public async Task<ServiceResponse<int>> Add(Transaction transaction)
     {
-        var id = await _transactionsRepository.Add(transaction, personalAccountId);
+        var id = await _transactionsRepository.Add(transaction);
 
         return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
     }
 
-    public async Task<ServiceResponse<List<Transaction>>> GetAllByPersonalAccountId(int personalAccountId)
+    public async Task<ServiceResponse<List<Transaction>>> GetAllByPersonalAccountNumber(string personalAccountNumber)
     {
-        var list = await _transactionsRepository.GetAllByPersonalAccountId(personalAccountId);
+        var list = await _transactionsRepository.GetAllByPersonalAccountNumber(personalAccountNumber);
 
         return new ServiceResponse<List<Transaction>> { Status = true, Message = "Success", Data = list };
     }
 
-    public async Task<ServiceResponse<List<Transaction>>> GetAllByPersonalAccountDate(int personalAccountId, DateTime dateTimeStart, DateTime dateTimeEnd)
+    public async Task<ServiceResponse<List<Transaction>>> GetAllByPersonalAccountNumber(string personalAccountNumber, DateOnly dateStart, DateOnly dateEnd)
     {
-        var list = await _transactionsRepository.GetAllByPersonalAccountDate(personalAccountId, dateTimeStart, dateTimeEnd);
+        var list = await _transactionsRepository.GetAllByPersonalAccountDate(personalAccountNumber, 
+            new DateTime(dateStart, new TimeOnly(0, 0, 0)), new DateTime(dateEnd, new TimeOnly(23, 59, 59)));
 
         return new ServiceResponse<List<Transaction>> { Status = true, Message = "Success", Data = list };
     }

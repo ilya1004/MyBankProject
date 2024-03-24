@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class CardsRepository : ICardsRepository
 {
@@ -16,40 +10,26 @@ public class CardsRepository : ICardsRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(Card card, int cardPackageId, int userId, int personalAccountId)
+    public async Task<int> Add(Card card)
     {
-
         var cardPackageEntity = await _dbContext.CardPackages
-            .FirstOrDefaultAsync(cp => cp.Id == cardPackageId);
+            .FirstOrDefaultAsync(cp => cp.Id == card.CardPackageId);
 
         var userEntity = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == card.UserId);
 
         var personalAccountEntity = await _dbContext.PersonalAccounts
-                .FirstOrDefaultAsync(pa => pa.Id == personalAccountId);
+                .FirstOrDefaultAsync(pa => pa.Id == card.PersonalAccountId);
 
-        var cardEntity = new CardEntity
-        {
-            Id = 0,
-            Name = card.Name,
-            Number = card.Number,
-            CreationDate = card.CreationDate,
-            ExpirationDate = card.ExpirationDate,
-            AccountType = card.AccountType,
-            CvvCode = card.CvvCode,
-            Pincode = card.Pincode,
-            IsActive = card.IsActive,
-            CardPackageId = cardPackageId,
-            CardPackage = cardPackageEntity,
-            UserId = userId,
-            User = userEntity,
-            PersonalAccountId = personalAccountId,
-            PersonalAccount = personalAccountEntity
-        };
+        var cardEntity = _mapper.Map<CardEntity>(card);
 
-        await _dbContext.Cards.AddAsync(cardEntity);
+        cardEntity.CardPackage = cardPackageEntity;
+        cardEntity.User = userEntity;
+        cardEntity.PersonalAccount = personalAccountEntity;
+
+        var item = await _dbContext.Cards.AddAsync(cardEntity);
         await _dbContext.SaveChangesAsync();
-        return cardEntity.Id;
+        return item.Entity.Id;
     }
 
     public async Task<Card> GetById(int id)
@@ -61,11 +41,37 @@ public class CardsRepository : ICardsRepository
         return _mapper.Map<Card>(cardEntity);
     }
 
-    public async Task<Card> GetByNumber(string number)
+    public async Task<Card> GetByNumber(string number, bool withPersonalAccount, bool withUser)
     {
-        var cardEntity = await _dbContext.Cards
+        CardEntity? cardEntity = null;
+        if (withPersonalAccount && withUser)
+        {
+            cardEntity = await _dbContext.Cards
+            .AsNoTracking()
+            .Include(c => c.PersonalAccount)
+            .Include(c => c.User)
+            .FirstOrDefaultAsync(c => c.Number == number);
+        } 
+        else if (withUser)
+        {
+            cardEntity = await _dbContext.Cards
+            .AsNoTracking()
+            .Include(c => c.User)
+            .FirstOrDefaultAsync(c => c.Number == number);
+        }
+        else if (withPersonalAccount)
+        {
+            cardEntity = await _dbContext.Cards
+            .AsNoTracking()
+            .Include(c => c.PersonalAccount)
+            .FirstOrDefaultAsync(c => c.Number == number);
+        }
+        else
+        {
+            cardEntity = await _dbContext.Cards
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Number == number);
+        }
 
         return _mapper.Map<Card>(cardEntity);
     }

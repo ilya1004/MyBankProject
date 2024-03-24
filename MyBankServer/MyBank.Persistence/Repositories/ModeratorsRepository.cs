@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class ModeratorsRepository : IModeratorsRepository
 {
@@ -18,16 +12,7 @@ public class ModeratorsRepository : IModeratorsRepository
 
     public async Task<int> Add(Moderator moderator)
     {
-        var moderatorEntity = new ModeratorEntity
-        {
-            Id = 0,
-            Login = moderator.Login,
-            HashedPassword = moderator.HashedPassword,
-            Nickname = moderator.Nickname,
-            CreationDate = moderator.CreationDate,
-            IsActive = moderator.IsActive,
-            Messages = []
-        };
+        var moderatorEntity = _mapper.Map<ModeratorEntity>(moderator);
 
         var item = await _dbContext.Moderators.AddAsync(moderatorEntity);
         await _dbContext.SaveChangesAsync();

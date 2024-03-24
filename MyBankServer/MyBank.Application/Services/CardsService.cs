@@ -1,11 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-using System.Xml.Linq;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 
 public class CardsService : ICardsService
@@ -16,9 +9,9 @@ public class CardsService : ICardsService
         _cardsRepository = cardsRepository;
     }
 
-    public async Task<ServiceResponse<int>> Add(Card card, int cardPackageId, int userId, int personalAccountId)
+    public async Task<ServiceResponse<int>> Add(Card card)
     {
-        var id = await _cardsRepository.Add(card, cardPackageId, userId, personalAccountId);
+        var id = await _cardsRepository.Add(card);
 
         return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
     }
@@ -37,7 +30,7 @@ public class CardsService : ICardsService
 
     public async Task<ServiceResponse<Card>> GetByNumber(string number)
     {
-        var card = await _cardsRepository.GetByNumber(number);
+        var card = await _cardsRepository.GetByNumber(number, false, false);
 
         if (card == null)
         {

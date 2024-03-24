@@ -13,7 +13,8 @@ public class CreditRequestConfiguration : IEntityTypeConfiguration<CreditRequest
         builder
             .HasOne(cr => cr.Moderator)
             .WithMany(m => m.CreditRequestsReplied)
-            .HasForeignKey(cr => cr.ModeratorId);
+            .HasForeignKey(cr => cr.ModeratorId)
+            .IsRequired(false);
 
         builder
             .HasOne(cr => cr.User)

@@ -1,10 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 
 public class CardPackagesService : ICardPackagesService

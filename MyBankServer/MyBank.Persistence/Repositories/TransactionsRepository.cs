@@ -1,11 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
-
+﻿
 public class TransactionsRepository : ITransactionsRepository
 {
     private readonly MyBankDbContext _dbContext;
@@ -16,43 +9,30 @@ public class TransactionsRepository : ITransactionsRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(Transaction transaction, int personalAccountId)
+    public async Task<int> Add(Transaction transaction)
     {
-        var personalAccountEntity = await _dbContext.PersonalAccounts
-                .FirstOrDefaultAsync(pa => pa.Id == personalAccountId);
-
-        var transactionEntity = new TransactionEntity
-        {
-            Id = 0,
-            PaymentAmount = transaction.PaymentAmount,
-            Datetime = transaction.Datetime,
-            Status = transaction.Status,
-            Information = transaction.Information,
-            AccountReceiverNumber = transaction.AccountReceiverNumber,
-            PersonalAccountId = personalAccountId,
-            PersonalAccount = personalAccountEntity
-        };
+        var transactionEntity = _mapper.Map<TransactionEntity>(transaction);
 
         var item = await _dbContext.Transactions.AddAsync(transactionEntity);
         await _dbContext.SaveChangesAsync();
         return item.Entity.Id;
     }
 
-    public async Task<List<Transaction>> GetAllByPersonalAccountId(int personalAccountId)
+    public async Task<List<Transaction>> GetAllByPersonalAccountNumber(string personalAccountNumber)
     {
         var transationEntitiesList = await _dbContext.Transactions
             .AsNoTracking()
-            .Where(t => t.PersonalAccountId == personalAccountId)
+            .Where(t => t.AccountSenderNumber == personalAccountNumber || t.AccountRecipientNumber == personalAccountNumber)
             .ToListAsync();
 
         return _mapper.Map<List<Transaction>>(transationEntitiesList);
     }
 
-    public async Task<List<Transaction>> GetAllByPersonalAccountDate(int personalAccountId, DateTime dateTimeStart, DateTime dateTimeEnd)
+    public async Task<List<Transaction>> GetAllByPersonalAccountDate(string personalAccountNumber, DateTime dateTimeStart, DateTime dateTimeEnd)
     {
         var transationEntitiesList = await _dbContext.Transactions
             .AsNoTracking()
-            .Where(t => t.PersonalAccountId == personalAccountId
+            .Where(t => (t.AccountSenderNumber == personalAccountNumber || t.AccountRecipientNumber == personalAccountNumber) 
                 && dateTimeStart <= t.Datetime && t.Datetime <= dateTimeEnd)
             .ToListAsync();
 

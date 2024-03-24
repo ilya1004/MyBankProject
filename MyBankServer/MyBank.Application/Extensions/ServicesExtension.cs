@@ -8,7 +8,7 @@ namespace MyBank.Application.Extensions;
 
 public static class ServicesExtension
 {
-    public static IServiceCollection AddServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAdminService, AdminService>();

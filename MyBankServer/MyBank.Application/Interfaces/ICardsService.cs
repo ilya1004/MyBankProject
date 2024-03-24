@@ -1,11 +1,8 @@
-﻿using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-
-namespace MyBank.Application.Interfaces;
+﻿namespace MyBank.Application.Interfaces;
 
 public interface ICardsService
 {
-    Task<ServiceResponse<int>> Add(Card card, int cardPackageId, int userId, int personalAccountId);
+    Task<ServiceResponse<int>> Add(Card card);
     Task<ServiceResponse<bool>> Delete(int id);
     Task<ServiceResponse<List<Card>>> GetAllByUser(int userId);
     Task<ServiceResponse<Card>> GetById(int id);

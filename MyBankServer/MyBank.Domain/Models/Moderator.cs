@@ -1,5 +1,4 @@
-﻿
-namespace MyBank.Domain.Models;
+﻿namespace MyBank.Domain.Models;
 
 public class Moderator
 {

@@ -1,5 +1,4 @@
-﻿
-namespace MyBank.Domain.Models;
+﻿namespace MyBank.Domain.Models;
 
 public class PersonalAccount
 {
@@ -31,6 +30,5 @@ public class PersonalAccount
     public User? UserOwner { get; set; }
     public int CurrencyId { get; set; }
     public Currency? Currency { get; set; }
-    public List<Transaction> Transactions { get; set; } = [];
     public List<Card> Cards { get; set; } = [];
 }

@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MyBank.Application.Interfaces;
-using MyBank.Application.Services;
-using MyBank.Domain.DataTransferObjects;
-using MyBank.Domain.DataTransferObjects.AdminDtos;
-using MyBank.Domain.Models;
+﻿using MyBank.API.DataTransferObjects.AdminDtos;
 
 namespace MyBank.API.Controllers;
 
@@ -17,25 +11,26 @@ public class AdminController : ControllerBase
     {
         _adminService = adminService;
     }
-    /*
+
+
     [HttpPost]
-    public async Task<IResult> Register([FromBody] RegisterUserDto request)
+    public async Task<IResult> Register([FromBody] RegisterAdminDto dto)
     {
-        var serviceResponse = await _userService.Register(request);
+        var serviceResponse = await _adminService.Register(dto.Login, dto.Password, dto.Nickname);
 
         if (serviceResponse.Status == false)
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "UsersController",
+                ControllerName = "AdminController",
                 Message = serviceResponse.Message,
             },
             statusCode: 400);
         }
 
-        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
     }
-    */
+
 
     [HttpPost]
     public async Task<IResult> Login([FromBody] LoginAdminDto request)
@@ -52,13 +47,13 @@ public class AdminController : ControllerBase
             statusCode: 400);
         }
 
-        Response.Cookies.Append("my-cookie", serviceResponse.Data!, new CookieOptions { SameSite = SameSiteMode.Lax });
+        Response.Cookies.Append("my-cookie", serviceResponse.Data.Item2, new CookieOptions { SameSite = SameSiteMode.Lax });
 
-        return Results.Json(new { jwtToken = serviceResponse.Data! }, statusCode: 200);
+        return Results.Json(new { id = serviceResponse.Data.Item1 }, statusCode: 200);
     }
 
     [HttpPost]
-    [Authorize(Policy = "AdminPolicy")]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
     public async Task<IResult> GetInfoById(int adminId)
     {
         var serviceResponse = await _adminService.GetById(adminId);
@@ -73,7 +68,7 @@ public class AdminController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { item = serviceResponse.Data! }, statusCode: 200);
     }
 
     [HttpPut]
@@ -92,6 +87,25 @@ public class AdminController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { status = serviceResponse.Data! }, statusCode: 200);
+    }
+
+    [HttpDelete]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> Delete(int adminId)
+    {
+        var serviceResponse = await _adminService.Delete(adminId);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "AdminController",
+                Message = serviceResponse.Message,
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace MyBank.Application.Interfaces
+﻿namespace MyBank.Application.Interfaces;
+
+public interface IPasswordHasher
 {
-    public interface IPasswordHasher
-    {
-        string GenerateHash(string password);
-        bool VerifyPassword(string password, string hashedPassword);
-    }
+    string GenerateHash(string password);
+    bool VerifyPassword(string password, string hashedPassword);
 }

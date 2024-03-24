@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MyBank.Application.Interfaces;
-using MyBank.Domain.DataTransferObjects;
-using MyBank.Domain.DataTransferObjects.CurrencyDtos;
+﻿using MyBank.API.DataTransferObjects.CurrencyDtos;
 
 namespace MyBank.API.Controllers;
 
@@ -11,16 +7,18 @@ namespace MyBank.API.Controllers;
 public class CurrencyController : ControllerBase
 {
     private readonly ICurrencyService _currencyService;
-    public CurrencyController(ICurrencyService currencyService)
+    private readonly IMapper _mapper;
+    public CurrencyController(ICurrencyService currencyService, IMapper mapper)
     {
         _currencyService = currencyService;
+        _mapper = mapper;
     }
 
     [HttpPost]
-    [Authorize(Policy = "AdminPolicy")]
-    public async Task<IResult> Add([FromBody] CurrencyDto currencyDto)
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> Add([FromBody] CurrencyDto dto)
     {
-        var serviceResponse = await _currencyService.Add(currencyDto);
+        var serviceResponse = await _currencyService.Add(_mapper.Map<Currency>(dto));
 
         if (serviceResponse.Status == false)
         {
@@ -31,8 +29,7 @@ public class CurrencyController : ControllerBase
             },
             statusCode: 400);
         }
-
-        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpGet]
@@ -50,7 +47,7 @@ public class CurrencyController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpGet]
@@ -68,7 +65,7 @@ public class CurrencyController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpGet]
@@ -86,11 +83,11 @@ public class CurrencyController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpDelete]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
     public async Task<IResult> Delete(int currencyId)
     {
         var serviceResponse = await _currencyService.Delete(currencyId);
@@ -105,6 +102,6 @@ public class CurrencyController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 }

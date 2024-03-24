@@ -1,9 +1,9 @@
-﻿
-namespace MyBank.Domain.Models;
+﻿namespace MyBank.Domain.Models;
 
 public class CreditAccount
 {
-    public CreditAccount(int id, string name, string number, decimal currentBalance, decimal creditStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, int madePaymentsNumber, bool hasPrepaymentOption, int userId, User? userOwner, int currencyId, Currency? currency, int moderatorApprovedId, Moderator? moderatorApproved, Card? card)
+    public CreditAccount() { }
+    public CreditAccount(int id, string name, string number, decimal currentBalance, decimal creditStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, int madePaymentsNumber, bool hasPrepaymentOption, int? userId, User? userOwner, int? currencyId, Currency? currency, int? moderatorApprovedId, Moderator? moderatorApproved)
     {
         Id = id;
         Name = name;
@@ -25,7 +25,6 @@ public class CreditAccount
         Currency = currency;
         ModeratorApprovedId = moderatorApprovedId;
         ModeratorApproved = moderatorApproved;
-        Card = card;
     }
 
     public int Id { get; set; }
@@ -48,8 +47,6 @@ public class CreditAccount
     public Currency? Currency { get; set; } = null;
     public int? ModeratorApprovedId { get; set; } = null;
     public Moderator? ModeratorApproved { get; set; } = null;
-    public int? CardId { get; set; } = null;
-    public Card? Card { get; set; } = null;
     public List<CreditPayment> Payments { get; set; } = [];
     public List<Transaction> Transactions { get; set; } = [];
 }

@@ -1,8 +1,4 @@
-﻿
-
-using MyBank.Domain.Models;
-
-namespace MyBank.Persistence.Interfaces;
+﻿namespace MyBank.Persistence.Interfaces;
 
 public interface ICardPackagesRepository
 {

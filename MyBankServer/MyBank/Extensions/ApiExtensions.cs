@@ -39,31 +39,31 @@ public static class ApiExtensions
     public static IServiceCollection AddApiAuthorization(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
-            .AddPolicy("UserPolicy", policy =>
+            .AddPolicy(AuthorizationPolicies.UserPolicy, policy =>
             {
                 policy.RequireClaim("Role", "User");
             })
-            .AddPolicy("ModeratorPolicy", policy =>
+            .AddPolicy(AuthorizationPolicies.ModeratorPolicy, policy =>
             {
                 policy.RequireClaim("Role", "Moderator");
             })
-            .AddPolicy("AdminPolicy", policy =>
+            .AddPolicy(AuthorizationPolicies.AdminPolicy, policy =>
             {
                 policy.RequireClaim("Role", "Admin");
             })
-            .AddPolicy("UserAndModeratorPolicy", policy =>
+            .AddPolicy(AuthorizationPolicies.UserAndModeratorPolicy, policy =>
             {
                 policy.RequireClaim("Role", "User", "Moderator");
             })
-            .AddPolicy("ModeratorAndAdminPolicy", policy =>
+            .AddPolicy(AuthorizationPolicies.ModeratorAndAdminPolicy, policy =>
             {
                 policy.RequireClaim("Role", "Moderator", "Admin");
             })
-            .AddPolicy("UserAndAdminPolicy", policy =>
+            .AddPolicy(AuthorizationPolicies.UserAndAdminPolicy, policy =>
             {
                 policy.RequireClaim("Role", "User", "Admin");
             })
-            .AddPolicy("UserAndModeratorAndAdminPolicy", policy =>
+            .AddPolicy(AuthorizationPolicies.UserAndModeratorAndAdminPolicy, policy =>
             {
                 policy.RequireClaim("Role", "User", "Moderator", "Admin");
             });

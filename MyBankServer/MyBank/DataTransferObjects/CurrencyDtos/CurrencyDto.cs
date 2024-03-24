@@ -1,6 +1,6 @@
-﻿namespace MyBank.Domain.DataTransferObjects.CurrencyDtos;
+﻿namespace MyBank.API.DataTransferObjects.CurrencyDtos;
 
-public class CurrencyDto
+public record CurrencyDto
 {
     public int Id { get; set; }
     public string Code { get; set; } = string.Empty;

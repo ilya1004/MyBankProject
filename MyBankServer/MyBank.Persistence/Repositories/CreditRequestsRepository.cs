@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class CreditRequestsRepository : ICreditRequestsRepository
 {
@@ -16,30 +10,14 @@ public class CreditRequestsRepository : ICreditRequestsRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(CreditRequest creditRequest, int moderatorId, int userId)
+    public async Task<int> Add(CreditRequest creditRequest)
     {
-
-        var moderatorEntity = await _dbContext.Moderators
-            .FirstOrDefaultAsync(m => m.Id == moderatorId);
-
         var userEntity = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == creditRequest.UserId);
 
-        var creditRequestEntity = new CreditRequestEntity
-        {
-            Id = 0,
-            StartBalance = creditRequest.StartBalance,
-            InterestRate = creditRequest.InterestRate,
-            InterestCalculationType = creditRequest.InterestCalculationType,
-            CreditTermInDays = creditRequest.CreditTermInDays,
-            TotalPaymentsNumber = creditRequest.TotalPaymentsNumber,
-            HasPrepaymentOption = creditRequest.HasPrepaymentOption,
-            IsApproved = creditRequest.IsApproved,
-            ModeratorId = moderatorId,
-            Moderator = moderatorEntity,
-            UserId = userId,
-            User = userEntity,
-        };
+        var creditRequestEntity = _mapper.Map<CreditRequestEntity>(creditRequest);
+
+        creditRequestEntity.User = userEntity;
 
         var item = await _dbContext.CreditRequests.AddAsync(creditRequestEntity);
         await _dbContext.SaveChangesAsync();
@@ -65,12 +43,17 @@ public class CreditRequestsRepository : ICreditRequestsRepository
         return _mapper.Map<List<CreditRequest>>(creditRequestEntitiesList);
     }
 
-    public async Task<bool> UpdateIsApproved(int id, bool IsApproved)
+    public async Task<bool> UpdateIsApproved(int id, int moderatorId, bool IsApproved)
     {
+        var moderatorEntity = await _dbContext.Moderators
+            .FirstOrDefaultAsync(m => m.Id == moderatorId);
+
         var number = await _dbContext.CreditRequests
             .Where(cr => cr.Id == id)
             .ExecuteUpdateAsync(s => s
-                .SetProperty(cr => cr.IsApproved, IsApproved));
+                .SetProperty(cr => cr.IsApproved, IsApproved)
+                .SetProperty(cr => cr.ModeratorId, moderatorId)
+                .SetProperty(cr => cr.Moderator, moderatorEntity));
 
         return (number == 0) ? false : true;
     }

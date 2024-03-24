@@ -1,10 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 
 public class DepositAccrualsService : IDepositAccrualsService
@@ -18,11 +12,9 @@ public class DepositAccrualsService : IDepositAccrualsService
 
     public async Task<ServiceResponse<int>> Add()  // TODO
     {
-        var depositAccountId = 0;
-
         var depositAccrual = new DepositAccrual(0, 0, DateTime.UtcNow, DepositAccrualStatus.Ok);
 
-        var id = await _depositAccrualsRepository.Add(depositAccrual, depositAccountId);
+        var id = await _depositAccrualsRepository.Add(depositAccrual);
 
         return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
     }

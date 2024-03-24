@@ -1,14 +1,10 @@
-﻿using MyBank.Application.Utils;
-using MyBank.Domain.DataTransferObjects.UserDtos;
-using MyBank.Domain.Models;
-
-namespace MyBank.Application.Interfaces;
+﻿namespace MyBank.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<ServiceResponse<int>> Register(RegisterUserDto registerUserDto);
+    Task<ServiceResponse<int>> Register(string email, string password, string nickname, string name, string surname, string patronymic, string passportSeries, string passportNumber, string citizenship);
 
-    Task<ServiceResponse<string>> Login(string email, string password);
+    Task<ServiceResponse<(int, string)>> Login(string email, string password);
 
     Task<ServiceResponse<User>> GetById(int id);
 

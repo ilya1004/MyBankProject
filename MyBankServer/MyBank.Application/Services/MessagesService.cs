@@ -1,11 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-using System.Xml.Linq;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 
 public class MessagesService : IMessagesService
@@ -16,9 +9,9 @@ public class MessagesService : IMessagesService
         _messagesRepository = messagesRepository;
     }
 
-    public async Task<ServiceResponse<int>> Add(Message message, int adminId, int moderatorId, int userId)
+    public async Task<ServiceResponse<int>> Add(Message message)
     {
-        var id = await _messagesRepository.Add(message, adminId, moderatorId, userId);
+        var id = await _messagesRepository.Add(message);
 
         return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
     }

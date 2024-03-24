@@ -1,10 +1,4 @@
-﻿using MyBank.Application.Interfaces;
-using MyBank.Application.Utils;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 
 public class CreditRequestsService : ICreditRequestsService
@@ -15,9 +9,9 @@ public class CreditRequestsService : ICreditRequestsService
         _creditRequestsRepository = creditRequestsRepository;
     }
 
-    public async Task<ServiceResponse<int>> Add(CreditRequest creditRequest, int moderatorId, int userId)
+    public async Task<ServiceResponse<int>> Add(CreditRequest creditRequest)
     {
-        var id = await _creditRequestsRepository.Add(creditRequest, moderatorId, userId);
+        var id = await _creditRequestsRepository.Add(creditRequest);
 
         return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
     }
@@ -41,9 +35,9 @@ public class CreditRequestsService : ICreditRequestsService
         return new ServiceResponse<List<CreditRequest>> { Status = true, Message = "Success", Data = list };
     }
 
-    public async Task<ServiceResponse<bool>> UpdateIsApproved(int id, bool isApproved)
+    public async Task<ServiceResponse<bool>> UpdateIsApproved(int id, int moderatorId, bool isApproved)
     {
-        var status = await _creditRequestsRepository.UpdateIsApproved(id, isApproved);
+        var status = await _creditRequestsRepository.UpdateIsApproved(id, moderatorId, isApproved);
 
         if (status == false)
         {

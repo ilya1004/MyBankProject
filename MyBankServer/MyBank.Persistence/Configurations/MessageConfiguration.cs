@@ -13,16 +13,19 @@ public class MessageConfiguration : IEntityTypeConfiguration<MessageEntity>
         builder
             .HasOne(m => m.SenderUser)
             .WithMany(u => u.Messages)
-            .HasForeignKey(m => m.SenderUserId);
+            .HasForeignKey(m => m.SenderUserId)
+            .IsRequired(false);
 
         builder
             .HasOne(m => m.SenderModerator)
             .WithMany(u => u.Messages)
-            .HasForeignKey(m => m.SenderModeratorId);
+            .HasForeignKey(m => m.SenderModeratorId)
+            .IsRequired(false);
 
         builder
             .HasOne(m => m.SenderAdmin)
             .WithMany(u => u.Messages)
-            .HasForeignKey(m => m.SenderAdminId);
+            .HasForeignKey(m => m.SenderAdminId)
+            .IsRequired(false);
     }
 }

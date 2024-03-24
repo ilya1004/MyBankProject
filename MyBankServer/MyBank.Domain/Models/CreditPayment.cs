@@ -1,5 +1,4 @@
-﻿
-namespace MyBank.Domain.Models;
+﻿namespace MyBank.Domain.Models;
 
 public class CreditPayment
 {
@@ -21,8 +20,8 @@ public class CreditPayment
     public int PaymentNumber { get; set; }
     public DateTime Datetime { get; set; }
     public string Status { get; set; } = string.Empty;
-    public int CreditAccountId { get; set; }
+    public int? CreditAccountId { get; set; }
     public CreditAccount? CreditAccount { get; set; } = null;
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
     public User? User { get; set; } = null;
 }

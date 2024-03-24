@@ -44,3 +44,9 @@ public class MyBankDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 }
+
+
+/*
+dotnet ef migrations add 'migration-name' -s MyBank -p MyBank.Persistence
+dotnet ef database update -s MyBank -p MyBank.Persistence
+ */

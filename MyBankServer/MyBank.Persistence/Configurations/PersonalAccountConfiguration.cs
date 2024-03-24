@@ -21,11 +21,6 @@ public class PersonalAccountConfiguration : IEntityTypeConfiguration<PersonalAcc
             .HasForeignKey(pa => pa.CurrencyId);
 
         builder
-            .HasMany(pa => pa.Transactions)
-            .WithOne(t => t.PersonalAccount)
-            .HasForeignKey(t => t.PersonalAccountId);
-
-        builder
             .HasMany(pa => pa.Cards)
             .WithOne(c => c.PersonalAccount)
             .HasForeignKey(c => c.PersonalAccountId);

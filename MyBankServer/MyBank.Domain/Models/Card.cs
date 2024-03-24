@@ -2,14 +2,13 @@
 
 public class Card
 {
-    public Card(int id, string name, string number, DateTime creationDate, DateTime expirationDate, string accountType, string cvvCode, string pincode, bool isActive, int cardPackageId, CardPackage? cardPackage, int userId, User? user, int? personalAccountId, PersonalAccount? personalAccount)
+    public Card(int id, string name, string number, DateTime creationDate, DateTime expirationDate, string cvvCode, string pincode, bool isActive, int? cardPackageId, CardPackage? cardPackage, int? userId, User? user, int? personalAccountId, PersonalAccount? personalAccount)
     {
         Id = id;
         Name = name;
         Number = number;
         CreationDate = creationDate;
         ExpirationDate = expirationDate;
-        AccountType = accountType;
         CvvCode = cvvCode;
         Pincode = pincode;
         IsActive = isActive;
@@ -26,7 +25,6 @@ public class Card
     public string Number { get; set; } = string.Empty;
     public DateTime CreationDate { get; set; }
     public DateTime ExpirationDate { get; set; }
-    public string AccountType { get; set; } = string.Empty;
     public string CvvCode { get; set; } = string.Empty;
     public string Pincode { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;

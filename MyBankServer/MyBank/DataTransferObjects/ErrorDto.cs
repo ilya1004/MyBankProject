@@ -1,4 +1,4 @@
-﻿namespace MyBank.Domain.DataTransferObjects;
+﻿namespace MyBank.API.DataTransferObjects;
 
 public class ErrorDto
 {

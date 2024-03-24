@@ -1,10 +1,8 @@
-﻿using MyBank.Domain.Models;
-
-namespace MyBank.Persistence.Interfaces;
+﻿namespace MyBank.Persistence.Interfaces;
 
 public interface ICreditAccountsRepository
 {
-    Task<int> Add(CreditAccount creditAccount, int userId, int currencyId, int moderatorId);
+    Task<int> Add(CreditAccount creditAccount);
 
     Task<CreditAccount> GetById(int id);
 

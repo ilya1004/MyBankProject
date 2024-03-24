@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MyBank.Domain.Models;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Entities;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class DepositAccountsRepository : IDepositAccountsRepository
 {
@@ -16,47 +10,40 @@ public class DepositAccountsRepository : IDepositAccountsRepository
         _mapper = mapper;
     }
 
-    public async Task<int> Add(DepositAccount depositAccount, int userId, int currencyId)
+    public async Task<int> Add(DepositAccount depositAccount)
     {
         var userEntity = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == depositAccount.UserId);
 
         var currencyEntity = await _dbContext.Currencies
-            .FirstOrDefaultAsync(c => c.Id == currencyId);
+            .FirstOrDefaultAsync(c => c.Id == depositAccount.CurrencyId);
 
-        var depositAccountEntity = new DepositAccountEntity
-        {
-            Id = 0,
-            Name = depositAccount.Name,
-            Number = depositAccount.Number,
-            CurrentBalance = depositAccount.CurrentBalance,
-            DepositStartBalance = depositAccount.DepositStartBalance,
-            CreationDate = depositAccount.CreationDate,
-            IsActive = depositAccount.IsActive,
-            InterestRate = depositAccount.InterestRate,
-            DepositTermInDays = depositAccount.DepositTermInDays,
-            TotalAccrualsNumber = depositAccount.TotalAccrualsNumber,
-            MadeAccrualsNumber = depositAccount.MadeAccrualsNumber,
-            IsRevocable = depositAccount.IsRevocable,
-            HasCapitalisation = depositAccount.HasCapitalisation,
-            HasInterestWithdrawalOption = depositAccount.HasInterestWithdrawalOption,
-            UserId = userId,
-            UserOwner = userEntity,
-            CurrencyId = currencyId,
-            Currency = currencyEntity,
-            Accruals = []
-        };
+        var depositAccountEntity = _mapper.Map<DepositAccountEntity>(depositAccount);
+
+        depositAccountEntity.UserOwner = userEntity;
+        depositAccountEntity.Currency = currencyEntity;
 
         var item = await _dbContext.DepositAccounts.AddAsync(depositAccountEntity);
         await _dbContext.SaveChangesAsync();
         return item.Entity.Id;
     }
 
-    public async Task<DepositAccount> GetById(int id)
+    public async Task<DepositAccount> GetById(int id, bool withUser)
     {
-        var depositAccountEntity = await _dbContext.DepositAccounts
-            .AsNoTracking()
-            .FirstOrDefaultAsync(da => da.Id == id);
+        DepositAccountEntity? depositAccountEntity = null;
+        if (withUser)
+        {
+            depositAccountEntity = await _dbContext.DepositAccounts
+                .AsNoTracking()
+                .Include(da => da.UserOwner)
+                .FirstOrDefaultAsync(da => da.Id == id);
+        }
+        else
+        {
+            depositAccountEntity = await _dbContext.DepositAccounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(da => da.Id == id);
+        }
 
         return _mapper.Map<DepositAccount>(depositAccountEntity);
     }
@@ -71,18 +58,27 @@ public class DepositAccountsRepository : IDepositAccountsRepository
         return _mapper.Map<List<DepositAccount>>(depositAccountEntitiesList);
     }
 
-    public async Task<bool> UpdateInfo(int id, string name, bool isActive)
+    public async Task<bool> UpdateName(int id, string name)
     {
         var number = await _dbContext.DepositAccounts
             .Where(da => da.Id == id)
             .ExecuteUpdateAsync(s => s
-                .SetProperty(da => da.Name, name)
+                .SetProperty(da => da.Name, name));
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> UpdateStatus(int id, bool isActive)
+    {
+        var number = await _dbContext.DepositAccounts
+            .Where(da => da.Id == id)
+            .ExecuteUpdateAsync(s => s
                 .SetProperty(da => da.IsActive, isActive));
 
         return (number == 0) ? false : true;
     }
 
-    public async Task<bool> UpdateBalance(int id, decimal deltaNumber)
+    public async Task<bool> UpdateBalanceDelta(int id, decimal deltaNumber)
     {
         var number = await _dbContext.DepositAccounts
             .Where(pa => pa.Id == id)
@@ -92,11 +88,33 @@ public class DepositAccountsRepository : IDepositAccountsRepository
         return (number == 0) ? false : true;
     }
 
+    public async Task<bool> UpdateBalanceValue(int id, decimal newBalance)
+    {
+        var number = await _dbContext.DepositAccounts
+            .Where(pa => pa.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(pa => pa.CurrentBalance, newBalance));
+
+        return (number == 0) ? false : true;
+    }
+
     public async Task<bool> Delete(int id)
     {
         var number = await _dbContext.DepositAccounts
             .Where(da => da.Id == id)
             .ExecuteDeleteAsync();
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> UpdateClosingInfo(int id, int newBalance, DateTime dateTime, bool isActive)
+    {
+        var number = await _dbContext.DepositAccounts
+            .Where(pa => pa.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(pa => pa.CurrentBalance, newBalance)
+                .SetProperty(pa => pa.ClosingDate, dateTime)
+                .SetProperty(pa => pa.IsActive, isActive));
 
         return (number == 0) ? false : true;
     }
