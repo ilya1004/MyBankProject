@@ -3,7 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank", "MyBank\MyBank.csproj", "{53E57E14-2211-4C62-B91F-5DDF35C1170C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank.API", "MyBank\MyBank.API.csproj", "{53E57E14-2211-4C62-B91F-5DDF35C1170C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank.Domain", "MyBank.Domain\MyBank.Domain.csproj", "{2E64C2FB-C85A-4EDD-BBA8-90BBE2E1DB8A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank.Persistence", "MyBank.Persistence\MyBank.Persistence.csproj", "{19204A41-2C2A-4E50-9876-9F9F14C3134D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBank.Application", "MyBank.Application\MyBank.Application.csproj", "{CB32518B-9FD9-455C-A62D-50C38EA28444}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{C09BF322-2338-489C-A55B-9D4D19F5F19D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Todo.txt = Todo.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +27,18 @@ Global
 		{53E57E14-2211-4C62-B91F-5DDF35C1170C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53E57E14-2211-4C62-B91F-5DDF35C1170C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53E57E14-2211-4C62-B91F-5DDF35C1170C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E64C2FB-C85A-4EDD-BBA8-90BBE2E1DB8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E64C2FB-C85A-4EDD-BBA8-90BBE2E1DB8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E64C2FB-C85A-4EDD-BBA8-90BBE2E1DB8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E64C2FB-C85A-4EDD-BBA8-90BBE2E1DB8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19204A41-2C2A-4E50-9876-9F9F14C3134D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19204A41-2C2A-4E50-9876-9F9F14C3134D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19204A41-2C2A-4E50-9876-9F9F14C3134D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19204A41-2C2A-4E50-9876-9F9F14C3134D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB32518B-9FD9-455C-A62D-50C38EA28444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB32518B-9FD9-455C-A62D-50C38EA28444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB32518B-9FD9-455C-A62D-50C38EA28444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB32518B-9FD9-455C-A62D-50C38EA28444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,13 @@
+﻿namespace MyBank.Persistence.Interfaces;
+
+public interface ICardsRepository
+{
+    Task<int> Add(Card card);
+    Task<Card> GetById(int id);
+    Task<Card> GetByNumber(string number, bool withPersonalAccount, bool withUser);
+    Task<List<Card>> GetAllByUser(int userId);
+    Task<bool> UpdatePincode(int id, string pincode);
+    Task<bool> UpdateName(int id, string name);
+    Task<bool> UpdateStatus(int id, bool isActive);
+    Task<bool> Delete(int id);
+}
