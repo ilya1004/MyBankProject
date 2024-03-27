@@ -1,9 +1,9 @@
-export default function() {
-    return (
-        <header>
-            <h1>
-                Заголовок
-            </h1>
-        </header>
-    )
+import "./Header.css";
+
+export default function Header() {
+  return (
+    <header className="main-header">
+      <div></div>
+    </header>
+  );
 }
