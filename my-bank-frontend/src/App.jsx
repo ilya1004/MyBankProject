@@ -1,12 +1,12 @@
-import MainPage from "./pages/MainPage";
-import CardsPage from "./pages/CardsPage";
-import PersonalAccountsPage from "./pages/PersonalAccountsPage";
-import CreditAccountsPage from "./pages/CreditAccountsPage";
-import DepositAccountsPage from "./pages/DepositAccountsPage";
-import ProfilePage from "./pages/ProfilePage";
-import LoginPage from "./pages/LoginPage/LoginPage";
+import MainPage from "./pages/MainPage/MainPage.jsx";
+import CardsPage from "./pages/CardsPage/CardsPage.jsx";
+import PersonalAccountsPage from "./pages/PersonalAccountsPage/PersonalAccountsPage.jsx";
+import CreditAccountsPage from "./pages/CreditAccountsPage/CreditAccountsPage.jsx";
+import DepositAccountsPage from "./pages/DepositAccountsPage/DepositAccountsPage.jsx";
+import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
+import LoginPage from "./pages/LoginPage/LoginPage.jsx";
 import BankLogo from "./assets/bank_logo.jpg";
-import SignUpPage from "./pages/SignUpPage/SignUpPage";
+import SignUpPage from "./pages/SignUpPage/SignUpPage.jsx";
 
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Button, Menu, Image, List, Flex, Layout } from "antd";

@@ -1,17 +1,12 @@
-import {
-  Form,
-  Button,
-  Input,
-  Card,
-  Flex,
-} from "antd";
+import { Form, Button, Input, Card, Flex } from "antd";
 import React from "react";
-import "./Login.css";
+import "./LoginPage.css";
 import { Link, Route, Routes } from "react-router-dom";
 import SignUpPage from "../SignUpPage/SignUpPage.jsx";
 
-const BASE_URL = `http://localhost:8000`;
-const url_login = BASE_URL + `/auth/jwt/login`;
+const BASE_URL = `http://localhost:7050/api`;
+// const url_login = BASE_URL + `/auth/jwt/login`;
+const axios = require("axios").default;
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -24,16 +19,25 @@ class LoginPage extends React.Component {
     };
   }
 
-  // handleSubmit = (e) => {
-  //     e.preventDefault();
+  handleSubmit = (e) => {
+    // e.preventDefault();
 
-  //     let data = new URLSearchParams();
-  //     data.append('grant_type', '');
-  //     data.append('username', this.state.email);
-  //     data.append('password', this.state.password);
-  //     data.append('scope', '');
-  //     data.append('client_id', '');
-  //     data.append('client_secret', '');
+    const axiosInstance = axios.create({baseURL: BASE_URL})
+
+    let data = new URLSearchParams();
+    data.append("grant_type", "");
+    data.append("username", this.state.email);
+    data.append("password", this.state.password);
+    data.append("scope", "");
+    data.append("client_id", "");
+    data.append("client_secret", "");
+
+    var response = axios.post(`User/Login`,
+    {
+      Email: "string",
+      Password: "string"
+    })
+  };
 
   //     fetch(url_login, {
   //         method: 'POST',
@@ -56,7 +60,7 @@ class LoginPage extends React.Component {
   // };
 
   // handleChange = (e) => {
-  //     this.setState({ [e.target.name]: e.target.value });
+  //   this.setState({ [e.target.name]: e.target.value });
   // };
 
   render() {
@@ -92,10 +96,12 @@ class LoginPage extends React.Component {
             </Form.Item>
           </Form>
           <Flex justify="center" align="center">
-            <Button type="primary" 
-							style={{ 
-								margin: "10px 0px" 
-								}}>
+            <Button
+              type="primary"
+              style={{
+                margin: "10px 0px",
+              }}
+            >
               Войти
             </Button>
           </Flex>
