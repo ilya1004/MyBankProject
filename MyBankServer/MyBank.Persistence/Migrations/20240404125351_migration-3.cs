@@ -5,7 +5,7 @@
 namespace MyBank.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class migration1 : Migration
+    public partial class migration3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

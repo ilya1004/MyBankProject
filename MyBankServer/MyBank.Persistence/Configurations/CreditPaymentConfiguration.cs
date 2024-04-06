@@ -10,14 +10,14 @@ public class CreditPaymentConfiguration : IEntityTypeConfiguration<CreditPayment
     {
         builder.HasKey(cp => cp.Id);
 
-        builder
-            .HasOne(cp => cp.CreditAccount)
-            .WithMany(ca => ca.Payments)
-            .HasForeignKey(cp => cp.CreditAccountId);
+        //builder
+        //    .HasOne(cp => cp.CreditAccount)
+        //    .WithMany(ca => ca.Payments)
+        //    .HasForeignKey(cp => cp.CreditAccountId);
 
-        builder
-            .HasOne(cp => cp.User)
-            .WithMany(u => u.CreditPayments)
-            .HasForeignKey(cp => cp.UserId);
+        //builder
+        //    .HasOne(cp => cp.User)
+        //    .WithMany(u => u.CreditPayments)
+        //    .HasForeignKey(cp => cp.UserId);
     }
 }

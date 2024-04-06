@@ -10,10 +10,10 @@ public class PersonalAccountConfiguration : IEntityTypeConfiguration<PersonalAcc
     {
         builder.HasKey(pa => pa.Id);
 
-        builder
-            .HasOne(pa => pa.UserOwner)
-            .WithMany(u => u.PersonalAccounts)
-            .HasForeignKey(pa => pa.UserId);
+        //builder
+        //    .HasOne(pa => pa.UserOwner)
+        //    .WithMany(u => u.PersonalAccounts)
+        //    .HasForeignKey(pa => pa.UserId);
 
         builder
             .HasOne(pa => pa.Currency)

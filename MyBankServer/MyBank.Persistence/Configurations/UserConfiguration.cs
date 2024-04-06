@@ -12,17 +12,17 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
 
         builder
             .HasMany(u => u.PersonalAccounts)
-            .WithOne(pa => pa.UserOwner)
+            .WithOne(pa => pa.User)
             .HasForeignKey(pa => pa.UserId);
 
         builder
             .HasMany(u => u.CreditAccounts)
-            .WithOne(ca => ca.UserOwner)
+            .WithOne(ca => ca.User)
             .HasForeignKey(ca => ca.UserId);
 
         builder
             .HasMany(u => u.DepositAccounts)
-            .WithOne(da => da.UserOwner)
+            .WithOne(da => da.User)
             .HasForeignKey(da => da.UserId);
 
         builder

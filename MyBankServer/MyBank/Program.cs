@@ -8,34 +8,55 @@ using MyBank.Application.Utils;
 using MyBank.Persistence;
 using MyBank.Persistence.Extensions;
 using MyBank.Persistence.Mapping;
+using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+var services = builder.Services;
 
-//builder.Services.AddAutoMapper(typeof(Program).Assembly);
+//services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.AddAutoMapper(typeof(MappingProfileDatabase).Assembly, typeof(MappingProfileDtos).Assembly);
+services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+services.AddAutoMapper(typeof(MappingProfileDatabase).Assembly, typeof(MappingProfileDtos).Assembly);
 
-builder.Services.AddDbContext<MyBankDbContext>(
+services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+
+services.AddDbContext<MyBankDbContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(MyBankDbContext))));
 
-builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyBank API", Version = "v1" }));
+services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyBank API", Version = "v1" }));
 
-builder.Services.AddApiAuthentication(builder.Configuration);
-builder.Services.AddApiAuthorization();
+services.AddApiAuthentication(builder.Configuration);
+services.AddApiAuthorization();
 
-builder.Services.AddApplicationServices();
+services.AddApplicationServices();
 
-builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+services.AddScoped<IJwtProvider, JwtProvider>();
+services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-builder.Services.AddRepositories();
+services.AddRepositories();
+
+
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins, policyBuilder =>
+    {
+        policyBuilder.WithOrigins("http://localhost:3000");
+        policyBuilder.AllowAnyMethod();
+        policyBuilder.AllowAnyHeader();
+        policyBuilder.AllowCredentials();
+    });
+
+});
+
+
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -49,6 +70,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthentication();
 app.UseAuthorization();
 

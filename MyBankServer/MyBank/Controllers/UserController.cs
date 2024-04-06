@@ -1,7 +1,12 @@
-﻿using MyBank.API.DataTransferObjects.UserDtos;
+﻿using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.UserDtos;
+using MyBank.Application.Utils;
+using Newtonsoft.Json;
 
 namespace MyBank.API.Controllers;
 
+
+[EnableCors(PolicyName = "_myAllowSpecificOrigins")]
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class UserController : ControllerBase
@@ -28,7 +33,7 @@ public class UserController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { userId = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpPost]
@@ -53,9 +58,9 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserAndModeratorAndAdminPolicy)]
-    public async Task<IResult> GetInfoById(int userId)
+    public async Task<IResult> GetInfoById(int userId, bool includeData)
     {
-        var serviceResponse = await _userService.GetById(userId);
+        var serviceResponse = await _userService.GetById(userId, includeData);
 
         if (serviceResponse.Status == false)
         {
@@ -67,7 +72,7 @@ public class UserController : ControllerBase
                 statusCode: 400);
         }
 
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { item = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(serviceResponse.Data, settings: new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore })) }, statusCode: 200);
     }
 
     [HttpGet]
@@ -86,7 +91,7 @@ public class UserController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { list = serviceResponse.Data! }, statusCode: 200);
     }
 
     [HttpPut]
@@ -104,7 +109,7 @@ public class UserController : ControllerBase
             },
             statusCode: 400);
         }
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { status = serviceResponse.Data! }, statusCode: 200);
     }
 
     [HttpPut]
@@ -123,7 +128,7 @@ public class UserController : ControllerBase
             },
             statusCode: 400);
         }
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { status = serviceResponse.Data! }, statusCode: 200);
     }
 
     [HttpPut]
@@ -141,7 +146,7 @@ public class UserController : ControllerBase
             },
             statusCode: 400);
         }
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { status = serviceResponse.Data! }, statusCode: 200);
     }
 
     [HttpDelete]
@@ -159,6 +164,6 @@ public class UserController : ControllerBase
             },
             statusCode: 400);
         }
-        return Results.Json(serviceResponse.Data!, statusCode: 200);
+        return Results.Json(new { status = serviceResponse.Data! }, statusCode: 200);
     }
 }

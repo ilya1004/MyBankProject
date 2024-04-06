@@ -19,11 +19,30 @@ public class UsersRepository : IUsersRepository
         return item.Entity.Id;
     }
 
-    public async Task<User> GetById(int id)
+    public async Task<User> GetById(int id, bool includeData)
     {
-        var userEntity = await _dbContext.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id);
+        UserEntity? userEntity = null;
+        if (includeData)
+        {
+            userEntity = await _dbContext.Users
+                .AsNoTracking()
+                .Include(u => u.Cards)
+                .Include(u => u.PersonalAccounts)
+                    .ThenInclude(pa => pa.Currency)
+                .Include(u => u.CreditAccounts)
+                    .ThenInclude(pa => pa.Currency)
+                .Include(u => u.DepositAccounts)
+                    .ThenInclude(pa => pa.Currency)
+                .Include(u => u.CreditRequests)
+                .Include(u => u.Messages)
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
+        else
+        {
+            userEntity = await _dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
 
         return _mapper.Map<User>(userEntity);
     }
@@ -41,6 +60,7 @@ public class UsersRepository : IUsersRepository
     {
         var userEntitiesList = await _dbContext.Users
             .AsNoTracking()
+            .Include(u => u.PersonalAccounts)
             .ToListAsync();
 
         return _mapper.Map<List<User>>(userEntitiesList);

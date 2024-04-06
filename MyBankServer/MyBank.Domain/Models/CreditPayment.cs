@@ -2,6 +2,7 @@
 
 public class CreditPayment
 {
+    public CreditPayment() { }
     public CreditPayment(int id, decimal paymentAmount, int paymentNumber, DateTime datetime, string status, int creditAccountId, CreditAccount? creditAccount, int userId, User? user)
     {
         Id = id;

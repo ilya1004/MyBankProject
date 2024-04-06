@@ -12,7 +12,8 @@ public class AdminConfiguration : IEntityTypeConfiguration<AdminEntity>
 
         builder
             .HasMany(a => a.Messages)
-            .WithOne(m => m.SenderAdmin);
+            .WithOne(m => m.SenderAdmin)
+            .HasForeignKey(m => m.SenderAdminId);
     }
 
 }

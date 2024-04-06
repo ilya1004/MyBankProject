@@ -1,71 +1,32 @@
+import React, { useEffect, useState } from "react";
+import {
+  Typography,
+  List,
+  Card,
+  Flex,
+  InputNumber,
+  Dropdown,
+  Space,
+  Divider,
+} from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import PackagesList from "./Components/PackagesList";
+import CurrencyConventer from "./Components/CurrencyConventer";
 import "./MainPage.css";
+import axios from "axios";
 
-import { Title, List, Card, Flex, InputNumber, Dropdown } from "antd";
+const { Title, Text } = Typography;
 
-var list = ["Name", 234.234, 30, 1900, 500];
-
-var str = "Название валюты"
-var code = "CODE"
-
-var otherCurrencies = [
-  {
-    label: <Text>{`${code} ${qwe}`}</Text>,
-    key: "0"
-  }
-];
+const BASE_URL = `https://localhost:7050/api/`;
 
 export default function MainPage() {
   return (
     <div>
-      <h1>MainPage</h1>
-      <List>
-        <Card>
-          <Title>{list[0]}</Title>
-          <Title level={2}>{`${list[1]} BYN`}</Title>
-          <Title level={5}>{"Условия бесплатности (в месяц):"}</Title>
-          <Text>{`Количество операций: ${list[2]}`}</Text>
-          <Text>{`Сумма операций: ${list[3]}`}</Text>
-          <Text>{`Средний остаток по счету: ${list[4]}`}</Text>
-        </Card>
-      </List>
+      <Title align="center">Пакеты карт</Title>
+      <PackagesList />
+      <Divider />
 
-      <Card>
-        <List>
-          <List.Item>
-            <Flex justify="flex-start" align="center">
-              <Title>USD</Title>
-              <InputNumber defaultValue={1} placeholder="Введите значение" />
-            </Flex>
-          </List.Item>
-
-          <List.Item>
-            <Flex justify="flex-start" align="center">
-              <Title>EUR</Title>
-              <InputNumber defaultValue={0} placeholder={0} />
-            </Flex>
-          </List.Item>
-
-          <List.Item>
-            <Flex justify="flex-start" align="center">
-              <Title>RUB</Title>
-              <InputNumber defaultValue={0} placeholder={0} />
-            </Flex>
-          </List.Item>
-
-          <List.Item>
-            <Flex justify="flex-start" align="center">
-              <Title>PLN</Title>
-              <InputNumber defaultValue={0} placeholder={0} />
-            </Flex>
-          </List.Item>
-        </List>
-        <Dropdown 
-          menu={{ otherCurrencies }}
-          trigger={["click"]}
-          >
-            Добавить валюту
-          </Dropdown>
-      </Card>
+      <CurrencyConventer />
     </div>
   );
 }

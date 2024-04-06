@@ -18,8 +18,7 @@ public class ModeratorConfiguration : IEntityTypeConfiguration<ModeratorEntity>
         builder
             .HasMany(m => m.CreditRequestsReplied)
             .WithOne(cr => cr.Moderator)
-            .HasForeignKey(cr => cr.ModeratorId)
-            .IsRequired(false);
+            .HasForeignKey(cr => cr.ModeratorId);
 
         builder
             .HasMany(m => m.CreditsApproved)

@@ -20,11 +20,11 @@ public class PersonalAccountEntity
     public string Number { get; set; } = string.Empty;
     public decimal CurrentBalance { get; set; }
     public DateTime CreationDate { get; set; }
-    public DateTime ClosingDate { get; set; }
+    public DateTime? ClosingDate { get; set; } = null;
     public bool IsActive { get; set; }
     public bool IsForTransfersByNickname { get; set; }
     public int? UserId { get; set; } = null;
-    public UserEntity? UserOwner { get; set; } = null;
+    public UserEntity? User { get; set; } = null;
     public int? CurrencyId { get; set; } = null;
     public CurrencyEntity? Currency { get; set; } = null;
     public List<CardEntity> Cards { get; set; } = [];

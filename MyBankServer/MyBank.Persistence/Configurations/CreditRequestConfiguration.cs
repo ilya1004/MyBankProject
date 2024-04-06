@@ -10,15 +10,14 @@ public class CreditRequestConfiguration : IEntityTypeConfiguration<CreditRequest
     {
         builder.HasKey(cr => cr.Id);
 
-        builder
-            .HasOne(cr => cr.Moderator)
-            .WithMany(m => m.CreditRequestsReplied)
-            .HasForeignKey(cr => cr.ModeratorId)
-            .IsRequired(false);
+        //builder
+        //    .HasOne(cr => cr.Moderator)
+        //    .WithMany(m => m.CreditRequestsReplied)
+        //    .HasForeignKey(cr => cr.ModeratorId);
 
-        builder
-            .HasOne(cr => cr.User)
-            .WithMany(u => u.CreditRequests)
-            .HasForeignKey(cr => cr.UserId);
+        //builder
+        //    .HasOne(cr => cr.User)
+        //    .WithMany(u => u.CreditRequests)
+        //    .HasForeignKey(cr => cr.UserId);
     }
 }

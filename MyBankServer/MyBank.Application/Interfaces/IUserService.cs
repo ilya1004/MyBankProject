@@ -6,7 +6,7 @@ public interface IUserService
 
     Task<ServiceResponse<(int, string)>> Login(string email, string password);
 
-    Task<ServiceResponse<User>> GetById(int id);
+    Task<ServiceResponse<User>> GetById(int id, bool includeData);
 
     Task<ServiceResponse<List<User>>> GetAll();
 

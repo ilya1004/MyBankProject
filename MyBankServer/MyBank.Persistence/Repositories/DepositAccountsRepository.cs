@@ -20,7 +20,7 @@ public class DepositAccountsRepository : IDepositAccountsRepository
 
         var depositAccountEntity = _mapper.Map<DepositAccountEntity>(depositAccount);
 
-        depositAccountEntity.UserOwner = userEntity;
+        depositAccountEntity.User = userEntity;
         depositAccountEntity.Currency = currencyEntity;
 
         var item = await _dbContext.DepositAccounts.AddAsync(depositAccountEntity);
@@ -35,7 +35,7 @@ public class DepositAccountsRepository : IDepositAccountsRepository
         {
             depositAccountEntity = await _dbContext.DepositAccounts
                 .AsNoTracking()
-                .Include(da => da.UserOwner)
+                .Include(da => da.User)
                 .FirstOrDefaultAsync(da => da.Id == id);
         }
         else

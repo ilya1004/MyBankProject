@@ -10,9 +10,9 @@ public class CardPackageConfiguration : IEntityTypeConfiguration<CardPackageEnti
     {
         builder.HasKey(cp => cp.Id);
 
-        builder
-            .HasMany(cp => cp.Cards)
-            .WithOne(c => c.CardPackage)
-            .HasForeignKey(c => c.CardPackageId);
+        //builder
+        //    .HasMany(cp => cp.Cards)
+        //    .WithOne(c => c.CardPackage)
+        //    .HasForeignKey(c => c.CardPackageId);
     }
 }

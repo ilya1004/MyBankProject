@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyBank.Persistence.Migrations
 {
     [DbContext(typeof(MyBankDbContext))]
-    [Migration("20240324222712_migration-1")]
-    partial class migration1
+    [Migration("20240405174821_migration-7")]
+    partial class migration7
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,7 +143,7 @@ namespace MyBank.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ClosingDate")
+                    b.Property<DateTime?>("ClosingDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreationDate")
@@ -327,7 +327,7 @@ namespace MyBank.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ClosingDate")
+                    b.Property<DateTime?>("ClosingDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreationDate")
@@ -339,6 +339,9 @@ namespace MyBank.Persistence.Migrations
                     b.Property<decimal>("CurrentBalance")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal>("DepositStartBalance")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("DepositTermInDays")
                         .HasColumnType("integer");
 
@@ -347,6 +350,10 @@ namespace MyBank.Persistence.Migrations
 
                     b.Property<bool>("HasInterestWithdrawalOption")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("InterestPaymentType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("InterestRate")
                         .HasColumnType("numeric");
@@ -367,9 +374,6 @@ namespace MyBank.Persistence.Migrations
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<decimal>("StartBalance")
-                        .HasColumnType("numeric");
 
                     b.Property<int>("TotalAccrualsNumber")
                         .HasColumnType("integer");
@@ -502,7 +506,7 @@ namespace MyBank.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ClosingDate")
+                    b.Property<DateTime?>("ClosingDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreationDate")
@@ -668,7 +672,7 @@ namespace MyBank.Persistence.Migrations
                         .WithMany("CreditsApproved")
                         .HasForeignKey("ModeratorApprovedId");
 
-                    b.HasOne("MyBank.Persistence.Entities.UserEntity", "UserOwner")
+                    b.HasOne("MyBank.Persistence.Entities.UserEntity", "User")
                         .WithMany("CreditAccounts")
                         .HasForeignKey("UserId");
 
@@ -676,7 +680,7 @@ namespace MyBank.Persistence.Migrations
 
                     b.Navigation("ModeratorApproved");
 
-                    b.Navigation("UserOwner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyBank.Persistence.Entities.CreditPaymentEntity", b =>
@@ -715,13 +719,13 @@ namespace MyBank.Persistence.Migrations
                         .WithMany("DepositAccounts")
                         .HasForeignKey("CurrencyId");
 
-                    b.HasOne("MyBank.Persistence.Entities.UserEntity", "UserOwner")
+                    b.HasOne("MyBank.Persistence.Entities.UserEntity", "User")
                         .WithMany("DepositAccounts")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Currency");
 
-                    b.Navigation("UserOwner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyBank.Persistence.Entities.DepositAccrualEntity", b =>
@@ -760,13 +764,13 @@ namespace MyBank.Persistence.Migrations
                         .WithMany("PersonalAccounts")
                         .HasForeignKey("CurrencyId");
 
-                    b.HasOne("MyBank.Persistence.Entities.UserEntity", "UserOwner")
+                    b.HasOne("MyBank.Persistence.Entities.UserEntity", "User")
                         .WithMany("PersonalAccounts")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Currency");
 
-                    b.Navigation("UserOwner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyBank.Persistence.Entities.AdminEntity", b =>

@@ -2,6 +2,7 @@
 
 public class PersonalAccount
 {
+    public PersonalAccount() { }
     public PersonalAccount(int id, string name, string number, decimal currentBalance, DateTime creationDate, DateTime closingDate, bool isActive, bool isForTransfersByNickname, int userId, User? userOwner, int currencyId, Currency? currency)
     {
         Id = id;
@@ -23,7 +24,7 @@ public class PersonalAccount
     public string Number { get; set; } = string.Empty;
     public decimal CurrentBalance { get; set; } = 0;
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
-    public DateTime ClosingDate { get; set; }
+    public DateTime? ClosingDate { get; set; } = null;
     public bool IsActive { get; set; }
     public bool IsForTransfersByNickname { get; set; }
     public int UserId { get; set; }

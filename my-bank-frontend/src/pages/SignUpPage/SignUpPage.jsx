@@ -1,218 +1,322 @@
-import React from "react";
-import {
-  Form,
-  Button,
-  Input,
-  Card,
-  Flex,
-} from "antd";
-import { Link, Route, Routes } from "react-router-dom";
-import "../LoginPage/Login.css";
-import "./SignUp.css"
+import React, { useState } from "react";
+import { Form, Button, Input, Card, Flex, Typography, message } from "antd";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import LoginPage from "../LoginPage/LoginPage";
+import axios from "axios";
+import "./SignUpPage.css";
 
-const BASE_URL = `http://localhost:8000`;
-const url_register = BASE_URL + `/auth/register`;
+const { Text, Title } = Typography;
 
-class SignUpPage extends React.Component {
-  constructor(props) {
-    super(props);
+const BASE_URL = `http://localhost:7050/api`;
 
-    this.state = {
-      nickname: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-    };
-  }
+export default function SignUpPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [patronymic, setPatronymic] = useState("");
+  const [passportSeries, setPassportSeries] = useState("");
+  const [passportNumber, setPassportNumber] = useState("");
+  const [citizenship, setCitizenship] = useState("");
+  const [isValid, setIsValid] = useState("");
+  const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
-  handleSubmit = (e) => {
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleChangePassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleChangePassword2 = (e) => {
+    setPassword2(e.target.value);
+  };
+
+  const handleChangeNickname = (e) => {
+    setNickname(e.target.value);
+  };
+
+  const handleChangeName = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleChangeSurname = (e) => {
+    setSurname(e.target.value);
+  };
+
+  const handleChangePatronymic = (e) => {
+    setPatronymic(e.target.value);
+  };
+
+  const handleChangePassportSeries = (e) => {
+    setPassportSeries(e.target.value);
+  };
+
+  const handleChangePassportNumber = (e) => {
+    setPassportNumber(e.target.value);
+  };
+
+  const handleChangeCitizenship = (e) => {
+    setCitizenship(e.target.value);
+  };
+
+  const showMessage = (msg) => {
+    messageApi.open({
+      type: "error",
+      content: msg,
+      style: {
+        marginTop: "60px",
+      },
+    });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (this.state.password !== this.state.passwordConfirm) {
-      alert("You are entered different passwords");
-      this.setState({
-        nickname: "",
-        email: "",
-        password: "",
-        passwordConfirm: "",
-      });
-    } else {
-      const data = {
-        email: this.state.email,
-        password: this.state.password,
-        is_active: true,
-        is_superuser: false,
-        is_verified: false,
-        nickname: this.state.nickname,
-      };
+    const axiosInstance = axios.create({ baseURL: BASE_URL });
 
-      console.log(data);
-
-      fetch(url_register, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    axiosInstance
+      .post(`User/Register`, {
+        Email: email.trim(),
+        Password: password.trim(),
+        Nickname: nickname.trim(),
+        Name: name.trim(),
+        Surname: surname.trim(),
+        Patronymic: patronymic.trim(),
+        PassportSeries: passportSeries.trim(),
+        PassportNumber: passportNumber.trim(),
+        Citizenship: citizenship.trim(),
       })
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          this.setState({ inputValue: data.status });
-          if (data.email === this.state.email) {
-            window.location.href = "/";
-          }
-          console.log(data);
-        });
-    }
+      .then((response) => {
+        console.log(response.data);
+        if (response.status === 200) {
+          setIsValid(true);
+          navigate("/login");
+        } else {
+          setIsValid(false);
+          showMessage("Произошла ошибка. Повторите попытку");
+        }
+      })
+      .catch((err) => {
+        showMessage("Произошла неизвестная ошибка.");
+        console.error(err);
+      });
   };
 
-  goToLogin() {
-    window.location.href = "/";
-  }
-
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  render() {
-    return (
-      <Flex justify="center" align="center">
-        <Card className="reg-card" title="Введите свои данные">
-          <Form
-            labelCol={{ span: 8, offset: 2 }}
-            labelAlign="right"
-            // wrapperCol={{ span: 40 }}
-            layout="horizontal"
-            // style={{ maxWidth: 800 }}
+  return (
+    <Flex
+      justify="center"
+      align="flex-start"
+      style={{
+        height: "105vh",
+        margin: "30px 0px 0px 0px",
+      }}
+    >
+      <Card
+        style={{
+          display: "block",
+          width: "550px",
+        }}
+        title={
+          <Title style={{ margin: "0px" }} level={4}>
+            Введите свои данные
+          </Title>
+        }
+      >
+        <Form
+          labelCol={{ span: 8, offset: 2 }}
+          labelAlign="right"
+          layout="horizontal"
+          onFinish={handleSubmit}
+        >
+          <Form.Item
+            label="Электронная почта:"
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Введите электронную почту!",
+              },
+            ]}
           >
-            <Form.Item
-              label="Электронная почта:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input type="email" />
-            </Form.Item>
-            <Form.Item
-              label="Пароль"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-            <Form.Item
-              label="Подтвердите пароль:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-            <Form.Item
-              label="Никнейм:"
-              tooltip="Ваше имя в системе банка"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Имя:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Фамилия:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Отчество:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Серия паспорта:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Номер паспорта:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Гражданство:"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Form>
-          <Flex justify="center" align="center">
-            <Button type="primary" 
-							style={{ 
-								margin: "10px 0px" 
-								}}>
-              Зарегистироваться
-            </Button>
-          </Flex>
-          <div className="div-to-login-page">
-            Уже есть аккаунт?{" "}
-            <Link className="link-primary" to="/login">
-              Войти
-            </Link>
-          </div>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-          </Routes>
-        </Card>
-      </Flex>
-    );
-  }
-}
+            <Input
+              // type="email"
+              name="email"
+              onChange={handleChangeEmail}
+              value={email}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Пароль"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Введите пароль!",
+              },
+            ]}
+          >
+            <Input.Password
+              name="password"
+              onChange={handleChangePassword}
+              value={password}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Подтвердите пароль"
+            name="password2"
+            rules={[
+              {
+                required: true,
+                message: "Подтвердите пароль!",
+              },
+            ]}
+          >
+            <Input.Password
+              name="password2"
+              onChange={handleChangePassword2}
+              value={password}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Никнейм"
+            name="nickname"
+            tooltip="Ваше отображаемое имя в системе банка"
+            rules={[
+              {
+                required: true,
+                message: "Введите никнейм!",
+              },
+            ]}
+          >
+            <Input
+              name="nickname"
+              onChange={handleChangeNickname}
+              value={nickname}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Имя:"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: "Введите ваше имя!",
+              },
+            ]}
+          >
+            <Input name="name" onChange={handleChangeName} value={name} />
+          </Form.Item>
+          <Form.Item
+            label="Фамилия:"
+            name="surname"
+            rules={[
+              {
+                required: true,
+                message: "Введите вашу фамилию!",
+              },
+            ]}
+          >
+            <Input
+              name="surname"
+              onChange={handleChangeSurname}
+              value={surname}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Отчество:"
+            name="patronymic"
+            rules={[
+              {
+                required: true,
+                message: "Введите ваше отчество!",
+              },
+            ]}
+          >
+            <Input
+              name="patronymic"
+              onChange={handleChangePatronymic}
+              value={patronymic}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Серия паспорта:"
+            name="passportSeries"
+            rules={[
+              {
+                required: true,
+                message: "Введите вашу серию паспорта!",
+              },
+            ]}
+          >
+            <Input
+              name="passportSeries"
+              onChange={handleChangePassportSeries}
+              value={passportSeries}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Номер паспорта:"
+            name="passportNumber"
+            rules={[
+              {
+                required: true,
+                message: "Введите ваш номер паспорта!",
+              },
+            ]}
+          >
+            <Input
+              name="passportNumber"
+              onChange={handleChangePassportNumber}
+              value={passportNumber}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Гражданство:"
+            name="citizenship"
+            rules={[
+              {
+                required: true,
+                message: "Введите ваше гражданство!",
+              },
+            ]}
+          >
+            <Input
+              name="citizenship"
+              onChange={handleChangeCitizenship}
+              value={citizenship}
+            />
+          </Form.Item>
 
-export default SignUpPage;
+          <Form.Item>
+            <Flex justify="center" align="center">
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{
+                  margin: "0px",
+                }}
+              >
+                Зарегистрироваться
+              </Button>
+            </Flex>
+          </Form.Item>
+        </Form>
+        {contextHolder}
+        <Flex align="center" justify="center">
+          <Text style={{ marginRight: "5px" }}>Уже есть аккаунт?</Text>
+          <Link className="link-primary" to="/login">
+            Войти
+          </Link>
+        </Flex>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </Card>
+    </Flex>
+  );
+}

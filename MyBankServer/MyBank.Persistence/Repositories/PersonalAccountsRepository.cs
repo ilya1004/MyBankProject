@@ -20,7 +20,7 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
 
         var personalAccountEntity = _mapper.Map<PersonalAccountEntity>(personalAccount);
 
-        personalAccountEntity.UserOwner = userEntity;
+        personalAccountEntity.User = userEntity;
         personalAccountEntity.Currency = currencyEntity;
 
         var item = await _dbContext.PersonalAccounts.AddAsync(personalAccountEntity);
@@ -43,7 +43,7 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
         {
             personalAccountEntity = await _dbContext.PersonalAccounts
                 .AsNoTracking()
-                .Include(pa => pa.UserOwner)
+                .Include(pa => pa.User)
                 .FirstOrDefaultAsync(pa => pa.Number == personalAccountNumber);
         }
         else

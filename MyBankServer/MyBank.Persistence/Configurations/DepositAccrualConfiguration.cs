@@ -10,9 +10,9 @@ public class DepositAccrualConfiguration : IEntityTypeConfiguration<DepositAccru
     {
         builder.HasKey(da => da.Id);
 
-        builder
-            .HasOne(da => da.DepositAccount)
-            .WithMany(da => da.Accruals)
-            .HasForeignKey(da => da.DepositAccountId);
+        //builder
+        //    .HasOne(da => da.DepositAccount)
+        //    .WithMany(da => da.Accruals)
+        //    .HasForeignKey(da => da.DepositAccountId);
     }
 }

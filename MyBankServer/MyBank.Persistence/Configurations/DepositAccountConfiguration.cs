@@ -10,10 +10,10 @@ public class DepositAccountConfiguration : IEntityTypeConfiguration<DepositAccou
     {
         builder.HasKey(ca => ca.Id);
 
-        builder
-            .HasOne(ca => ca.UserOwner)
-            .WithMany(u => u.DepositAccounts)
-            .HasForeignKey(ca => ca.UserId);
+        //builder
+        //    .HasOne(ca => ca.UserOwner)
+        //    .WithMany(u => u.DepositAccounts)
+        //    .HasForeignKey(ca => ca.UserId);
 
         builder
             .HasOne(ca => ca.Currency)

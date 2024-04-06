@@ -2,6 +2,7 @@
 
 public class DepositAccrual
 {
+    public DepositAccrual() { }
     public DepositAccrual(int id, decimal accrualAmount, DateTime datetime, string status)
     {
         Id = id;

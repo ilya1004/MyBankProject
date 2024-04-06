@@ -15,7 +15,7 @@ public class DepositAccountsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> Add([FromBody] DepositAccountDto dto)
     {
         var serviceResponse = await _depositAccountsService.Add(_mapper.Map<DepositAccount>(dto));

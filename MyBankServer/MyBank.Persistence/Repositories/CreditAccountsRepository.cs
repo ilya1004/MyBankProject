@@ -23,7 +23,7 @@ public class CreditAccountsRepository : ICreditAccountsRepository
 
         var creditAccountEntity = _mapper.Map<CreditAccountEntity>(creditAccount);
 
-        creditAccountEntity.UserOwner = userEntity;
+        creditAccountEntity.User = userEntity;
         creditAccountEntity.Currency = currencyEntity;
         creditAccountEntity.ModeratorApproved = moderatorEntity;
 

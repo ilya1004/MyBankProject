@@ -75,9 +75,9 @@ public class UserService : IUserService
         return new ServiceResponse<(int, string)> { Status = true, Message = "Success", Data = (user.Id, token) };
     }
 
-    public async Task<ServiceResponse<User>> GetById(int id)
+    public async Task<ServiceResponse<User>> GetById(int id, bool includeData)
     {
-        var user = await _userRepository.GetById(id);
+        var user = await _userRepository.GetById(id, includeData);
 
         if (user == null)
         {

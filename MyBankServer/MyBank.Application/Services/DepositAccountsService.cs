@@ -137,7 +137,7 @@ public class DepositAccountsService : IDepositAccountsService
         if (personalAccount == null)
             return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe personal account with given id ({personalAccountId}) not found", Data = default };
 
-        decimal value = depositAccount.CurrentBalance - depositAccount.StartBalance;
+        decimal value = depositAccount.CurrentBalance - depositAccount.DepositStartBalance;
 
         var status = await _personalAccountsRepository.UpdateBalanceDelta(personalAccountId, value);
 

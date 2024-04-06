@@ -2,13 +2,14 @@
 
 public class DepositAccount
 {
-    public DepositAccount(int id, string name, string number, decimal currentBalance, decimal startBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, string interestPaymentType, bool hasCapitalisation, bool hasInterestWithdrawalOption, int? userId, User? userOwner, int? currencyId, Currency? currency, List<DepositAccrual> accruals)
+    public DepositAccount() { }
+    public DepositAccount(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, string interestPaymentType, bool hasCapitalisation, bool hasInterestWithdrawalOption)
     {
         Id = id;
         Name = name;
         Number = number;
         CurrentBalance = currentBalance;
-        StartBalance = startBalance;
+        DepositStartBalance = depositStartBalance;
         CreationDate = creationDate;
         ClosingDate = closingDate;
         IsActive = isActive;
@@ -20,20 +21,15 @@ public class DepositAccount
         InterestPaymentType = interestPaymentType;
         HasCapitalisation = hasCapitalisation;
         HasInterestWithdrawalOption = hasInterestWithdrawalOption;
-        UserId = userId;
-        UserOwner = userOwner;
-        CurrencyId = currencyId;
-        Currency = currency;
-        Accruals = accruals;
     }
 
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Number { get; set; } = string.Empty;
     public decimal CurrentBalance { get; set; }
-    public decimal StartBalance { get; set; }
-    public DateTime CreationDate { get; set; }
-    public DateTime ClosingDate { get; set; }
+    public decimal DepositStartBalance { get; set; }
+    public DateTime CreationDate { get; set; } = DateTime.UtcNow;
+    public DateTime? ClosingDate { get; set; } = null;
     public bool IsActive { get; set; }
     public decimal InterestRate { get; set; }
     public int DepositTermInDays { get; set; }

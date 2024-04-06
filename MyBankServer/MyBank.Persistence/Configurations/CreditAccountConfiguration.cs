@@ -10,20 +10,20 @@ public class CreditAccountConfiguration : IEntityTypeConfiguration<CreditAccount
     {
         builder.HasKey(ca => ca.Id);
 
-        builder
-            .HasOne(ca => ca.UserOwner)
-            .WithMany(u => u.CreditAccounts)
-            .HasForeignKey(ca => ca.UserId);
+        //builder
+        //    .HasOne(ca => ca.UserOwner)
+        //    .WithMany(u => u.CreditAccounts)
+        //    .HasForeignKey(ca => ca.UserId);
 
         builder
             .HasOne(ca => ca.Currency)
             .WithMany(c => c.CreditAccounts)
             .HasForeignKey(ca => ca.CurrencyId);
 
-        builder
-            .HasOne(ca => ca.ModeratorApproved)
-            .WithMany(m => m.CreditsApproved)
-            .HasForeignKey(ca => ca.ModeratorApprovedId);
+        //builder
+        //    .HasOne(ca => ca.ModeratorApproved)
+        //    .WithMany(m => m.CreditsApproved)
+        //    .HasForeignKey(ca => ca.ModeratorApprovedId);
 
         builder
             .HasMany(ca => ca.Payments)

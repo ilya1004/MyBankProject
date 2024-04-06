@@ -11,19 +11,19 @@ public class CurrencyConfiguration : IEntityTypeConfiguration<CurrencyEntity>
     {
         builder.HasKey(c => c.Id);
 
-        builder
-            .HasMany(c => c.PersonalAccounts)
-            .WithOne(pa => pa.Currency)
-            .HasForeignKey(c => c.CurrencyId);
+        //builder
+        //    .HasMany(c => c.PersonalAccounts)
+        //    .WithOne(pa => pa.Currency)
+        //    .HasForeignKey(c => c.CurrencyId);
 
-        builder
-            .HasMany(c => c.CreditAccounts)
-            .WithOne(pa => pa.Currency)
-            .HasForeignKey(c => c.CurrencyId);
+        //builder
+        //    .HasMany(c => c.CreditAccounts)
+        //    .WithOne(pa => pa.Currency)
+        //    .HasForeignKey(c => c.CurrencyId);
 
-        builder
-            .HasMany(c => c.DepositAccounts)
-            .WithOne(da => da.Currency)
-            .HasForeignKey(c => c.CurrencyId);
+        //builder
+        //    .HasMany(c => c.DepositAccounts)
+        //    .WithOne(da => da.Currency)
+        //    .HasForeignKey(c => c.CurrencyId);
     }
 }
