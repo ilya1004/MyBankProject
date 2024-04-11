@@ -1,9 +1,9 @@
 ﻿namespace MyBank.Application.Services;
 
-
 public class CreditPaymentsService : ICreditPaymentsService
 {
     private readonly ICreditPaymentsRepository _creditPaymentsRepository;
+
     public CreditPaymentsService(ICreditPaymentsRepository creditPaymentsRepository)
     {
         _creditPaymentsRepository = creditPaymentsRepository;
@@ -13,7 +13,12 @@ public class CreditPaymentsService : ICreditPaymentsService
     {
         var id = await _creditPaymentsRepository.Add(creditPayment);
 
-        return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
+        return new ServiceResponse<int>
+        {
+            Status = true,
+            Message = "Success",
+            Data = id
+        };
     }
 
     public async Task<ServiceResponse<CreditPayment>> GetById(int id)
@@ -22,17 +27,32 @@ public class CreditPaymentsService : ICreditPaymentsService
 
         if (card == null)
         {
-            return new ServiceResponse<CreditPayment> { Status = false, Message = $"Credit payment with given id ({id}) not found", Data = default };
+            return new ServiceResponse<CreditPayment>
+            {
+                Status = false,
+                Message = $"Credit payment with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<CreditPayment> { Status = true, Message = "Success", Data = card };
+        return new ServiceResponse<CreditPayment>
+        {
+            Status = true,
+            Message = "Success",
+            Data = card
+        };
     }
 
     public async Task<ServiceResponse<List<CreditPayment>>> GetAllByCredit(int creditAccountId)
     {
         var list = await _creditPaymentsRepository.GetAllByCredit(creditAccountId);
 
-        return new ServiceResponse<List<CreditPayment>> { Status = true, Message = "Success", Data = list };
+        return new ServiceResponse<List<CreditPayment>>
+        {
+            Status = true,
+            Message = "Success",
+            Data = list
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateStatus(int id, string paymentStatus)
@@ -41,10 +61,20 @@ public class CreditPaymentsService : ICreditPaymentsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe credit payment with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe credit payment with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> Delete(int id)
@@ -53,9 +83,19 @@ public class CreditPaymentsService : ICreditPaymentsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe credit payment with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe credit payment with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 }

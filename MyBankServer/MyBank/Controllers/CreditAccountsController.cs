@@ -1,13 +1,16 @@
-﻿using MyBank.API.DataTransferObjects.CreditAccountDtos;
+﻿using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.CreditAccountDtos;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
+[EnableCors(PolicyName = "myCorsPolicy")]
 [Route("api/[controller]/[action]")]
 public class CreditAccountsController
 {
     private readonly ICreditAccountsService _creditAccountsService;
     private readonly IMapper _mapper;
+
     public CreditAccountsController(ICreditAccountsService creditAccountsService, IMapper mapper)
     {
         _creditAccountsService = creditAccountsService;
@@ -18,17 +21,18 @@ public class CreditAccountsController
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> Add([FromBody] CreditAccountDto dto)
     {
-        var serviceResponse = await _creditAccountsService.Add(
-            _mapper.Map<CreditAccount>(dto));
+        var serviceResponse = await _creditAccountsService.Add(_mapper.Map<CreditAccount>(dto));
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { creditAccountId = serviceResponse.Data }, statusCode: 200);
@@ -42,12 +46,14 @@ public class CreditAccountsController
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
@@ -61,12 +67,14 @@ public class CreditAccountsController
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);

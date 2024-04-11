@@ -3,7 +3,21 @@
 public class PersonalAccount
 {
     public PersonalAccount() { }
-    public PersonalAccount(int id, string name, string number, decimal currentBalance, DateTime creationDate, DateTime closingDate, bool isActive, bool isForTransfersByNickname, int userId, User? userOwner, int currencyId, Currency? currency)
+
+    public PersonalAccount(
+        int id,
+        string name,
+        string number,
+        decimal currentBalance,
+        DateTime creationDate,
+        DateTime closingDate,
+        bool isActive,
+        bool isForTransfersByNickname,
+        int userId,
+        User? userOwner,
+        int currencyId,
+        Currency? currency
+    )
     {
         Id = id;
         Name = name;

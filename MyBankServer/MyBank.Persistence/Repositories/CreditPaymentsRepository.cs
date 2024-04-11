@@ -4,6 +4,7 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
 {
     private readonly MyBankDbContext _dbContext;
     private readonly IMapper _mapper;
+
     public CreditPaymentsRepository(MyBankDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
@@ -12,11 +13,13 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
 
     public async Task<int> Add(CreditPayment creditPayment)
     {
-        var creditAccountEntity = await _dbContext.CreditAccounts
-           .FirstOrDefaultAsync(ca => ca.Id == creditPayment.CreditAccountId);
+        var creditAccountEntity = await _dbContext.CreditAccounts.FirstOrDefaultAsync(ca =>
+            ca.Id == creditPayment.CreditAccountId
+        );
 
-        var userEntity = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == creditPayment.UserId);
+        var userEntity = await _dbContext.Users.FirstOrDefaultAsync(u =>
+            u.Id == creditPayment.UserId
+        );
 
         var сreditPaymentEntity = _mapper.Map<CreditPaymentEntity>(creditPayment);
 
@@ -30,8 +33,8 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
 
     public async Task<CreditPayment> GetById(int id)
     {
-        var creditPaymentEntity = await _dbContext.CreditPayments
-            .AsNoTracking()
+        var creditPaymentEntity = await _dbContext
+            .CreditPayments.AsNoTracking()
             .FirstOrDefaultAsync(cp => cp.Id == id);
 
         return _mapper.Map<CreditPayment>(creditPaymentEntity);
@@ -39,8 +42,8 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
 
     public async Task<List<CreditPayment>> GetAllByCredit(int creditAccountId)
     {
-        var creditPaymentEntitiesList = await _dbContext.CreditPayments
-            .AsNoTracking()
+        var creditPaymentEntitiesList = await _dbContext
+            .CreditPayments.AsNoTracking()
             .Where(cp => cp.CreditAccountId == creditAccountId)
             .ToListAsync();
 
@@ -49,19 +52,16 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
 
     public async Task<bool> UpdateStatus(int id, string status)
     {
-        var number = await _dbContext.CreditPayments
-            .Where(cp => cp.Id == id)
-            .ExecuteUpdateAsync(s => s
-                .SetProperty(cp => cp.Status, status));
+        var number = await _dbContext
+            .CreditPayments.Where(cp => cp.Id == id)
+            .ExecuteUpdateAsync(s => s.SetProperty(cp => cp.Status, status));
 
         return (number == 0) ? false : true;
     }
 
     public async Task<bool> Delete(int id)
     {
-        var number = await _dbContext.CreditPayments
-            .Where(cp => cp.Id == id)
-            .ExecuteDeleteAsync();
+        var number = await _dbContext.CreditPayments.Where(cp => cp.Id == id).ExecuteDeleteAsync();
 
         return (number == 0) ? false : true;
     }

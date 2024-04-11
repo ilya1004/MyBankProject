@@ -1,8 +1,11 @@
-﻿global using MyBank.API.DataTransferObjects;
-global using MyBank.Application.Interfaces;
-global using MyBank.API.Extensions;
+﻿global using AutoMapper;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
-global using MyBank.Domain.Models;
+global using MyBank.API.DataTransferObjects;
+global using MyBank.API.Extensions;
 global using MyBank.API.Utils;
-global using AutoMapper;
+global using MyBank.API.Interfaces;
+global using MyBank.Application.Interfaces;
+global using MyBank.Domain.Models;
+global using Microsoft.AspNetCore.Cors;
+global using Newtonsoft.Json;

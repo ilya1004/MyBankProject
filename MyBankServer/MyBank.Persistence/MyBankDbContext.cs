@@ -6,9 +6,9 @@ namespace MyBank.Persistence;
 
 public class MyBankDbContext : DbContext
 {
-    public MyBankDbContext(DbContextOptions<MyBankDbContext> options) :
-        base(options)
-    { }
+    public MyBankDbContext(DbContextOptions<MyBankDbContext> options)
+        : base(options) { }
+
     public DbSet<AdminEntity> Admins { get; set; }
     public DbSet<CardEntity> Cards { get; set; }
     public DbSet<CardPackageEntity> CardPackages { get; set; }

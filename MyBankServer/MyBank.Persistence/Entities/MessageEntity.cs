@@ -3,7 +3,16 @@
 public class MessageEntity
 {
     public MessageEntity() { }
-    public MessageEntity(int id, string title, string text, int recepientId, string recepientRole, DateTime creationDatetime, bool isRead)
+
+    public MessageEntity(
+        int id,
+        string title,
+        string text,
+        int recepientId,
+        string recepientRole,
+        DateTime creationDatetime,
+        bool isRead
+    )
     {
         Id = id;
         Title = title;
@@ -27,5 +36,4 @@ public class MessageEntity
     public ModeratorEntity? SenderModerator { get; set; } = null;
     public int? SenderUserId { get; set; } = null;
     public UserEntity? SenderUser { get; set; } = null;
-
 }

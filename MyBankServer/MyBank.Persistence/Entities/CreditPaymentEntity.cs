@@ -3,7 +3,14 @@
 public class CreditPaymentEntity
 {
     public CreditPaymentEntity() { }
-    public CreditPaymentEntity(int id, decimal paymentAmount, int paymentNumber, DateTime datetime, string status)
+
+    public CreditPaymentEntity(
+        int id,
+        decimal paymentAmount,
+        int paymentNumber,
+        DateTime datetime,
+        string status
+    )
     {
         Id = id;
         PaymentAmount = paymentAmount;

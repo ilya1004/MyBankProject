@@ -13,5 +13,4 @@ public record RegisterUserDto
     public string PassportSeries { get; set; } = string.Empty;
     public string PassportNumber { get; set; } = string.Empty;
     public string Citizenship { get; set; } = string.Empty;
-
 }

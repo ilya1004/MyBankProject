@@ -15,5 +15,4 @@ public class AdminConfiguration : IEntityTypeConfiguration<AdminEntity>
             .WithOne(m => m.SenderAdmin)
             .HasForeignKey(m => m.SenderAdminId);
     }
-
 }

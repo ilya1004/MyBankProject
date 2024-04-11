@@ -45,6 +45,5 @@ public class MappingProfileDatabase : Profile
 
         CreateMap<UserEntity, User>();
         CreateMap<User, UserEntity>();
-
     }
 }

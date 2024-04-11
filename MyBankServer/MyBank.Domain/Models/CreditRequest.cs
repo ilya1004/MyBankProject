@@ -3,7 +3,21 @@
 public class CreditRequest
 {
     public CreditRequest() { }
-    public CreditRequest(int id, decimal startBalance, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, bool hasPrepaymentOption, bool isApproved, int moderatorId, Moderator? moderator, int userId, User? user)
+
+    public CreditRequest(
+        int id,
+        decimal startBalance,
+        decimal interestRate,
+        string interestCalculationType,
+        int creditTermInDays,
+        int totalPaymentsNumber,
+        bool hasPrepaymentOption,
+        bool isApproved,
+        int moderatorId,
+        Moderator? moderator,
+        int userId,
+        User? user
+    )
     {
         Id = id;
         StartBalance = startBalance;

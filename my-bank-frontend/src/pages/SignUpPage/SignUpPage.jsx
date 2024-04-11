@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Input, Card, Flex, Typography, message } from "antd";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
-import LoginPage from "../LoginPage/LoginPage";
 import axios from "axios";
 import "./SignUpPage.css";
 
@@ -64,9 +63,9 @@ export default function SignUpPage() {
     setCitizenship(e.target.value);
   };
 
-  const showMessage = (msg) => {
+  const showMessage = (msg, msgType) => {
     messageApi.open({
-      type: "error",
+      type: msgType,
       content: msg,
       style: {
         marginTop: "60px",
@@ -98,11 +97,11 @@ export default function SignUpPage() {
           navigate("/login");
         } else {
           setIsValid(false);
-          showMessage("Произошла ошибка. Повторите попытку");
+          showMessage("Произошла ошибка. Повторите попытку", "error");
         }
       })
       .catch((err) => {
-        showMessage("Произошла неизвестная ошибка.");
+        showMessage("Произошла неизвестная ошибка.", "error");
         console.error(err);
       });
   };
@@ -309,13 +308,10 @@ export default function SignUpPage() {
         {contextHolder}
         <Flex align="center" justify="center">
           <Text style={{ marginRight: "5px" }}>Уже есть аккаунт?</Text>
-          <Link className="link-primary" to="/login">
+          <Link to="/login">
             Войти
           </Link>
         </Flex>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
       </Card>
     </Flex>
   );

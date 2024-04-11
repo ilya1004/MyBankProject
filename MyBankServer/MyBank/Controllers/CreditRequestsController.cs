@@ -1,14 +1,17 @@
-﻿using MyBank.API.DataTransferObjects.CreditRequestDtos;
-using System.Diagnostics.Eventing.Reader;
+﻿using System.Diagnostics.Eventing.Reader;
+using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.CreditRequestDtos;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
+[EnableCors(PolicyName = "myCorsPolicy")]
 [Route("api/[controller]/[action]")]
 public class CreditRequestsController : ControllerBase
 {
     private readonly ICreditRequestsService _creditRequestsService;
     private readonly IMapper _mapper;
+
     public CreditRequestsController(ICreditRequestsService creditRequestsService, IMapper mapper)
     {
         _creditRequestsService = creditRequestsService;
@@ -23,12 +26,14 @@ public class CreditRequestsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditRequestsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditRequestsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
@@ -42,12 +47,14 @@ public class CreditRequestsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditRequestsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditRequestsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
@@ -57,16 +64,22 @@ public class CreditRequestsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.ModeratorPolicy)]
     public async Task<IResult> UpdateStatus(int creditRequestId, int moderatorId, bool isApproved)
     {
-        var serviceResponse = await _creditRequestsService.UpdateIsApproved(creditRequestId, moderatorId, isApproved);
+        var serviceResponse = await _creditRequestsService.UpdateIsApproved(
+            creditRequestId,
+            moderatorId,
+            isApproved
+        );
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditRequestsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditRequestsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
@@ -80,12 +93,14 @@ public class CreditRequestsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CurrencyController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CurrencyController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);

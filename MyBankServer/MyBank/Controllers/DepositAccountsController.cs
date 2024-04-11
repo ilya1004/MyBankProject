@@ -1,13 +1,16 @@
-﻿using MyBank.API.DataTransferObjects.DepositAccountDtos;
+﻿using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.DepositAccountDtos;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
+[EnableCors(PolicyName = "myCorsPolicy")]
 [Route("api/[controller]/[action]")]
 public class DepositAccountsController : ControllerBase
 {
     private readonly IDepositAccountsService _depositAccountsService;
     private readonly IMapper _mapper;
+
     public DepositAccountsController(IDepositAccountsService depositAccountsService, IMapper mapper)
     {
         _depositAccountsService = depositAccountsService;
@@ -22,12 +25,14 @@ public class DepositAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "DepositAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "DepositAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
         return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
     }
@@ -40,12 +45,14 @@ public class DepositAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "DepositAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "DepositAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
@@ -59,12 +66,14 @@ public class DepositAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "DepositAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "DepositAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
@@ -78,12 +87,14 @@ public class DepositAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "DepositAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "DepositAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
@@ -93,16 +104,21 @@ public class DepositAccountsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> Revoke(int depositAccountId, int personalAccountId)
     {
-        var serviceResponse = await _depositAccountsService.RevokeDeposit(depositAccountId, personalAccountId);
+        var serviceResponse = await _depositAccountsService.RevokeDeposit(
+            depositAccountId,
+            personalAccountId
+        );
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "DepositAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "DepositAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
@@ -112,16 +128,21 @@ public class DepositAccountsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> WithdrawInterests(int depositAccountId, int personalAccountId)
     {
-        var serviceResponse = await _depositAccountsService.WithdrawInterests(depositAccountId, personalAccountId);
+        var serviceResponse = await _depositAccountsService.WithdrawInterests(
+            depositAccountId,
+            personalAccountId
+        );
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "DepositAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "DepositAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);

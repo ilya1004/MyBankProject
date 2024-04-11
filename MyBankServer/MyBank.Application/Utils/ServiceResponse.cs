@@ -1,8 +1,9 @@
 ﻿namespace MyBank.Application.Utils;
 
-public class ServiceResponse <T>
+public class ServiceResponse<T>
 {
     public ServiceResponse() { }
+
     public ServiceResponse(bool status, string message, T data)
     {
         Status = status;

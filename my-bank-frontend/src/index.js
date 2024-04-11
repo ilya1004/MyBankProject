@@ -1,18 +1,72 @@
-import React from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import React, { Children } from "react";
 import ReactDOM from "react-dom/client";
 import "./utils/index.css";
 import App from "./App";
-// import { BrowserRouter as Router } from "react-router-dom";
-// import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./store/AuthContext/AuthProvider";
+import ErrorPage from "./pages/ErrorPage/ErrorPage";
+import MainPage from "./pages/MainPage/MainPage";
+import CardsPage, { cardsLoader } from "./pages/CardsPage/CardsPage";
+import AccountsPage from "./pages/AccountsPage/AccountsPage";
+import CreditsPage from "./pages/CreditsPage/CreditsPage";
+import DepositsPage from "./pages/DepositsPage/DepositsPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import SignUpPage from "./pages/SignUpPage/SignUpPage";
+import CardInfo from "./pages/CardsPage/Components/CardInfo";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const routers = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/",
+        element: <MainPage />,
+      },
+      {
+        path: "cards",
+        element: <CardsPage />,
+        loader: cardsLoader,
+      },
+      {
+        path: "cards/:cardId",
+        element: <CardInfo />,
+      },
+      {
+        path: "accounts",
+        element: <AccountsPage />,
+      },
+      {
+        path: "credits",
+        element: <CreditsPage />,
+      },
+      {
+        path: "deposits",
+        element: <DepositsPage />,
+      },
+      {
+        path: "profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "register",
+        element: <SignUpPage />,
+      },
+    ],
+  },
+]);
 
-root.render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+    <AuthProvider>
+      <RouterProvider router={routers} />
+    </AuthProvider>
   </React.StrictMode>
 );
 

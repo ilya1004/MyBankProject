@@ -3,7 +3,18 @@
 public class Transaction
 {
     public Transaction() { }
-    public Transaction(int id, decimal paymentAmount, DateTime datetime, bool status, string information, string? accountSenderNumber, string? userSenderNickname, string? accountRecipientNumber, string? userRecipientNickname)
+
+    public Transaction(
+        int id,
+        decimal paymentAmount,
+        DateTime datetime,
+        bool status,
+        string information,
+        string? accountSenderNumber,
+        string? userSenderNickname,
+        string? accountRecipientNumber,
+        string? userRecipientNickname
+    )
     {
         Id = id;
         PaymentAmount = paymentAmount;

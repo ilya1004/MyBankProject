@@ -3,7 +3,22 @@
 public class Message
 {
     public Message() { }
-    public Message(int id, string title, string text, int recepientId, string recepientRole, DateTime creationDatetime, bool isRead, int? senderAdminId, Admin? senderAdmin, int? senderModeratorId, Moderator? senderModerator, int? senderUserId, User? senderUser)
+
+    public Message(
+        int id,
+        string title,
+        string text,
+        int recepientId,
+        string recepientRole,
+        DateTime creationDatetime,
+        bool isRead,
+        int? senderAdminId,
+        Admin? senderAdmin,
+        int? senderModeratorId,
+        Moderator? senderModerator,
+        int? senderUserId,
+        User? senderUser
+    )
     {
         Id = id;
         Title = title;

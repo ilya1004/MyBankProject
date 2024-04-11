@@ -3,6 +3,7 @@
 public class DepositAccrualEntity
 {
     public DepositAccrualEntity() { }
+
     public DepositAccrualEntity(int id, decimal accrualAmount, DateTime datetime, string status)
     {
         Id = id;

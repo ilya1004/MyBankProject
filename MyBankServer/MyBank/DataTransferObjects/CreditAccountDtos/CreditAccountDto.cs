@@ -22,5 +22,4 @@ public record CreditAccountDto
     public int? UserId { get; set; } = null;
     public int? CurrencyId { get; set; } = null;
     public int? ModeratorApprovedId { get; set; } = null;
-
 }

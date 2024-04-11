@@ -3,6 +3,7 @@
 public class Admin
 {
     public Admin() { }
+
     public Admin(int id, string login, string hashedPassword, string nickname)
     {
         Id = id;

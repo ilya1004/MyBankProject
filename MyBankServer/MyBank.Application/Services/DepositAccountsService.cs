@@ -1,15 +1,16 @@
 ﻿namespace MyBank.Application.Services;
 
-
 public class DepositAccountsService : IDepositAccountsService
 {
     private readonly IDepositAccountsRepository _depositAccountsRepository;
     private readonly IPersonalAccountsRepository _personalAccountsRepository;
     private readonly ITransactionsRepository _transactionsRepository;
 
-    public DepositAccountsService(IDepositAccountsRepository depositAccountsRepository, 
+    public DepositAccountsService(
+        IDepositAccountsRepository depositAccountsRepository,
         IPersonalAccountsRepository personalAccountsRepository,
-        ITransactionsRepository transactionsRepository)
+        ITransactionsRepository transactionsRepository
+    )
     {
         _depositAccountsRepository = depositAccountsRepository;
         _personalAccountsRepository = personalAccountsRepository;
@@ -20,7 +21,12 @@ public class DepositAccountsService : IDepositAccountsService
     {
         var id = await _depositAccountsRepository.Add(depositAccount);
 
-        return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
+        return new ServiceResponse<int>
+        {
+            Status = true,
+            Message = "Success",
+            Data = id
+        };
     }
 
     public async Task<ServiceResponse<DepositAccount>> GetById(int id)
@@ -29,17 +35,32 @@ public class DepositAccountsService : IDepositAccountsService
 
         if (depositAccount == null)
         {
-            return new ServiceResponse<DepositAccount> { Status = false, Message = $"Deposit account with given id ({id}) not found", Data = default };
+            return new ServiceResponse<DepositAccount>
+            {
+                Status = false,
+                Message = $"Deposit account with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<DepositAccount> { Status = true, Message = "Success", Data = depositAccount };
+        return new ServiceResponse<DepositAccount>
+        {
+            Status = true,
+            Message = "Success",
+            Data = depositAccount
+        };
     }
 
     public async Task<ServiceResponse<List<DepositAccount>>> GetAllByUser(int userId)
     {
         var list = await _depositAccountsRepository.GetAllByUser(userId);
 
-        return new ServiceResponse<List<DepositAccount>> { Status = true, Message = "Success", Data = list };
+        return new ServiceResponse<List<DepositAccount>>
+        {
+            Status = true,
+            Message = "Success",
+            Data = list
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateName(int id, string name)
@@ -48,10 +69,20 @@ public class DepositAccountsService : IDepositAccountsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe deposit account with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe deposit account with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive)
@@ -60,10 +91,20 @@ public class DepositAccountsService : IDepositAccountsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe deposit account with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe deposit account with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateBalanceDelta(int id, decimal deltaNumber)
@@ -72,10 +113,20 @@ public class DepositAccountsService : IDepositAccountsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe deposit account with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe deposit account with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateBalanceValue(int id, decimal newBalance)
@@ -84,10 +135,20 @@ public class DepositAccountsService : IDepositAccountsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe deposit account with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe deposit account with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> Delete(int id)
@@ -96,57 +157,135 @@ public class DepositAccountsService : IDepositAccountsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe deposit account with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe deposit account with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
-    public async Task<ServiceResponse<bool>> RevokeDeposit(int depositAccountId, int personalAccountId)
+    public async Task<ServiceResponse<bool>> RevokeDeposit(
+        int depositAccountId,
+        int personalAccountId
+    )
     {
         var depositAccount = await _depositAccountsRepository.GetById(depositAccountId, true);
-        
+
         if (depositAccount == null)
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe deposit account with given id ({depositAccountId}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message =
+                    $"Unknown error. Maybe deposit account with given id ({depositAccountId}) not found",
+                Data = default
+            };
 
         var personalAccount = await _personalAccountsRepository.GetById(personalAccountId);
 
         if (personalAccount == null)
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe personal account with given id ({personalAccountId}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message =
+                    $"Unknown error. Maybe personal account with given id ({personalAccountId}) not found",
+                Data = default
+            };
 
-        var status = await _personalAccountsRepository.UpdateBalanceDelta(personalAccountId, depositAccount.CurrentBalance);
+        var status = await _personalAccountsRepository.UpdateBalanceDelta(
+            personalAccountId,
+            depositAccount.CurrentBalance
+        );
 
         await _transactionsRepository.Add(
-            new Transaction(0, depositAccount.CurrentBalance, DateTime.UtcNow, true, "Списание средств с депозитного счета",
-            depositAccount.Number, depositAccount.UserOwner!.Nickname, personalAccount.Number, depositAccount.UserOwner.Nickname));
+            new Transaction(
+                0,
+                depositAccount.CurrentBalance,
+                DateTime.UtcNow,
+                true,
+                "Списание средств с депозитного счета",
+                depositAccount.Number,
+                depositAccount.UserOwner!.Nickname,
+                personalAccount.Number,
+                depositAccount.UserOwner.Nickname
+            )
+        );
 
-        status = await _depositAccountsRepository.UpdateClosingInfo(depositAccountId, 0, DateTime.UtcNow, false);
+        status = await _depositAccountsRepository.UpdateClosingInfo(
+            depositAccountId,
+            0,
+            DateTime.UtcNow,
+            false
+        );
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
-    public async Task<ServiceResponse<bool>> WithdrawInterests(int depositAccountId, int personalAccountId)
+    public async Task<ServiceResponse<bool>> WithdrawInterests(
+        int depositAccountId,
+        int personalAccountId
+    )
     {
         var depositAccount = await _depositAccountsRepository.GetById(depositAccountId, true);
 
         if (depositAccount == null)
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe deposit account with given id ({depositAccountId}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message =
+                    $"Unknown error. Maybe deposit account with given id ({depositAccountId}) not found",
+                Data = default
+            };
 
         var personalAccount = await _personalAccountsRepository.GetById(personalAccountId);
 
         if (personalAccount == null)
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe personal account with given id ({personalAccountId}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message =
+                    $"Unknown error. Maybe personal account with given id ({personalAccountId}) not found",
+                Data = default
+            };
 
         decimal value = depositAccount.CurrentBalance - depositAccount.DepositStartBalance;
 
         var status = await _personalAccountsRepository.UpdateBalanceDelta(personalAccountId, value);
 
         await _transactionsRepository.Add(
-            new Transaction(0, value, DateTime.UtcNow, true, "Списание процентов с депозитного счета",
-            depositAccount.Number, depositAccount.UserOwner!.Nickname, personalAccount.Number, depositAccount.UserOwner!.Nickname));
+            new Transaction(
+                0,
+                value,
+                DateTime.UtcNow,
+                true,
+                "Списание процентов с депозитного счета",
+                depositAccount.Number,
+                depositAccount.UserOwner!.Nickname,
+                personalAccount.Number,
+                depositAccount.UserOwner!.Nickname
+            )
+        );
 
         status = await _depositAccountsRepository.UpdateBalanceDelta(depositAccountId, -value);
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 }

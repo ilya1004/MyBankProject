@@ -4,7 +4,24 @@ public class DepositAccountEntity
 {
     public DepositAccountEntity() { }
 
-    public DepositAccountEntity(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, string interestPaymentType, bool hasCapitalisation, bool hasInterestWithdrawalOption)
+    public DepositAccountEntity(
+        int id,
+        string name,
+        string number,
+        decimal currentBalance,
+        decimal depositStartBalance,
+        DateTime creationDate,
+        DateTime closingDate,
+        bool isActive,
+        decimal interestRate,
+        int depositTermInDays,
+        int totalAccrualsNumber,
+        int madeAccrualsNumber,
+        bool isRevocable,
+        string interestPaymentType,
+        bool hasCapitalisation,
+        bool hasInterestWithdrawalOption
+    )
     {
         Id = id;
         Name = name;

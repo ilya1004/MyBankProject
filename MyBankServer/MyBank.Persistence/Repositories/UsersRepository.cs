@@ -4,6 +4,7 @@ public class UsersRepository : IUsersRepository
 {
     private readonly MyBankDbContext _dbContext;
     private readonly IMapper _mapper;
+
     public UsersRepository(MyBankDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
@@ -39,9 +40,7 @@ public class UsersRepository : IUsersRepository
         }
         else
         {
-            userEntity = await _dbContext.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == id);
+            userEntity = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
 
         return _mapper.Map<User>(userEntity);
@@ -71,13 +70,22 @@ public class UsersRepository : IUsersRepository
         return await _dbContext.Users.AnyAsync(u => u.Email == email);
     }
 
-    public async Task<bool> UpdateAccountInfo(int id, string email, string hashedPassword)
+    public async Task<bool> UpdatePassword(int id, string hashedPassword)
     {
         var number = await _dbContext.Users
             .Where(u => u.Id == id)
             .ExecuteUpdateAsync(s => s
-                .SetProperty(u => u.Email, email)
                 .SetProperty(u => u.HashedPassword, hashedPassword));
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> UpdateEmail(int id, string email)
+    {
+        var number = await _dbContext.Users
+            .Where(u => u.Id == id)
+            .ExecuteUpdateAsync(s => s
+            .SetProperty(u => u.Email, email));
 
         return (number == 0) ? false : true;
     }
@@ -90,6 +98,7 @@ public class UsersRepository : IUsersRepository
                 .SetProperty(u => u.Nickname, nickname)
                 .SetProperty(u => u.Name, name)
                 .SetProperty(u => u.Surname, surname)
+                .SetProperty(u => u.Patronymic, patronymic)
                 .SetProperty(u => u.PhoneNumber, phoneNumber)
                 .SetProperty(u => u.PassportSeries, passportSeries)
                 .SetProperty(u => u.PassportNumber, passportNumber)
@@ -110,9 +119,7 @@ public class UsersRepository : IUsersRepository
 
     public async Task<bool> Delete(int id)
     {
-        var number = await _dbContext.Users
-            .Where(u => u.Id == id)
-            .ExecuteDeleteAsync();
+        var number = await _dbContext.Users.Where(u => u.Id == id).ExecuteDeleteAsync();
 
         return (number == 0) ? false : true;
     }

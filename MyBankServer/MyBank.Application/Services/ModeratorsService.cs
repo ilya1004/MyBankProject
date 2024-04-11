@@ -6,7 +6,11 @@ public class ModeratorsService : IModeratorsService
     private readonly IJwtProvider _jwtProvider;
     private readonly IModeratorsRepository _moderatorsRepository;
 
-    public ModeratorsService(IPasswordHasher passwordHasher, IJwtProvider jwtProvider, IModeratorsRepository moderatorsRepository)
+    public ModeratorsService(
+        IPasswordHasher passwordHasher,
+        IJwtProvider jwtProvider,
+        IModeratorsRepository moderatorsRepository
+    )
     {
         _passwordHasher = passwordHasher;
         _jwtProvider = jwtProvider;
@@ -18,7 +22,12 @@ public class ModeratorsService : IModeratorsService
         var isExist = await _moderatorsRepository.IsExistByLogin(login);
 
         if (isExist)
-            return new ServiceResponse<int> { Status = false, Message = "Moderator with given login already exists", Data = 0 };
+            return new ServiceResponse<int>
+            {
+                Status = false,
+                Message = "Moderator with given login already exists",
+                Data = 0
+            };
 
         var hashedPassword = _passwordHasher.GenerateHash(password);
 
@@ -34,7 +43,12 @@ public class ModeratorsService : IModeratorsService
 
         var moderatorId = await _moderatorsRepository.Add(moderator);
 
-        return new ServiceResponse<int> { Status = true, Message = "Success", Data = moderatorId };
+        return new ServiceResponse<int>
+        {
+            Status = true,
+            Message = "Success",
+            Data = moderatorId
+        };
     }
 
     public async Task<ServiceResponse<(int, string)>> Login(string login, string password)
@@ -42,7 +56,12 @@ public class ModeratorsService : IModeratorsService
         var isExist = await _moderatorsRepository.IsExistByLogin(login);
 
         if (!isExist)
-            return new ServiceResponse<(int, string)> { Status = false, Message = "Модератора с данным логином не найдено", Data = (-1, string.Empty) };
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Модератора с данным логином не найдено",
+                Data = (-1, string.Empty)
+            };
 
         var moderator = await _moderatorsRepository.GetByLogin(login);
 
@@ -50,12 +69,22 @@ public class ModeratorsService : IModeratorsService
 
         if (res == false)
         {
-            return new ServiceResponse<(int, string)> { Status = false, Message = "Неверный логин или пароль", Data = (-1, string.Empty) };
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Неверный логин или пароль",
+                Data = (-1, string.Empty)
+            };
         }
 
         var token = _jwtProvider.GenerateToken(moderator);
 
-        return new ServiceResponse<(int, string)> { Status = true, Message = "Success", Data = (moderator.Id, token) };
+        return new ServiceResponse<(int, string)>
+        {
+            Status = true,
+            Message = "Success",
+            Data = (moderator.Id, token)
+        };
     }
 
     public async Task<ServiceResponse<Moderator>> GetById(int id)
@@ -64,17 +93,32 @@ public class ModeratorsService : IModeratorsService
 
         if (moderator == null)
         {
-            return new ServiceResponse<Moderator> { Status = false, Message = $"Moderator with given id ({id}) not found", Data = default };
+            return new ServiceResponse<Moderator>
+            {
+                Status = false,
+                Message = $"Moderator with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<Moderator> { Status = true, Message = "Success", Data = moderator };
+        return new ServiceResponse<Moderator>
+        {
+            Status = true,
+            Message = "Success",
+            Data = moderator
+        };
     }
 
     public async Task<ServiceResponse<List<Moderator>>> GetAll()
     {
         var list = await _moderatorsRepository.GetAll();
 
-        return new ServiceResponse<List<Moderator>> { Status = true, Message = "Success", Data = list };
+        return new ServiceResponse<List<Moderator>>
+        {
+            Status = true,
+            Message = "Success",
+            Data = list
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateInfo(int id, string nickname)
@@ -83,10 +127,20 @@ public class ModeratorsService : IModeratorsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe moderator with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe moderator with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> Delete(int id)
@@ -95,9 +149,19 @@ public class ModeratorsService : IModeratorsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe moderator with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe moderator with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 }

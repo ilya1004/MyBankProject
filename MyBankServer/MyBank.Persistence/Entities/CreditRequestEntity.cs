@@ -3,7 +3,17 @@
 public class CreditRequestEntity
 {
     public CreditRequestEntity() { }
-    public CreditRequestEntity(int id, decimal startBalance, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, bool hasPrepaymentOption, bool isApproved)
+
+    public CreditRequestEntity(
+        int id,
+        decimal startBalance,
+        decimal interestRate,
+        string interestCalculationType,
+        int creditTermInDays,
+        int totalPaymentsNumber,
+        bool hasPrepaymentOption,
+        bool isApproved
+    )
     {
         Id = id;
         StartBalance = startBalance;

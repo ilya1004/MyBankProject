@@ -80,7 +80,6 @@ export default function ListCards(props) {
       style={{
         width: "90%",
         height: "240px",
-        // fontSize: "20px"
       }}
     >
       <List

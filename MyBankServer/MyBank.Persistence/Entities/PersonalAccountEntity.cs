@@ -3,7 +3,17 @@
 public class PersonalAccountEntity
 {
     public PersonalAccountEntity() { }
-    public PersonalAccountEntity(int id, string name, string number, decimal currentBalance, DateTime creationDate, DateTime closingDate, bool isActive, bool isForTransfersByNickname)
+
+    public PersonalAccountEntity(
+        int id,
+        string name,
+        string number,
+        decimal currentBalance,
+        DateTime creationDate,
+        DateTime closingDate,
+        bool isActive,
+        bool isForTransfersByNickname
+    )
     {
         Id = id;
         Name = name;

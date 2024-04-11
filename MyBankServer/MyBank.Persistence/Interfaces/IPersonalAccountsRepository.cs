@@ -13,6 +13,11 @@ public interface IPersonalAccountsRepository
     Task<bool> UpdateName(int id, string name);
     Task<bool> UpdateStatus(int id, bool isActive);
     Task<bool> UpdateTransfersStatus(int id, bool isForTransfersByNickname);
-    Task<bool> UpdateClosingInfo(int id, DateTime dateTime, bool isActive, bool isForTransfersByNickname);
+    Task<bool> UpdateClosingInfo(
+        int id,
+        DateTime dateTime,
+        bool isActive,
+        bool isForTransfersByNickname
+    );
     Task<PersonalAccount> GetIsForTransfersByNickname(string user);
 }

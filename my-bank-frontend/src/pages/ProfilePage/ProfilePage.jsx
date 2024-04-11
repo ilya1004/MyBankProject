@@ -1,6 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Card, Flex, Image, List, Typography, Button } from "antd";
+import {
+  Card,
+  Flex,
+  Image,
+  Typography,
+  Button,
+  Input,
+  message,
+  Modal,
+} from "antd";
 import {
   EnvironmentOutlined,
   PhoneOutlined,
@@ -8,16 +17,19 @@ import {
   IdcardOutlined,
   MailOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import Avatar from "../../assets/avatar-sq.jpg";
 import ListCards from "./Components/ListCards";
 import ListAccounts from "./Components/ListAccounts";
 import ListCredits from "./Components/ListCredits";
 import ListDeposits from "./Components/ListDeposits";
-import { FOCUSABLE_SELECTOR } from "@testing-library/user-event/dist/utils";
+import EditUserData from "./Components/EditUserData";
+import ChangePassword from "./Components/ChangePassword";
+import ChangeEmail from "./Components/ChangeEmail";
+import { BASE_URL } from "../../store/constants"
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 const imageSize = "300px";
 export const widthCardAcc = "300px";
@@ -27,40 +39,124 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState({});
   const { role, id } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-
-  // console.log(isEditing);
-
-  let qwe = false;
+  const [isOpenSettings, setIsOpenSettings] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isChangingEmail, setIsChangingEmail] = useState(false);
+  const [toReload, setToReload] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [openModal, setOpenModal] = useState(false);
+  const [loadingModal, setLoadingModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // if (userData == {}) {
-    const fetchData = async () => {
-      const BASE_URL = `https://localhost:7050/api/`;
+    const getUserData = async () => {
       const axiosInstance = axios.create({
         baseURL: BASE_URL,
         withCredentials: true,
       });
       axiosInstance
-        .get(`User/GetInfoById/?userId=${1}&includeData=${true}`)
+        .get(`User/GetInfoCurrent/?includeData=${true}`)
         .then((response) => {
           console.log(response.data["item"]);
           setUserData(response.data["item"]);
-          // setPackagesData(response.data["list"]);
-          // setItems(response.data["list"]);
         })
         .catch((err) => {
           console.error(err);
         });
     };
-    fetchData();
-    // }
-  }, []);
+    setToReload(false);
+    getUserData();
+  }, [toReload]);
 
-  const handleEditProfile = () => {};
+  const deleteUserAccount = async () => {
+    const axiosInstance = axios.create({
+      baseURL: BASE_URL,
+      withCredentials: true,
+    });
+    try {
+      // const res = await axiosInstance.delete(`User/Delete`);
+      // console.log(res.data["status"]);
+      showMessage("Учетная запись была успешно удалена", "success");
+      navigate("/");
+    } catch (err) {
+      if (err.response.status === 401) {
+        showMessage("Вы ввели неверную электронную почту или пароль", "error");
+      }
+      console.error(err);
+    }
+  };
+
+  const handleReload = () => {
+    setToReload(true);
+  };
+
+  const handleEditProfile = () => {
+    setIsOpenSettings(false);
+    setIsChangingPassword(false);
+    isEditing === false ? setIsEditing(true) : setIsEditing(false);
+  };
+
+  const handleSettingsProfile = () => {
+    setIsEditing(false);
+    setIsChangingPassword(false);
+    isOpenSettings === false
+      ? setIsOpenSettings(true)
+      : setIsOpenSettings(false);
+  };
+
+  const handleCloseSettings = () => {
+    setIsOpenSettings(false);
+    setIsChangingPassword(false);
+  };
 
   const printRegDate = (date) => {
     let dateObj = new Date(date);
     return `Клиент банка с ${dateObj.toLocaleDateString()}`;
+  };
+
+  const handleChangePassword = () => {
+    setIsChangingEmail(false);
+    isChangingPassword === false
+      ? setIsChangingPassword(true)
+      : setIsChangingPassword(false);
+  };
+
+  const handleDeleteAccount = () => {
+    setOpenModal(true);
+    setLoadingModal(true);
+    setTimeout(() => {
+      if (openModal === false) {
+        console.log(openModal);
+        setLoadingModal(false);
+      }
+    }, 3000);
+  };
+
+  const handleOkModal = () => {
+    setOpenModal(false);
+    deleteUserAccount();
+  };
+
+  const handleCancelModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleChangeEmail = () => {
+    setIsChangingPassword(false);
+    isChangingEmail === false
+      ? setIsChangingEmail(true)
+      : setIsChangingEmail(false);
+  };
+
+  const showMessage = (msg, msgType) => {
+    messageApi.open({
+      type: msgType,
+      content: msg,
+      duration: 3,
+      style: {
+        marginTop: "55px",
+      },
+    });
   };
 
   return (
@@ -91,6 +187,7 @@ export default function ProfilePage() {
           />
           <Flex gap={15}>
             <Button onClick={handleEditProfile}>Редактировать профиль</Button>
+            <Button onClick={handleSettingsProfile}>Настройки аккаунта</Button>
           </Flex>
           <Card
             style={{
@@ -142,28 +239,84 @@ export default function ProfilePage() {
               >{`${userData["surname"]} ${userData["name"]} ${userData["patronymic"]}`}</Title>
               <Flex gap={5}>
                 <EnvironmentOutlined />
-                <Text>{` ${userData["citizenship"]}`}</Text>
+                <Text>{`${userData["citizenship"]}`}</Text>
               </Flex>
               <Flex gap={5}>
                 <PhoneOutlined />
-                <Text>{` ${userData["phoneNumber"]}`}</Text>
+                <Text>{`+${userData["phoneNumber"]}`}</Text>
               </Flex>
             </Flex>
           </Card>
-          {isEditing === true ? (
+
+          {isOpenSettings === false && isEditing === false ? (
             <>
               <ListCards value={userData["cards"]} />
               <ListAccounts value={userData["personalAccounts"]} />
               <ListCredits value={userData["creditAccounts"]} />
               <ListDeposits value={userData["depositAccount"]} />
             </>
-          ) : (
+          ) : null}
+          {isOpenSettings === true ? (
             <>
-              
+              <Card style={{ width: "600px" }}>
+                <Flex align="center" justify="center" gap={50}>
+                  <Flex align="center" justify="center" gap={30} vertical>
+                    <Button type="primary" onClick={handleChangePassword}>
+                      Сменить пароль
+                    </Button>
+                    <Button onClick={handleCloseSettings}>Закрыть</Button>
+                  </Flex>
+                  <Flex align="center" justify="center" gap={30} vertical>
+                    <Button type="primary" onClick={handleChangeEmail}>
+                      Сменить электронную почту
+                    </Button>
+                    <Button type="primary" danger onClick={handleDeleteAccount}>
+                      Удалить учетную запись
+                    </Button>
+                  </Flex>
+                </Flex>
+              </Card>
+              <Modal
+                title="Удаление учетной записи"
+                open={openModal}
+                onOk={handleOkModal}
+                onCancel={handleCancelModal}
+                confirmLoading={loadingModal}
+                okButtonProps={{ type: "primary" }}
+                okType="danger"
+                okText="Удалить"
+                cancelText="Отмена"
+              >
+                <Text style={{ fontSize: "16px" }}>
+                  Вы действительно хотите удалить свою учетную запись?
+                </Text>
+              </Modal>
             </>
-          )}
+          ) : null}
+          {isEditing === true ? (
+            <EditUserData
+              onSetIsEditing={handleEditProfile}
+              onReload={handleReload}
+              userData={userData}
+            />
+          ) : null}
+          {isChangingPassword === true ? (
+            <ChangePassword
+              onSetIsOpenSettings={setIsOpenSettings}
+              onSetIsChangingPassword={setIsChangingPassword}
+              onShowMessage={showMessage}
+            />
+          ) : null}
+          {isChangingEmail === true ? (
+            <ChangeEmail
+              onSetIsOpenSettings={setIsOpenSettings}
+              onSetIsChangingEmail={setIsChangingEmail}
+              onShowMessage={showMessage}
+            />
+          ) : null}
         </Flex>
       </Flex>
+      {contextHolder}
     </div>
   );
 }

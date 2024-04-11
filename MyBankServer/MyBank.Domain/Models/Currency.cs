@@ -3,7 +3,15 @@
 public class Currency
 {
     public Currency() { }
-    public Currency(int id, string code, string name, int scale, DateTime lastDateRateUpdate, decimal officialRate)
+
+    public Currency(
+        int id,
+        string code,
+        string name,
+        int scale,
+        DateTime lastDateRateUpdate,
+        decimal officialRate
+    )
     {
         Id = id;
         Code = code;

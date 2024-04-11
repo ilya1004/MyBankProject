@@ -1,13 +1,16 @@
-﻿using MyBank.API.DataTransferObjects.CreditPaymentDtos;
+﻿using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.CreditPaymentDtos;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
+[EnableCors(PolicyName = "myCorsPolicy")]
 [Route("api/[controller]/[action]")]
 public class CreditPaymentsController : ControllerBase
 {
     private readonly ICreditPaymentsService _creditPaymentsService;
     private readonly IMapper _mapper;
+
     public CreditPaymentsController(ICreditPaymentsService creditPaymentsService, IMapper mapper)
     {
         _creditPaymentsService = creditPaymentsService;
@@ -22,12 +25,14 @@ public class CreditPaymentsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditPaymentsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditPaymentsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
@@ -41,12 +46,14 @@ public class CreditPaymentsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditPaymentsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditPaymentsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
@@ -60,15 +67,16 @@ public class CreditPaymentsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "CreditPaymentsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditPaymentsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
     }
-
 }

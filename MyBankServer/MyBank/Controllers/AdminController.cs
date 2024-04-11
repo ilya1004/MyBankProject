@@ -1,17 +1,19 @@
-﻿using MyBank.API.DataTransferObjects.AdminDtos;
+﻿using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.AdminDtos;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
+[EnableCors(PolicyName = "myCorsPolicy")]
 [Route("api/[controller]/[action]")]
 public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
+
     public AdminController(IAdminService adminService)
     {
         _adminService = adminService;
     }
-
 
     [HttpPost]
     public async Task<IResult> Register([FromBody] RegisterAdminDto dto)
@@ -20,17 +22,18 @@ public class AdminController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "AdminController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "AdminController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
     }
-
 
     [HttpPost]
     public async Task<IResult> Login([FromBody] LoginAdminDto request)
@@ -39,15 +42,21 @@ public class AdminController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "AdminController",
-                Message = serviceResponse.Message
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "AdminController",
+                    Message = serviceResponse.Message
+                },
+                statusCode: 400
+            );
         }
 
-        Response.Cookies.Append("my-cookie", serviceResponse.Data.Item2, new CookieOptions { SameSite = SameSiteMode.Lax });
+        Response.Cookies.Append(
+            "my-cookie",
+            serviceResponse.Data.Item2,
+            new CookieOptions { SameSite = SameSiteMode.Lax }
+        );
 
         return Results.Json(new { id = serviceResponse.Data.Item1 }, statusCode: 200);
     }
@@ -60,12 +69,14 @@ public class AdminController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "AdminController",
-                Message = serviceResponse.Message
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "AdminController",
+                    Message = serviceResponse.Message
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { item = serviceResponse.Data! }, statusCode: 200);
@@ -79,12 +90,14 @@ public class AdminController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "AdminController",
-                Message = serviceResponse.Message
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "AdminController",
+                    Message = serviceResponse.Message
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data! }, statusCode: 200);
@@ -98,12 +111,14 @@ public class AdminController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "AdminController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "AdminController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);

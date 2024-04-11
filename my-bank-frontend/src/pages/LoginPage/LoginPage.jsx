@@ -24,7 +24,7 @@ import "./LoginPage.css";
 
 const { Title, Text } = Typography;
 
-const BASE_URL = `https://localhost:7050/api`;
+const BASE_URL = `https://localhost:7050/api/`;
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -56,83 +56,112 @@ export default function LoginPage() {
   const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = () => {
-    const axiosInstance = axios.create({ baseURL: BASE_URL });
+    // let emailVal = email;
+    // let passwordVal = password;
 
-    let emailVal = email;
-    let passwordVal = password;
+    // axiosInstance
+    //   .post(`User/Login`, {
+    //     email: email.trim(),
+    //     password: password.trim(),
+    //   })
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (response.status === 200) {
+    //       setIsValid(true);
+    //       setId(response.data["id"]);
+    //       setAuth(true);
+    //       setRole(Role.User);
+    //       navigate(from, { replace: true });
+    //     } else {
+    //       setIsValid(false);
+    //       showMessage("Введена неверная электронная почта или пароль");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     showMessage("Произошла неизвестная ошибка.");
+    //     console.error(err);
+    //   });
 
-    if (email.startsWith("#admin#") && !email.includes("@")) {
-      axiosInstance
-        .post(`Admin/Login`, {
-          Email: email.trim(),
-          Password: password.trim(),
-        })
-        .then((response) => {
-          console.log(response.data);
-          if (response.status === 200) {
-            setIsValid(true);
-            setId(response.data["id"]);
-            setAuth(true);
-            setRole(Role.Moderator);
-            navigate("/admin/");
-            // navigate(from, { replace: true });
-          } else {
-            setIsValid(false);
-            showMessage("Введена неверная электронная почта или пароль");
-          }
-        })
-        .catch((err) => {
-          showMessage("Произошла неизвестная ошибка.");
-          console.error(err);
+    const loginUser = async () => {
+      const axiosInstance = axios.create({
+        baseURL: BASE_URL,
+        withCredentials: true,
+      });
+      try {
+        const res = await axiosInstance.post(`User/Login`, {
+          email: email.trim(),
+          password: password.trim(),
         });
-    } else if (email.startsWith("#moderator#") && !email.includes("@")) {
-      axiosInstance
-        .post(`Moderator/Login`, {
-          Email: email.trim(),
-          Password: password.trim(),
-        })
-        .then((response) => {
-          console.log(response.data);
-          if (response.status === 200) {
-            setIsValid(true);
-            setId(response.data["id"]);
-            setAuth(true);
-            setRole(Role.Moderator);
-            navigate("/moderator/");
-            // navigate(from, { replace: true });
-          } else {
-            setIsValid(false);
-            showMessage("Введена неверная электронная почта или пароль");
-          }
-        })
-        .catch((err) => {
+        console.log(res);
+        setIsValid(true);
+        setId(res.data["id"]);
+        console.log(res.data["id"])
+        setAuth(true);
+        setRole(Role.User);
+        navigate("/");
+        // navigate(from, { replace: true });
+      } catch (err) {
+        if (err.response.status === 401) {
+          showMessage("Введена неверная электронная почта или пароль");
+        } else {
           showMessage("Произошла неизвестная ошибка.");
-          console.error(err);
-        });
-    } else {
-      axiosInstance
-        .post(`User/Login`, {
-          Email: email.trim(),
-          Password: password.trim(),
-        })
-        .then((response) => {
-          console.log(response.data);
-          if (response.status === 200) {
-            setIsValid(true);
-            setId(response.data["id"]);
-            setAuth(true);
-            setRole(Role.User);
-            navigate(from, { replace: true });
-          } else {
-            setIsValid(false);
-            showMessage("Введена неверная электронная почта или пароль");
-          }
-        })
-        .catch((err) => {
-          showMessage("Произошла неизвестная ошибка.");
-          console.error(err);
-        });
-    }
+        }
+        console.error(err);
+      }
+    };
+    loginUser();
+
+    // if (email.startsWith("#admin#") && !email.includes("@")) {
+    //   axiosInstance
+    //     .post(`Admin/Login`, {
+    //       Email: email.trim(),
+    //       Password: password.trim(),
+    //     })
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       if (response.status === 200) {
+    //         setIsValid(true);
+    //         setId(response.data["id"]);
+    //         setAuth(true);
+    //         setRole(Role.Moderator);
+    //         navigate("/admin/");
+    //         // navigate(from, { replace: true });
+    //       } else {
+    //         setIsValid(false);
+    //         showMessage("Введена неверная электронная почта или пароль");
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       showMessage("Произошла неизвестная ошибка.");
+    //       console.error(err);
+    //     });
+    // } else if (email.startsWith("#moderator#") && !email.includes("@")) {
+    //   axiosInstance
+    //     .post(`Moderator/Login`, {
+    //       Email: email.trim(),
+    //       Password: password.trim(),
+    //     })
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       if (response.status === 200) {
+    //         setIsValid(true);
+    //         setId(response.data["id"]);
+    //         setAuth(true);
+    //         setRole(Role.Moderator);
+    //         navigate("/moderator/");
+    // navigate(from, { replace: true });
+    //       } else {
+    //         setIsValid(false);
+    //         showMessage("Введена неверная электронная почта или пароль");
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       showMessage("Произошла неизвестная ошибка.");
+    //       console.error(err);
+    //     });
+    // } else {
+
+    // }
   };
 
   return (
@@ -212,15 +241,10 @@ export default function LoginPage() {
           </Form.Item>
         </Form>
         {contextHolder}
-        <div className="div-to-reg-page">
-          {"Еще нет аккаунта? "}
-          <Link className="link-primary" to="/register">
-            Зарегистироваться
-          </Link>
-        </div>
-        <Routes>
-          <Route path="/register" element={<SignUpPage />} />
-        </Routes>
+        <Flex align="center" justify="center">
+          <Text style={{ marginRight: "5px" }}>Еще нет аккаунта?</Text>
+          <Link to="/register">Зарегистрироваться</Link>
+        </Flex>
       </Card>
     </Flex>
   );

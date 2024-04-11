@@ -3,7 +3,29 @@
 public class CreditAccount
 {
     public CreditAccount() { }
-    public CreditAccount(int id, string name, string number, decimal currentBalance, decimal creditStartBalance, DateTime creationDate, DateTime closingDate, bool isActive, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, int madePaymentsNumber, bool hasPrepaymentOption, int? userId, User? userOwner, int? currencyId, Currency? currency, int? moderatorApprovedId, Moderator? moderatorApproved)
+
+    public CreditAccount(
+        int id,
+        string name,
+        string number,
+        decimal currentBalance,
+        decimal creditStartBalance,
+        DateTime creationDate,
+        DateTime closingDate,
+        bool isActive,
+        decimal interestRate,
+        string interestCalculationType,
+        int creditTermInDays,
+        int totalPaymentsNumber,
+        int madePaymentsNumber,
+        bool hasPrepaymentOption,
+        int? userId,
+        User? userOwner,
+        int? currencyId,
+        Currency? currency,
+        int? moderatorApprovedId,
+        Moderator? moderatorApproved
+    )
     {
         Id = id;
         Name = name;

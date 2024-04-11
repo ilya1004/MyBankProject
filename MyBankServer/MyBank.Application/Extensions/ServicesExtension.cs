@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using MyBank.Application.Interfaces;
 using MyBank.Application.Services;
-using MyBank.Persistence.Interfaces;
-using MyBank.Persistence.Repositories;
 
 namespace MyBank.Application.Extensions;
 
@@ -26,6 +23,13 @@ public static class ServicesExtension
         services.AddScoped<ITransactionsService, TransactionsService>();
         services.AddScoped<IUserService, UserService>();
 
+        return services;
+    }
+
+    public static IServiceCollection AddApplicationUtils(this IServiceCollection services)
+    {
+        services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
         return services;
     }
 }

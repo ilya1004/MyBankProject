@@ -3,7 +3,15 @@
 public class Moderator
 {
     public Moderator() { }
-    public Moderator(int id, string login, string hashedPassword, string nickname, DateTime creationDate, bool isActive)
+
+    public Moderator(
+        int id,
+        string login,
+        string hashedPassword,
+        string nickname,
+        DateTime creationDate,
+        bool isActive
+    )
     {
         Id = id;
         Login = login;

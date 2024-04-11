@@ -47,7 +47,7 @@ export default function NavigationBar() {
         mode="horizontal"
         theme={"light"}
         style={{
-          width: "60%",
+          width: "65%",
           margin: "0px 20px",
         }}
       >
@@ -62,22 +62,22 @@ export default function NavigationBar() {
           </Link>
         </Menu.Item>
         <Menu.Item key={3}>
-          <Link className="link" to="/personal-accounts">
+          <Link className="link" to="/accounts">
             Мои счета
           </Link>
         </Menu.Item>
         <Menu.Item key={4}>
-          <Link className="link" to="/credit-accounts">
-            Мои депозиты
+          <Link className="link" to="/credits">
+            Мои кредиты
           </Link>
         </Menu.Item>
         <Menu.Item key={5}>
-          <Link className="link" to="/deposit-accounts">
+          <Link className="link" to="/deposits">
             Мои депозиты
           </Link>
         </Menu.Item>
         <Menu.Item key={6}>
-          <Link className="link" to="/my-profile">
+          <Link className="link" to="/profile">
             Мой профиль
           </Link>
         </Menu.Item>

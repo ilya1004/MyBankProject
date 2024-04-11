@@ -3,7 +3,22 @@
 public class User
 {
     public User() { }
-    public User(int id, string email, string hashedPassword, string nickname, bool isActive, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, DateTime registrationDate, string citizenship)
+
+    public User(
+        int id,
+        string email,
+        string hashedPassword,
+        string nickname,
+        bool isActive,
+        string name,
+        string surname,
+        string patronymic,
+        string phoneNumber,
+        string passportSeries,
+        string passportNumber,
+        DateTime registrationDate,
+        string citizenship
+    )
     {
         Id = id;
         Email = email;

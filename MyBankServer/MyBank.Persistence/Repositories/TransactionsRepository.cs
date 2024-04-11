@@ -1,8 +1,8 @@
-﻿
-public class TransactionsRepository : ITransactionsRepository
+﻿public class TransactionsRepository : ITransactionsRepository
 {
     private readonly MyBankDbContext _dbContext;
     private readonly IMapper _mapper;
+
     public TransactionsRepository(MyBankDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
@@ -20,20 +20,33 @@ public class TransactionsRepository : ITransactionsRepository
 
     public async Task<List<Transaction>> GetAllByPersonalAccountNumber(string personalAccountNumber)
     {
-        var transationEntitiesList = await _dbContext.Transactions
-            .AsNoTracking()
-            .Where(t => t.AccountSenderNumber == personalAccountNumber || t.AccountRecipientNumber == personalAccountNumber)
+        var transationEntitiesList = await _dbContext
+            .Transactions.AsNoTracking()
+            .Where(t =>
+                t.AccountSenderNumber == personalAccountNumber
+                || t.AccountRecipientNumber == personalAccountNumber
+            )
             .ToListAsync();
 
         return _mapper.Map<List<Transaction>>(transationEntitiesList);
     }
 
-    public async Task<List<Transaction>> GetAllByPersonalAccountDate(string personalAccountNumber, DateTime dateTimeStart, DateTime dateTimeEnd)
+    public async Task<List<Transaction>> GetAllByPersonalAccountDate(
+        string personalAccountNumber,
+        DateTime dateTimeStart,
+        DateTime dateTimeEnd
+    )
     {
-        var transationEntitiesList = await _dbContext.Transactions
-            .AsNoTracking()
-            .Where(t => (t.AccountSenderNumber == personalAccountNumber || t.AccountRecipientNumber == personalAccountNumber) 
-                && dateTimeStart <= t.Datetime && t.Datetime <= dateTimeEnd)
+        var transationEntitiesList = await _dbContext
+            .Transactions.AsNoTracking()
+            .Where(t =>
+                (
+                    t.AccountSenderNumber == personalAccountNumber
+                    || t.AccountRecipientNumber == personalAccountNumber
+                )
+                && dateTimeStart <= t.Datetime
+                && t.Datetime <= dateTimeEnd
+            )
             .ToListAsync();
 
         return _mapper.Map<List<Transaction>>(transationEntitiesList);

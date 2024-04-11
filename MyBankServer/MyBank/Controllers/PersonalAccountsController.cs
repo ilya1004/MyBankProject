@@ -1,14 +1,20 @@
-﻿using MyBank.API.DataTransferObjects.PersonalAccountDtos;
+﻿using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.PersonalAccountDtos;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
+[EnableCors(PolicyName = "myCorsPolicy")]
 [Route("api/[controller]/[action]")]
 public class PersonalAccountsController : ControllerBase
 {
     private readonly IPersonalAccountsService _personalAccountsService;
     private readonly IMapper _mapper;
-    public PersonalAccountsController(IPersonalAccountsService personalAccountsService, IMapper mapper)
+
+    public PersonalAccountsController(
+        IPersonalAccountsService personalAccountsService,
+        IMapper mapper
+    )
     {
         _personalAccountsService = personalAccountsService;
         _mapper = mapper;
@@ -18,17 +24,18 @@ public class PersonalAccountsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> Add([FromBody] PersonalAccountDto dto)
     {
-        var serviceResponse = await _personalAccountsService.Add(
-            _mapper.Map<PersonalAccount>(dto));
+        var serviceResponse = await _personalAccountsService.Add(_mapper.Map<PersonalAccount>(dto));
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "PersonalAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "PersonalAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
@@ -42,12 +49,14 @@ public class PersonalAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "PersonalAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "PersonalAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
@@ -61,12 +70,14 @@ public class PersonalAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "PersonalAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "PersonalAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
@@ -80,12 +91,14 @@ public class PersonalAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "PersonalAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "PersonalAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
@@ -99,12 +112,14 @@ public class PersonalAccountsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "PersonalAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "PersonalAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
@@ -114,18 +129,26 @@ public class PersonalAccountsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> MakeTransfer([FromBody] TransferDto dto)
     {
-        var serviceResponse = await _personalAccountsService
-            .MakeTransfer(dto.PersonalAccountId, dto.AccountSenderNumber, dto.UserSenderNickname, 
-            dto.AccountRecipientNumber, dto.CardRecipientNumber, dto.UserRecipientNickname, dto.Amount);
+        var serviceResponse = await _personalAccountsService.MakeTransfer(
+            dto.PersonalAccountId,
+            dto.AccountSenderNumber,
+            dto.UserSenderNickname,
+            dto.AccountRecipientNumber,
+            dto.CardRecipientNumber,
+            dto.UserRecipientNickname,
+            dto.Amount
+        );
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "PersonalAccountsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "PersonalAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);

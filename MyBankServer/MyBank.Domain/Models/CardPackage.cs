@@ -2,8 +2,17 @@
 
 public class CardPackage
 {
-    public CardPackage () { }
-    public CardPackage(int id, string name, decimal price, int operationsNumber, decimal operationsSum, decimal averageAccountBalance, decimal monthPayroll)
+    public CardPackage() { }
+
+    public CardPackage(
+        int id,
+        string name,
+        decimal price,
+        int operationsNumber,
+        decimal operationsSum,
+        decimal averageAccountBalance,
+        decimal monthPayroll
+    )
     {
         Id = id;
         Name = name;
@@ -13,6 +22,7 @@ public class CardPackage
         AverageAccountBalance = averageAccountBalance;
         MonthPayroll = monthPayroll;
     }
+
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }

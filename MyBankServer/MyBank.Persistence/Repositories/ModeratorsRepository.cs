@@ -4,6 +4,7 @@ public class ModeratorsRepository : IModeratorsRepository
 {
     private readonly MyBankDbContext _dbContext;
     private readonly IMapper _mapper;
+
     public ModeratorsRepository(MyBankDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
@@ -21,8 +22,8 @@ public class ModeratorsRepository : IModeratorsRepository
 
     public async Task<Moderator> GetByLogin(string login)
     {
-        var moderatorEntity = await _dbContext.Moderators
-            .AsNoTracking()
+        var moderatorEntity = await _dbContext
+            .Moderators.AsNoTracking()
             .FirstOrDefaultAsync(m => m.Login == login);
 
         return _mapper.Map<Moderator>(moderatorEntity);
@@ -30,8 +31,8 @@ public class ModeratorsRepository : IModeratorsRepository
 
     public async Task<Moderator> GetById(int id)
     {
-        var moderatorEntity = await _dbContext.Moderators
-            .AsNoTracking()
+        var moderatorEntity = await _dbContext
+            .Moderators.AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
 
         return _mapper.Map<Moderator>(moderatorEntity);
@@ -39,9 +40,7 @@ public class ModeratorsRepository : IModeratorsRepository
 
     public async Task<List<Moderator>> GetAll()
     {
-        var moderatorEntitiesList = await _dbContext.Moderators
-            .AsNoTracking()
-            .ToListAsync();
+        var moderatorEntitiesList = await _dbContext.Moderators.AsNoTracking().ToListAsync();
 
         return _mapper.Map<List<Moderator>>(moderatorEntitiesList);
     }
@@ -53,29 +52,25 @@ public class ModeratorsRepository : IModeratorsRepository
 
     public async Task<bool> UpdateInfo(int id, string nickname)
     {
-        var number = await _dbContext.Moderators
-            .Where(m => m.Id == id)
-            .ExecuteUpdateAsync(s => s
-                .SetProperty(m => m.Nickname, nickname));
+        var number = await _dbContext
+            .Moderators.Where(m => m.Id == id)
+            .ExecuteUpdateAsync(s => s.SetProperty(m => m.Nickname, nickname));
 
         return (number == 0) ? false : true;
     }
 
     public async Task<bool> UpdateInfo(int id, bool isActive)
     {
-        var number = await _dbContext.Moderators
-            .Where(m => m.Id == id)
-            .ExecuteUpdateAsync(s => s
-                .SetProperty(m => m.IsActive, isActive));
+        var number = await _dbContext
+            .Moderators.Where(m => m.Id == id)
+            .ExecuteUpdateAsync(s => s.SetProperty(m => m.IsActive, isActive));
 
         return (number == 0) ? false : true;
     }
 
     public async Task<bool> Delete(int id)
     {
-        var number = await _dbContext.Moderators
-            .Where(m => m.Id == id)
-            .ExecuteDeleteAsync();
+        var number = await _dbContext.Moderators.Where(m => m.Id == id).ExecuteDeleteAsync();
 
         return (number == 0) ? false : true;
     }

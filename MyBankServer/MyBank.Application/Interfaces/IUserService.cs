@@ -10,7 +10,8 @@ public interface IUserService
 
     Task<ServiceResponse<List<User>>> GetAll();
 
-    Task<ServiceResponse<bool>> UpdateAccountInfo(int id, string email, string hashedPassword);
+    Task<ServiceResponse<bool>> UpdatePassword(int id, string oldEmail, string oldPassword, string newPassword);
+    Task<ServiceResponse<bool>> UpdateEmail(int id, string oldEmail, string oldPassword, string newEmail);
 
     Task<ServiceResponse<bool>> UpdatePersonalInfo(int id, string nickname, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, string citizenship);
 

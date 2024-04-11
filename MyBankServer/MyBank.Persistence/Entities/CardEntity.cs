@@ -3,7 +3,17 @@
 public class CardEntity
 {
     public CardEntity() { }
-    public CardEntity(int id, string name, string number, DateTime creationDate, DateTime expirationDate, string cvvCode, string pincode, bool isActive)
+
+    public CardEntity(
+        int id,
+        string name,
+        string number,
+        DateTime creationDate,
+        DateTime expirationDate,
+        string cvvCode,
+        string pincode,
+        bool isActive
+    )
     {
         Id = id;
         Name = name;

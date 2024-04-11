@@ -4,7 +4,17 @@ public class TransactionEntity
 {
     public TransactionEntity() { }
 
-    public TransactionEntity(int id, decimal paymentAmount, DateTime datetime, bool status, string information, string? accountSenderNumber, string? userSenderNickname, string? accountRecipientNumber, string? userRecipientNickname)
+    public TransactionEntity(
+        int id,
+        decimal paymentAmount,
+        DateTime datetime,
+        bool status,
+        string information,
+        string? accountSenderNumber,
+        string? userSenderNickname,
+        string? accountRecipientNumber,
+        string? userRecipientNickname
+    )
     {
         Id = id;
         PaymentAmount = paymentAmount;

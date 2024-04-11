@@ -3,6 +3,7 @@
 public class Card
 {
     public Card() { }
+
     public Card(int id, string name, string number, DateTime creationDate, DateTime expirationDate, string cvvCode, string pincode, bool isActive, int? cardPackageId, CardPackage? cardPackage, int? userId, User? user, int? personalAccountId, PersonalAccount? personalAccount)
     {
         Id = id;

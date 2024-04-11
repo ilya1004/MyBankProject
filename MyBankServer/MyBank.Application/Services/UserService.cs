@@ -7,7 +7,12 @@ public class UserService : IUserService
     private readonly IJwtProvider _jwtProvider;
     private readonly IModeratorsRepository _moderatorRepository;
 
-    public UserService(IPasswordHasher passwordHasher, IUsersRepository userRepository,  IJwtProvider jwtProvider, IModeratorsRepository moderatorRepository)
+    public UserService(
+        IPasswordHasher passwordHasher,
+        IUsersRepository userRepository,
+        IJwtProvider jwtProvider,
+        IModeratorsRepository moderatorRepository
+    )
     {
         _passwordHasher = passwordHasher;
         _userRepository = userRepository;
@@ -22,9 +27,14 @@ public class UserService : IUserService
 
         if (isExist)
         {
-            return new ServiceResponse<int> { Status = false, Message = "User with given email already exists", Data = 0 };
+            return new ServiceResponse<int>
+            {
+                Status = false,
+                Message = "User with given email already exists",
+                Data = 0
+            };
         }
-        
+
         var hashedPassword = _passwordHasher.GenerateHash(password);
 
         var user = new User
@@ -46,7 +56,12 @@ public class UserService : IUserService
 
         var userId = await _userRepository.Add(user);
 
-        return new ServiceResponse<int> { Status = true, Message = "Success", Data = userId };
+        return new ServiceResponse<int>
+        {
+            Status = true,
+            Message = "Success",
+            Data = userId
+        };
     }
 
     // Структуры логинов
@@ -59,7 +74,12 @@ public class UserService : IUserService
         var isExist = await _userRepository.IsExistByEmail(email);
 
         if (!isExist)
-            return new ServiceResponse<(int, string)> { Status = false, Message = "Пользователя с данной электронной почтой не найдено", Data = (-1, string.Empty) };
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Пользователя с данной электронной почтой не найдено",
+                Data = (-1, string.Empty)
+            };
 
         var user = await _userRepository.GetByEmail(email);
 
@@ -67,12 +87,22 @@ public class UserService : IUserService
 
         if (res == false)
         {
-            return new ServiceResponse<(int, string)> { Status = false, Message = "Неверная электронная почта или пароль", Data = (-1, string.Empty)};
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Неверная электронная почта или пароль",
+                Data = (-1, string.Empty)
+            };
         }
 
         var token = _jwtProvider.GenerateToken(user);
 
-        return new ServiceResponse<(int, string)> { Status = true, Message = "Success", Data = (user.Id, token) };
+        return new ServiceResponse<(int, string)>
+        {
+            Status = true,
+            Message = "Success",
+            Data = (user.Id, token)
+        };
     }
 
     public async Task<ServiceResponse<User>> GetById(int id, bool includeData)
@@ -81,31 +111,125 @@ public class UserService : IUserService
 
         if (user == null)
         {
-            return new ServiceResponse<User> { Status = false, Message = $"User with given id ({id}) not found", Data = default };
+            return new ServiceResponse<User>
+            {
+                Status = false,
+                Message = $"User with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<User> { Status = true, Message = "Success", Data = user };
+        return new ServiceResponse<User>
+        {
+            Status = true,
+            Message = "Success",
+            Data = user
+        };
     }
 
     public async Task<ServiceResponse<List<User>>> GetAll()
     {
         var list = await _userRepository.GetAll();
 
-        return new ServiceResponse<List<User>> { Status = true, Message = "Success", Data = list };
+        return new ServiceResponse<List<User>>
+        {
+            Status = true,
+            Message = "Success",
+            Data = list
+        };
     }
 
-    public async Task<ServiceResponse<bool>> UpdateAccountInfo(int id, string email, string password)
+    public async Task<ServiceResponse<bool>> UpdatePassword(int id, string oldEmail, string oldPassword, string newPassword)
     {
-        var hashedPassword = _passwordHasher.GenerateHash(password);
+        var user = await _userRepository.GetById(id, false);
 
-        var status = await _userRepository.UpdateAccountInfo(id, email, hashedPassword);
+        if (user.Email == oldEmail) {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = "Неверная элекронная почта",
+                Data = default
+            };
+        }
+
+        var res = _passwordHasher.VerifyPassword(oldPassword, user.HashedPassword);
+
+        if (res == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = "Неверный пароль",
+                Data = default
+            };
+        }
+
+        var hashedPassword = _passwordHasher.GenerateHash(newPassword);
+
+        var status = await _userRepository.UpdatePassword(id, hashedPassword);
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe user with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
+    }
+
+    public async Task<ServiceResponse<bool>> UpdateEmail(int id, string oldEmail, string oldPassword, string newEmail)
+    {
+        var user = await _userRepository.GetById(id, false);
+
+        if (user.Email == oldEmail)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = "Неверная элекронная почта",
+                Data = default
+            };
+        }
+
+        var res = _passwordHasher.VerifyPassword(oldPassword, user.HashedPassword);
+
+        if (res == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = "Неверный пароль",
+                Data = default
+            };
+        }
+
+        var status = await _userRepository.UpdateEmail(id, newEmail);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe user with given id ({id}) not found",
+                Data = default
+            };
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdatePersonalInfo(int id, string nickname, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, string citizenship)
@@ -114,10 +238,20 @@ public class UserService : IUserService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe user with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive)
@@ -126,10 +260,20 @@ public class UserService : IUserService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe user with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> Delete(int id)
@@ -138,9 +282,19 @@ public class UserService : IUserService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe user with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe user with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 }

@@ -1,20 +1,7 @@
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { Button, Menu, Image, Flex, Layout } from "antd";
+import { Outlet } from "react-router-dom";
+import { Layout } from "antd";
 
-import MainPage from "./pages/MainPage/MainPage.jsx";
-import CardsPage from "./pages/CardsPage/CardsPage.jsx";
-import PersonalAccountsPage from "./pages/PersonalAccountsPage/PersonalAccountsPage.jsx";
-import CreditAccountsPage from "./pages/CreditAccountsPage/CreditAccountsPage.jsx";
-import DepositAccountsPage from "./pages/DepositAccountsPage/DepositAccountsPage.jsx";
-import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
-import LoginPage from "./pages/LoginPage/LoginPage.jsx";
-import SignUpPage from "./pages/SignUpPage/SignUpPage.jsx";
-import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute.jsx";
-
-import {
-  AppContextProvider,
-  useAppContext,
-} from "./store/Contexts/AppContextProvider.jsx";
+import { AppContextProvider } from "./store/Contexts/AppContextProvider.jsx";
 
 import "./utils/App.css";
 import NavigationBar from "./components/NavigationBar/NavigationBar.jsx";
@@ -25,16 +12,40 @@ export default function App() {
   return (
     <div className="app-main">
       <AppContextProvider>
-        <Router>
-          <Layout>
-            <Header>
-              <NavigationBar />
-            </Header>
-            <Content>
-              <Routes>
-                <Route index path="/*" element={<MainPage />} />
+        <Layout>
+          <Header
+            style={{
+              backgroundColor: "whitesmoke",
+            }}
+          >
+            <NavigationBar />
+          </Header>
+          <Content
+            style={{
+              padding: "10px 0px 0px 0px",
+              backgroundColor: "#F1F0E8",
+            }}
+          >
+            <Outlet />
+          </Content>
+          <Footer
+            style={{
+              backgroundColor: "wheat",
+            }}
+          >
+            Footer
+          </Footer>
+        </Layout>
+      </AppContextProvider>
+    </div>
+  );
+}
 
-                {/* <Route element={<PrivateRoute />}> */}
+{
+  /* <Routes>
+  <Route index path="/*" element={<MainPage />} />
+
+                <Route element={<PrivateRoute />}>
                 <Route path="cards/*" element={<CardsPage />} />
                 <Route
                   path="personal-accounts/*"
@@ -49,17 +60,9 @@ export default function App() {
                   element={<DepositAccountsPage />}
                 />
                 <Route path="my-profile/*" element={<ProfilePage />} />
-                {/* </Route> */}
+                </Route>
 
                 <Route path="login/*" element={<LoginPage />} />
                 <Route path="register/*" element={<SignUpPage />} />
-                {/* <Route index element={<div>No page is selected.</div> } /> */}
-              </Routes>
-            </Content>
-            <Footer>Footer</Footer>
-          </Layout>
-        </Router>
-      </AppContextProvider>
-    </div>
-  );
+              </Routes> */
 }

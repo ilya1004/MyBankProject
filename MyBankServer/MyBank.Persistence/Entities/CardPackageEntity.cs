@@ -3,7 +3,16 @@
 public class CardPackageEntity
 {
     public CardPackageEntity() { }
-    public CardPackageEntity(int id, string name, decimal price, int operationsNumber, decimal operationsSum, decimal averageAccountBalance, decimal monthPayroll)
+
+    public CardPackageEntity(
+        int id,
+        string name,
+        decimal price,
+        int operationsNumber,
+        decimal operationsSum,
+        decimal averageAccountBalance,
+        decimal monthPayroll
+    )
     {
         Id = id;
         Name = name;

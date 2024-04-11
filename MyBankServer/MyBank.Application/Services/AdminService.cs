@@ -6,7 +6,11 @@ public class AdminService : IAdminService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtProvider _jwtProvider;
 
-    public AdminService(IAdminRepository adminRepository, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
+    public AdminService(
+        IAdminRepository adminRepository,
+        IPasswordHasher passwordHasher,
+        IJwtProvider jwtProvider
+    )
     {
         _adminRepository = adminRepository;
         _passwordHasher = passwordHasher;
@@ -27,7 +31,12 @@ public class AdminService : IAdminService
 
         var adminId = await _adminRepository.Add(admin);
 
-        return new ServiceResponse<int> { Status = true, Message = "Success", Data = adminId };
+        return new ServiceResponse<int>
+        {
+            Status = true,
+            Message = "Success",
+            Data = adminId
+        };
     }
 
     public async Task<ServiceResponse<(int, string)>> Login(string login, string password)
@@ -35,7 +44,12 @@ public class AdminService : IAdminService
         var isExist = await _adminRepository.IsExistByLogin(login);
 
         if (!isExist)
-            return new ServiceResponse<(int, string)> { Status = false, Message = "Администратора с данным логином не найдено", Data = (-1, string.Empty) };
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Администратора с данным логином не найдено",
+                Data = (-1, string.Empty)
+            };
 
         var admin = await _adminRepository.GetByLogin(login);
 
@@ -43,12 +57,22 @@ public class AdminService : IAdminService
 
         if (res == false)
         {
-            return new ServiceResponse<(int, string)> { Status = false, Message = "Неверный логин или пароль", Data = (-1, string.Empty) };
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Неверный логин или пароль",
+                Data = (-1, string.Empty)
+            };
         }
 
         var token = _jwtProvider.GenerateToken(admin);
 
-        return new ServiceResponse<(int, string)> { Status = true, Message = "Success", Data = (admin.Id, token) };
+        return new ServiceResponse<(int, string)>
+        {
+            Status = true,
+            Message = "Success",
+            Data = (admin.Id, token)
+        };
     }
 
     public async Task<ServiceResponse<Admin>> GetById(int id)
@@ -57,10 +81,20 @@ public class AdminService : IAdminService
 
         if (admin == null)
         {
-            return new ServiceResponse<Admin> { Status = false, Message = $"Admin with given id ({id}) not found", Data = default };
+            return new ServiceResponse<Admin>
+            {
+                Status = false,
+                Message = $"Admin with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<Admin> { Status = true, Message = "Success", Data = admin };
+        return new ServiceResponse<Admin>
+        {
+            Status = true,
+            Message = "Success",
+            Data = admin
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateInfo(int id, string nickname)
@@ -69,10 +103,20 @@ public class AdminService : IAdminService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe admin with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe admin with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> Delete(int id)
@@ -81,9 +125,19 @@ public class AdminService : IAdminService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe admin with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe admin with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 }

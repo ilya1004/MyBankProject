@@ -1,13 +1,16 @@
-﻿using MyBank.API.DataTransferObjects.TransactionDtos;
+﻿using Microsoft.AspNetCore.Cors;
+using MyBank.API.DataTransferObjects.TransactionDtos;
 
 namespace MyBank.API.Controllers;
 
 [ApiController]
+[EnableCors(PolicyName = "myCorsPolicy")]
 [Route("api/[controller]/[action]")]
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionsService _transactionsService;
     private readonly IMapper _mapper;
+
     public TransactionsController(ITransactionsService transactionsService, IMapper mapper)
     {
         _transactionsService = transactionsService;
@@ -22,12 +25,14 @@ public class TransactionsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "TransactionsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "TransactionsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
@@ -37,16 +42,20 @@ public class TransactionsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
     public async Task<IResult> GetAllInfoByPersonalAccountId(string personalAccountNumber)
     {
-        var serviceResponse = await _transactionsService.GetAllByPersonalAccountNumber(personalAccountNumber);
+        var serviceResponse = await _transactionsService.GetAllByPersonalAccountNumber(
+            personalAccountNumber
+        );
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "TransactionsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "TransactionsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
@@ -54,18 +63,28 @@ public class TransactionsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
-    public async Task<IResult> GetAllInfoByPersonalAccountNumber(string personalAccountNumber, DateOnly dateStart, DateOnly dateEnd)
+    public async Task<IResult> GetAllInfoByPersonalAccountNumber(
+        string personalAccountNumber,
+        DateOnly dateStart,
+        DateOnly dateEnd
+    )
     {
-        var serviceResponse = await _transactionsService.GetAllByPersonalAccountNumber(personalAccountNumber, dateStart, dateEnd);
+        var serviceResponse = await _transactionsService.GetAllByPersonalAccountNumber(
+            personalAccountNumber,
+            dateStart,
+            dateEnd
+        );
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(new ErrorDto
-            {
-                ControllerName = "TransactionsController",
-                Message = serviceResponse.Message,
-            },
-            statusCode: 400);
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "TransactionsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);

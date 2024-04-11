@@ -1,9 +1,9 @@
 ﻿namespace MyBank.Application.Services;
 
-
 public class CardsService : ICardsService
 {
     private readonly ICardsRepository _cardsRepository;
+
     public CardsService(ICardsRepository cardsRepository)
     {
         _cardsRepository = cardsRepository;
@@ -13,7 +13,12 @@ public class CardsService : ICardsService
     {
         var id = await _cardsRepository.Add(card);
 
-        return new ServiceResponse<int> { Status = true, Message = "Success", Data = id };
+        return new ServiceResponse<int>
+        {
+            Status = true,
+            Message = "Success",
+            Data = id
+        };
     }
 
     public async Task<ServiceResponse<Card>> GetById(int id)
@@ -22,10 +27,20 @@ public class CardsService : ICardsService
 
         if (card == null)
         {
-            return new ServiceResponse<Card> { Status = false, Message = $"Card with given id ({id}) not found", Data = default };
+            return new ServiceResponse<Card>
+            {
+                Status = false,
+                Message = $"Card with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<Card> { Status = true, Message = "Success", Data = card };
+        return new ServiceResponse<Card>
+        {
+            Status = true,
+            Message = "Success",
+            Data = card
+        };
     }
 
     public async Task<ServiceResponse<Card>> GetByNumber(string number)
@@ -34,17 +49,32 @@ public class CardsService : ICardsService
 
         if (card == null)
         {
-            return new ServiceResponse<Card> { Status = false, Message = $"Card with given number ({number}) not found", Data = default };
+            return new ServiceResponse<Card>
+            {
+                Status = false,
+                Message = $"Card with given number ({number}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<Card> { Status = true, Message = "Success", Data = card };
+        return new ServiceResponse<Card>
+        {
+            Status = true,
+            Message = "Success",
+            Data = card
+        };
     }
 
-    public async Task<ServiceResponse<List<Card>>> GetAllByUser(int userId)
+    public async Task<ServiceResponse<List<Card>>> GetAllByUser(int userId, bool includeData)
     {
-        var list = await _cardsRepository.GetAllByUser(userId);
+        var list = await _cardsRepository.GetAllByUser(userId, includeData);
 
-        return new ServiceResponse<List<Card>> { Status = true, Message = "Success", Data = list };
+        return new ServiceResponse<List<Card>>
+        {
+            Status = true,
+            Message = "Success",
+            Data = list
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdatePincode(int id, string pincode)
@@ -53,10 +83,20 @@ public class CardsService : ICardsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe card with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe card with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateName(int id, string name)
@@ -65,10 +105,20 @@ public class CardsService : ICardsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe card with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe card with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> UpdateStatus(int id, bool cardStatus)
@@ -77,10 +127,20 @@ public class CardsService : ICardsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe card with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe card with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 
     public async Task<ServiceResponse<bool>> Delete(int id)
@@ -89,9 +149,19 @@ public class CardsService : ICardsService
 
         if (status == false)
         {
-            return new ServiceResponse<bool> { Status = false, Message = $"Unknown error. Maybe card with given id ({id}) not found", Data = default };
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe card with given id ({id}) not found",
+                Data = default
+            };
         }
 
-        return new ServiceResponse<bool> { Status = true, Message = "Success", Data = status };
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
     }
 }

@@ -6,5 +6,9 @@ public interface ITransactionsRepository
 
     Task<List<Transaction>> GetAllByPersonalAccountNumber(string personalAccountNumber);
 
-    Task<List<Transaction>> GetAllByPersonalAccountDate(string personalAccountNumber, DateTime dateTimeStart, DateTime dateTimeEnd);
+    Task<List<Transaction>> GetAllByPersonalAccountDate(
+        string personalAccountNumber,
+        DateTime dateTimeStart,
+        DateTime dateTimeEnd
+    );
 }
