@@ -4,7 +4,7 @@ public class Card
 {
     public Card() { }
 
-    public Card(int id, string name, string number, DateTime creationDate, DateTime expirationDate, string cvvCode, string pincode, bool isActive, int? cardPackageId, CardPackage? cardPackage, int? userId, User? user, int? personalAccountId, PersonalAccount? personalAccount)
+    public Card(int id, string name, string number, DateTime creationDate, DateTime expirationDate, string cvvCode, string pincode, bool isOperationsAllowed, bool isActive, int? cardPackageId, CardPackage? cardPackage, int? userId, User? user, int? personalAccountId, PersonalAccount? personalAccount)
     {
         Id = id;
         Name = name;
@@ -13,6 +13,7 @@ public class Card
         ExpirationDate = expirationDate;
         CvvCode = cvvCode;
         Pincode = pincode;
+        IsOperationsAllowed = isOperationsAllowed;
         IsActive = isActive;
         CardPackageId = cardPackageId;
         CardPackage = cardPackage;
@@ -29,6 +30,7 @@ public class Card
     public DateTime ExpirationDate { get; set; }
     public string CvvCode { get; set; } = string.Empty;
     public string Pincode { get; set; } = string.Empty;
+    public bool IsOperationsAllowed {  get; set; } = true;
     public bool IsActive { get; set; } = true;
     public int? CardPackageId { get; set; } = null;
     public CardPackage? CardPackage { get; set; } = null;

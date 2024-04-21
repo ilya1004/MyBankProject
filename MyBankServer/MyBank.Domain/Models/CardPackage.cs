@@ -4,15 +4,7 @@ public class CardPackage
 {
     public CardPackage() { }
 
-    public CardPackage(
-        int id,
-        string name,
-        decimal price,
-        int operationsNumber,
-        decimal operationsSum,
-        decimal averageAccountBalance,
-        decimal monthPayroll
-    )
+    public CardPackage(int id, string name, decimal price, int operationsNumber, decimal operationsSum, decimal averageAccountBalance)
     {
         Id = id;
         Name = name;
@@ -20,7 +12,6 @@ public class CardPackage
         OperationsNumber = operationsNumber;
         OperationsSum = operationsSum;
         AverageAccountBalance = averageAccountBalance;
-        MonthPayroll = monthPayroll;
     }
 
     public int Id { get; set; }
@@ -29,6 +20,6 @@ public class CardPackage
     public int OperationsNumber { get; set; }
     public decimal OperationsSum { get; set; }
     public decimal AverageAccountBalance { get; set; }
-    public decimal MonthPayroll { get; set; }
+    public bool IsActive { get; set; } = true;
     public List<Card> Cards { get; set; } = [];
 }

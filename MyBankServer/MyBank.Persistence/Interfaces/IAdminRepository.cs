@@ -3,7 +3,7 @@
 public interface IAdminRepository
 {
     Task<int> Add(Admin admin);
-    Task<Admin> GetById(int id);
+    Task<Admin> GetById(int id, bool includeData);
     Task<Admin> GetByLogin(string login);
     Task<List<Admin>> GetAll();
     Task<bool> UpdateInfo(int id, string nickname);

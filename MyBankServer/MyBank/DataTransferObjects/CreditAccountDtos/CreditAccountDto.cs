@@ -4,9 +4,7 @@ namespace MyBank.API.DataTransferObjects.CreditAccountDtos;
 
 public record CreditAccountDto
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string Number { get; set; } = string.Empty;
     public decimal CurrentBalance { get; set; }
     public decimal CreditStartBalance { get; set; }
     public decimal CreditGrantedAmount { get; set; }

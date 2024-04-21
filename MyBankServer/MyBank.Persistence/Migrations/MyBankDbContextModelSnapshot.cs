@@ -47,6 +47,28 @@ namespace MyBank.Persistence.Migrations
                     b.ToTable("Admins");
                 });
 
+            modelBuilder.Entity("MyBank.Persistence.Entities.BankSettingsEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("CreditInterestRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("DepositInterestRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BankSettings");
+                });
+
             modelBuilder.Entity("MyBank.Persistence.Entities.CardEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -69,6 +91,9 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsOperationsAllowed")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
@@ -109,10 +134,10 @@ namespace MyBank.Persistence.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("AverageAccountBalance")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
-                    b.Property<decimal>("MonthPayroll")
-                        .HasColumnType("numeric");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -122,10 +147,10 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("OperationsSum")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.HasKey("Id");
 
@@ -147,10 +172,10 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("CreditGrantedAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<decimal>("CreditStartBalance")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<int>("CreditTermInDays")
                         .HasColumnType("integer");
@@ -159,7 +184,7 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CurrentBalance")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<bool>("HasPrepaymentOption")
                         .HasColumnType("boolean");
@@ -220,7 +245,7 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("PaymentAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<int>("PaymentNumber")
                         .HasColumnType("integer");
@@ -252,6 +277,9 @@ namespace MyBank.Persistence.Migrations
                     b.Property<int>("CreditTermInDays")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CurrencyId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("HasPrepaymentOption")
                         .HasColumnType("boolean");
 
@@ -269,7 +297,7 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("StartBalance")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<int>("TotalPaymentsNumber")
                         .HasColumnType("integer");
@@ -278,6 +306,8 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
 
                     b.HasIndex("ModeratorId");
 
@@ -298,7 +328,16 @@ namespace MyBank.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastDateRateUpdate")
+                    b.Property<decimal>("CreditInterestRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("DepositInterestRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastRateUpdate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
@@ -306,7 +345,7 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<decimal>("OfficialRate")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<int>("Scale")
                         .HasColumnType("integer");
@@ -334,10 +373,10 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CurrentBalance")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<decimal>("DepositStartBalance")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<int>("DepositTermInDays")
                         .HasColumnType("integer");
@@ -396,7 +435,7 @@ namespace MyBank.Persistence.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("AccrualAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<DateTime>("Datetime")
                         .HasColumnType("timestamp with time zone");
@@ -425,6 +464,9 @@ namespace MyBank.Persistence.Migrations
 
                     b.Property<DateTime>("CreationDatetime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean");
@@ -513,7 +555,7 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("CurrentBalance")
-                        .HasColumnType("numeric");
+                        .HasColumnType("money");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -586,6 +628,13 @@ namespace MyBank.Persistence.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AvatarImagePath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("BirthdayDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Citizenship")
                         .IsRequired()
@@ -697,6 +746,10 @@ namespace MyBank.Persistence.Migrations
 
             modelBuilder.Entity("MyBank.Persistence.Entities.CreditRequestEntity", b =>
                 {
+                    b.HasOne("MyBank.Persistence.Entities.CurrencyEntity", "Currency")
+                        .WithMany("CreditRequests")
+                        .HasForeignKey("CurrencyId");
+
                     b.HasOne("MyBank.Persistence.Entities.ModeratorEntity", "Moderator")
                         .WithMany("CreditRequestsReplied")
                         .HasForeignKey("ModeratorId");
@@ -704,6 +757,8 @@ namespace MyBank.Persistence.Migrations
                     b.HasOne("MyBank.Persistence.Entities.UserEntity", "User")
                         .WithMany("CreditRequests")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Currency");
 
                     b.Navigation("Moderator");
 
@@ -788,6 +843,8 @@ namespace MyBank.Persistence.Migrations
             modelBuilder.Entity("MyBank.Persistence.Entities.CurrencyEntity", b =>
                 {
                     b.Navigation("CreditAccounts");
+
+                    b.Navigation("CreditRequests");
 
                     b.Navigation("DepositAccounts");
 

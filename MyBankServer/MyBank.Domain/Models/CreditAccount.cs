@@ -4,34 +4,14 @@ public class CreditAccount
 {
     public CreditAccount() { }
 
-    public CreditAccount(
-        int id,
-        string name,
-        string number,
-        decimal currentBalance,
-        decimal creditStartBalance,
-        DateTime creationDate,
-        DateTime closingDate,
-        bool isActive,
-        decimal interestRate,
-        string interestCalculationType,
-        int creditTermInDays,
-        int totalPaymentsNumber,
-        int madePaymentsNumber,
-        bool hasPrepaymentOption,
-        int? userId,
-        User? userOwner,
-        int? currencyId,
-        Currency? currency,
-        int? moderatorApprovedId,
-        Moderator? moderatorApproved
-    )
+    public CreditAccount(int id, string name, string number, decimal currentBalance, decimal creditStartBalance, decimal creditGrantedAmount, DateTime creationDate, DateTime? closingDate, bool isActive, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, int madePaymentsNumber, bool hasPrepaymentOption, int? userId, User? user, int? currencyId, Currency? currency, int? moderatorApprovedId, Moderator? moderatorApproved)
     {
         Id = id;
         Name = name;
         Number = number;
         CurrentBalance = currentBalance;
         CreditStartBalance = creditStartBalance;
+        CreditGrantedAmount = creditGrantedAmount;
         CreationDate = creationDate;
         ClosingDate = closingDate;
         IsActive = isActive;
@@ -42,7 +22,7 @@ public class CreditAccount
         MadePaymentsNumber = madePaymentsNumber;
         HasPrepaymentOption = hasPrepaymentOption;
         UserId = userId;
-        UserOwner = userOwner;
+        User = user;
         CurrencyId = currencyId;
         Currency = currency;
         ModeratorApprovedId = moderatorApprovedId;
@@ -65,7 +45,7 @@ public class CreditAccount
     public int MadePaymentsNumber { get; set; }
     public bool HasPrepaymentOption { get; set; }
     public int? UserId { get; set; } = null;
-    public User? UserOwner { get; set; } = null;
+    public User? User { get; set; } = null;
     public int? CurrencyId { get; set; } = null;
     public Currency? Currency { get; set; } = null;
     public int? ModeratorApprovedId { get; set; } = null;

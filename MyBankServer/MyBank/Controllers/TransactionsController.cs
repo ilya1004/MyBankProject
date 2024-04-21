@@ -63,17 +63,9 @@ public class TransactionsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
-    public async Task<IResult> GetAllInfoByPersonalAccountNumber(
-        string personalAccountNumber,
-        DateOnly dateStart,
-        DateOnly dateEnd
-    )
+    public async Task<IResult> GetAllInfoByPersonalAccountNumber(string accountNumber, DateOnly dateStart, DateOnly dateEnd)
     {
-        var serviceResponse = await _transactionsService.GetAllByPersonalAccountNumber(
-            personalAccountNumber,
-            dateStart,
-            dateEnd
-        );
+        var serviceResponse = await _transactionsService.GetAllByPersonalAccountNumber(accountNumber, dateStart, dateEnd);
 
         if (serviceResponse.Status == false)
         {
@@ -87,6 +79,6 @@ public class TransactionsController : ControllerBase
             );
         }
 
-        return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { list = MyJsonConverter<List<Transaction>>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 }

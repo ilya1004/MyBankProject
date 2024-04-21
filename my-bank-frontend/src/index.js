@@ -1,19 +1,72 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import React, { Children } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
-import "./utils/index.css";
-import App from "./App";
-import { AuthProvider } from "./store/AuthContext/AuthProvider";
-import ErrorPage from "./pages/ErrorPage/ErrorPage";
-import MainPage from "./pages/MainPage/MainPage";
-import CardsPage, { cardsLoader } from "./pages/CardsPage/CardsPage";
-import AccountsPage from "./pages/AccountsPage/AccountsPage";
-import CreditsPage from "./pages/CreditsPage/CreditsPage";
-import DepositsPage from "./pages/DepositsPage/DepositsPage";
-import ProfilePage from "./pages/ProfilePage/ProfilePage";
-import LoginPage from "./pages/LoginPage/LoginPage";
-import SignUpPage from "./pages/SignUpPage/SignUpPage";
-import CardInfo from "./pages/CardsPage/Components/CardInfo";
+import "./Common/Utils/index.css";
+import App from "./UserApp/Pages/App";
+import ErrorPage from "./Common/Pages/ErrorPage";
+import MainPage, {
+  loader as mainLoader,
+} from "./UserApp/Pages/MainPage/MainPage";
+import CardsPage, {
+  loader as cardsLoader,
+} from "./UserApp/Pages/CardsPage/CardsPage";
+import AccountsPage, {
+  loader as accountsLoader,
+} from "./UserApp/Pages/AccountsPage/AccountsPage";
+import CreditsPage from "./UserApp/Pages/CreditsPage/CreditsPage";
+import DepositsPage from "./UserApp/Pages/DepositsPage/DepositsPage";
+import ProfilePage, {
+  loader as userLoader,
+} from "./UserApp/Pages/ProfilePage/ProfilePage";
+import LoginPage from "./Common/Pages/LoginPage";
+import SignUpPage from "./UserApp/Pages/SignUpPage/SignUpPage";
+import CardInfo, {
+  loader as cardInfoLoader,
+} from "./UserApp/Pages/CardsPage/CardInfoPage";
+import AddCardPage, {
+  loader as addCardLoader,
+} from "./UserApp/Pages/CardsPage/AddCardPage";
+import AddAccountPage, {
+  loader as addAccountLoader,
+} from "./UserApp/Pages/AccountsPage/AddAccountPage";
+import AccountInfoPage, {
+  loader as accInfoLoader,
+} from "./UserApp/Pages/AccountsPage/AccountInfoPage";
+
+import { App as ModeratorApp } from "./ModeratorApp/Pages/App";
+import {
+  ProfilePage as ModerProfilePage,
+  loader as moderProfileLoader,
+} from "./ModeratorApp/Pages/ProfilePage/ProfilePage";
+import {
+  UsersInfo as ModerUsersInfo,
+  loader as moderUsersInfoLoader,
+} from "./ModeratorApp/Pages/UsersInfo/UsersInfo";
+import CreditRequests from "./ModeratorApp/Pages/CreditRequests/CreditRequests";
+
+import { App as AdminApp } from "./AdminApp/Pages/App";
+import {
+  ProfilePage as AdminProfilePage,
+  loader as adminProfileLoader,
+} from "./AdminApp/Pages/ProfilePage/ProfilePage";
+import {
+  UsersInfo as AdminUsersInfo,
+  loader as adminUsersInfoLoader,
+} from "./AdminApp/Pages/UsersInfo/UsersInfo";
+import ModeratorsPage, {
+  loader as moderatorsLoader,
+} from "./AdminApp/Pages/ModeratorsPage/ModeratorsPage";
+import ManagementPage, {
+  loader as managementLoader,
+} from "./AdminApp/Pages/ManagementPage/ManagementPage";
+import AddPackagePage from "./AdminApp/Pages/ManagementPage/Components/AddPackagePage";
+import EditPackagePage, {
+  loader as editPackageLoader,
+} from "./AdminApp/Pages/ManagementPage/Components/EditPackagePage";
+import DelPackagePage, {
+  loader as loaderDelPackage,
+} from "./AdminApp/Pages/ManagementPage/Components/DelPackagePage";
+import AddModeratorPage from "./AdminApp/Pages/ModeratorsPage/Components/AddModeratorPage";
 
 const routers = createBrowserRouter([
   {
@@ -24,6 +77,7 @@ const routers = createBrowserRouter([
       {
         path: "/",
         element: <MainPage />,
+        loader: mainLoader,
       },
       {
         path: "cards",
@@ -33,10 +87,27 @@ const routers = createBrowserRouter([
       {
         path: "cards/:cardId",
         element: <CardInfo />,
+        loader: cardInfoLoader,
+      },
+      {
+        path: "cards/create",
+        element: <AddCardPage />,
+        loader: addCardLoader,
       },
       {
         path: "accounts",
         element: <AccountsPage />,
+        loader: accountsLoader,
+      },
+      {
+        path: "accounts/:accountId",
+        element: <AccountInfoPage />,
+        loader: accInfoLoader,
+      },
+      {
+        path: "accounts/create",
+        element: <AddAccountPage />,
+        loader: addAccountLoader,
       },
       {
         path: "credits",
@@ -49,6 +120,7 @@ const routers = createBrowserRouter([
       {
         path: "profile",
         element: <ProfilePage />,
+        loader: userLoader,
       },
       {
         path: "login",
@@ -60,13 +132,77 @@ const routers = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/moderator",
+    element: <ModeratorApp />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "credit-requests",
+        element: <CreditRequests />,
+      },
+      {
+        path: "users-info",
+        element: <ModerUsersInfo />,
+        loader: moderUsersInfoLoader,
+      },
+      {
+        path: "profile",
+        element: <ModerProfilePage />,
+        loader: moderProfileLoader,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminApp />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "management",
+        element: <ManagementPage />,
+        loader: managementLoader,
+      },
+      {
+        path: "management/add-package",
+        element: <AddPackagePage />,
+      },
+      {
+        path: "management/edit-package",
+        element: <EditPackagePage />,
+        loader: editPackageLoader,
+      },
+      {
+        path: "management/delete-package",
+        element: <DelPackagePage />,
+        loader: loaderDelPackage,
+      },
+      {
+        path: "users-info",
+        element: <AdminUsersInfo />,
+        loader: adminUsersInfoLoader,
+      },
+      {
+        path: "moderators",
+        element: <ModeratorsPage />,
+        loader: moderatorsLoader,
+      },
+      {
+        path: "moderators/add",
+        element: <AddModeratorPage />,
+      },
+      {
+        path: "profile",
+        element: <AdminProfilePage />,
+        loader: adminProfileLoader,
+      },
+    ],
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={routers} />
-    </AuthProvider>
+    <RouterProvider router={routers} />
   </React.StrictMode>
 );
 

@@ -1,4 +1,6 @@
-﻿namespace MyBank.Persistence.Repositories;
+﻿using System.Xml.Linq;
+
+namespace MyBank.Persistence.Repositories;
 
 public class UsersRepository : IUsersRepository
 {
@@ -36,7 +38,7 @@ public class UsersRepository : IUsersRepository
                     .ThenInclude(pa => pa.Currency)
                 .Include(u => u.CreditRequests)
                 .Include(u => u.Messages)
-                .FirstOrDefaultAsync(u => u.Id == id);
+                .FirstOrDefaultAsync(u => u.Id == id && u.IsActive == true);
         }
         else
         {
@@ -50,24 +52,41 @@ public class UsersRepository : IUsersRepository
     {
         var userEntity = await _dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email == email);
+            .FirstOrDefaultAsync(u => u.Email == email && u.IsActive == true);
 
         return _mapper.Map<User>(userEntity);
     }
 
-    public async Task<List<User>> GetAll()
+    public async Task<List<User>> GetAll(bool includeData)
     {
-        var userEntitiesList = await _dbContext.Users
-            .AsNoTracking()
-            .Include(u => u.PersonalAccounts)
-            .ToListAsync();
+        var userEntitiesList = includeData == true ? 
+            await _dbContext.Users
+                .AsNoTracking()
+                .Include(u => u.PersonalAccounts)
+                    .ThenInclude(pa => pa.Currency)
+                .Include(u => u.CreditAccounts)
+                    .ThenInclude(pa => pa.Currency)
+                .Include(u => u.DepositAccounts)
+                    .ThenInclude(pa => pa.Currency)
+                .Include(u => u.Cards)
+                    .ThenInclude(c => c.PersonalAccount)
+                        .ThenInclude(pa => pa!.Currency)
+                .Include(u => u.CreditPayments)
+                    .ThenInclude(cp => cp.CreditAccount)
+                .Include(u => u.CreditRequests)
+                .Include(u => u.Messages)
+                .ToListAsync() :
+            await _dbContext.Users
+                .AsNoTracking()
+                .ToListAsync();
 
         return _mapper.Map<List<User>>(userEntitiesList);
     }
 
     public async Task<bool> IsExistByEmail(string email)
     {
-        return await _dbContext.Users.AnyAsync(u => u.Email == email);
+        return await _dbContext.Users
+            .AnyAsync(u => u.Email == email && u.IsActive == true);
     }
 
     public async Task<bool> UpdatePassword(int id, string hashedPassword)
@@ -107,19 +126,31 @@ public class UsersRepository : IUsersRepository
         return (number == 0) ? false : true;
     }
 
+    public async Task<bool> UpdateAvatarPath(int id, string fileFullPath)
+    {
+        var number = await _dbContext.Users
+            .Where(u => u.Id == id)
+            .ExecuteUpdateAsync(s => s
+            .SetProperty(u => u.AvatarImagePath, fileFullPath));
+
+        return (number == 0) ? false : true;
+    }
+
     public async Task<bool> UpdateStatus(int id, bool isActive)
     {
         var number = await _dbContext.Users
             .Where(u => u.Id == id)
             .ExecuteUpdateAsync(s => s
-                .SetProperty(u => u.IsActive, isActive));
+            .SetProperty(u => u.IsActive, isActive));
 
         return (number == 0) ? false : true;
     }
 
+
     public async Task<bool> Delete(int id)
     {
-        var number = await _dbContext.Users.Where(u => u.Id == id).ExecuteDeleteAsync();
+        var number = await _dbContext.Users
+            .Where(u => u.Id == id).ExecuteDeleteAsync();
 
         return (number == 0) ? false : true;
     }

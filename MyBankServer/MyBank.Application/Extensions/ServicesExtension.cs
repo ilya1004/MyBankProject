@@ -30,6 +30,8 @@ public static class ServicesExtension
     {
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<ICardNumberProvider, CardNumberProvider>();
+        services.AddScoped<IAccNumberProvider, AccNumberProvider>();
         return services;
     }
 }

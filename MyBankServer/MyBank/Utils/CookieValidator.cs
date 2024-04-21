@@ -5,9 +5,7 @@ namespace MyBank.API.Utils;
 
 public class CookieValidator : ICookieValidator
 {
-    public (bool status, string? message, int? errorCode, string? role, int? id) HandleCookie(
-        string cookieValue
-    )
+    public (bool status, string? message, int? errorCode, string? role, int? id) HandleCookie(string cookieValue)
     {
         int startIndex = cookieValue.IndexOf('=');
         var token = cookieValue[(startIndex + 1)..];
@@ -20,16 +18,31 @@ public class CookieValidator : ICookieValidator
         }
 
         var base64Payload = jwtParts[1];
-        var payloadBytes = Convert.FromBase64String(base64Payload);
+
+        byte[]? payloadBytes = null;
+        try
+        {
+            payloadBytes = Convert.FromBase64String(base64Payload);
+        }
+        catch (FormatException e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+        finally
+        {
+            if (payloadBytes == null)
+            {
+                payloadBytes = StringDecoder.Base64Decode(base64Payload);
+            }
+        }
+
         var payloadJson = System.Text.Encoding.UTF8.GetString(payloadBytes);
 
         var payloadData = JObject.Parse(payloadJson);
 
         var expiration = Convert.ToInt64(payloadData["exp"]?.ToString());
 
-        var expirationDateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(
-            expiration
-        );
+        var expirationDateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(expiration);
 
         if (expirationDateTime < DateTime.UtcNow)
         {

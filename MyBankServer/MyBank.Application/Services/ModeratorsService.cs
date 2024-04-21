@@ -87,9 +87,9 @@ public class ModeratorsService : IModeratorsService
         };
     }
 
-    public async Task<ServiceResponse<Moderator>> GetById(int id)
+    public async Task<ServiceResponse<Moderator>> GetById(int id, bool includeData)
     {
-        var moderator = await _moderatorsRepository.GetById(id);
+        var moderator = await _moderatorsRepository.GetById(id, includeData);
 
         if (moderator == null)
         {
@@ -109,9 +109,9 @@ public class ModeratorsService : IModeratorsService
         };
     }
 
-    public async Task<ServiceResponse<List<Moderator>>> GetAll()
+    public async Task<ServiceResponse<List<Moderator>>> GetAll(bool includeData, bool onlyActive)
     {
-        var list = await _moderatorsRepository.GetAll();
+        var list = await _moderatorsRepository.GetAll(includeData, onlyActive);
 
         return new ServiceResponse<List<Moderator>>
         {

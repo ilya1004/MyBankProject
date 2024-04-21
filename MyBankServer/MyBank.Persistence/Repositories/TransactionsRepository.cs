@@ -39,14 +39,10 @@
     {
         var transationEntitiesList = await _dbContext
             .Transactions.AsNoTracking()
-            .Where(t =>
-                (
-                    t.AccountSenderNumber == personalAccountNumber
-                    || t.AccountRecipientNumber == personalAccountNumber
-                )
-                && dateTimeStart <= t.Datetime
-                && t.Datetime <= dateTimeEnd
-            )
+            .Where(t => (t.AccountSenderNumber == personalAccountNumber
+                        || t.AccountRecipientNumber == personalAccountNumber)
+                        && dateTimeStart <= t.Datetime
+                        && t.Datetime <= dateTimeEnd)
             .ToListAsync();
 
         return _mapper.Map<List<Transaction>>(transationEntitiesList);

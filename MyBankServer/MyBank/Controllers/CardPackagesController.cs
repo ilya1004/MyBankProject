@@ -21,13 +21,12 @@ public class CardPackagesController : ControllerBase
     {
         var serviceResponse = await _cardPackagesService.Add(
             new CardPackage(
-                cardPackageDto.Id,
+                0,
                 cardPackageDto.Name,
                 cardPackageDto.Price,
                 cardPackageDto.OperationsNumber,
                 cardPackageDto.OperationsSum,
-                cardPackageDto.AverageAccountBalance,
-                cardPackageDto.MonthPayroll
+                cardPackageDto.AverageAccountBalance
             )
         );
 
@@ -87,7 +86,7 @@ public class CardPackagesController : ControllerBase
 
     [HttpPut]
     [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
-    public async Task<IResult> UpdateInfo(CardPackageDto cardPackageDto)
+    public async Task<IResult> UpdateInfo([FromBody] CardPackageDto cardPackageDto)
     {
         var serviceResponse = await _cardPackagesService.UpdateInfo(
             cardPackageDto.Id,
@@ -98,6 +97,27 @@ public class CardPackagesController : ControllerBase
             cardPackageDto.AverageAccountBalance,
             cardPackageDto.MonthPayroll
         );
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CardPackagesController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpPut]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> UpdateStatus(int cardPackageId, bool isActive)
+    {
+        var serviceResponse = await _cardPackagesService.UpdateStatus(cardPackageId, isActive);
 
         if (serviceResponse.Status == false)
         {

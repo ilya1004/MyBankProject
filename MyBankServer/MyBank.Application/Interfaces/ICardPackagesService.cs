@@ -3,7 +3,6 @@
 public interface ICardPackagesService
 {
     Task<ServiceResponse<int>> Add(CardPackage cardPackage);
-    Task<ServiceResponse<bool>> Delete(int id);
     Task<ServiceResponse<List<CardPackage>>> GetAll();
     Task<ServiceResponse<CardPackage>> GetById(int id);
     Task<ServiceResponse<bool>> UpdateInfo(
@@ -15,4 +14,6 @@ public interface ICardPackagesService
         decimal averageAccountBalance,
         decimal monthPayroll
     );
+    Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive);
+    Task<ServiceResponse<bool>> Delete(int id);
 }

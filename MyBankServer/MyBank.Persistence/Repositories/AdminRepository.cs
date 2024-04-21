@@ -20,11 +20,17 @@ public class AdminRepository : IAdminRepository
         return item.Entity.Id;
     }
 
-    public async Task<Admin> GetById(int id)
+    public async Task<Admin> GetById(int id, bool includeData)
     {
-        var adminEntity = await _dbContext
-            .Admins.AsNoTracking()
-            .FirstOrDefaultAsync(а => а.Id == id);
+        var adminEntity = includeData == true ?
+            await _dbContext.Admins
+                .AsNoTracking()
+                .Include(a => a.Messages)
+                .FirstOrDefaultAsync(а => а.Id == id) :
+            await _dbContext.Admins
+                .AsNoTracking()
+                .FirstOrDefaultAsync(а => а.Id == id)
+            ;
 
         return _mapper.Map<Admin>(adminEntity);
     }

@@ -14,7 +14,7 @@ public class PersonalAccount
         bool isActive,
         bool isForTransfersByNickname,
         int userId,
-        User? userOwner,
+        User? user,
         int currencyId,
         Currency? currency
     )
@@ -28,7 +28,7 @@ public class PersonalAccount
         IsActive = isActive;
         IsForTransfersByNickname = isForTransfersByNickname;
         UserId = userId;
-        UserOwner = userOwner;
+        User = user;
         CurrencyId = currencyId;
         Currency = currency;
     }
@@ -42,7 +42,7 @@ public class PersonalAccount
     public bool IsActive { get; set; }
     public bool IsForTransfersByNickname { get; set; }
     public int UserId { get; set; }
-    public User? UserOwner { get; set; }
+    public User? User { get; set; }
     public int CurrencyId { get; set; }
     public Currency? Currency { get; set; }
     public List<Card> Cards { get; set; } = [];

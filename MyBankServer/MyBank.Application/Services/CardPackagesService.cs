@@ -93,6 +93,28 @@ public class CardPackagesService : ICardPackagesService
         };
     }
 
+    public async Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive)
+    {
+        var status = await _cardPackagesRepository.UpdateStatus(id, isActive);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe card package with given id ({id}) not found",
+                Data = default
+            };
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
+    }
+
     public async Task<ServiceResponse<bool>> Delete(int id)
     {
         var status = await _cardPackagesRepository.Delete(id);

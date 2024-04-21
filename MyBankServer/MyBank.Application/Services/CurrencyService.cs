@@ -11,16 +11,8 @@ public class CurrencyService : ICurrencyService
 
     public async Task<ServiceResponse<int>> Add(Currency currency)
     {
-        var id = await _currenciesRepository.Add(
-            new Currency(
-                0,
-                currency.Code,
-                currency.Name,
-                currency.Scale,
-                currency.LastDateRateUpdate,
-                currency.OfficialRate
-            )
-        );
+
+        var id = await _currenciesRepository.Add(currency);
 
         return new ServiceResponse<int>
         {
@@ -88,11 +80,11 @@ public class CurrencyService : ICurrencyService
 
     public async Task<ServiceResponse<bool>> UpdateRate(
         int id,
-        DateTime lastDateRateUpdate,
+        DateTime lastRateUpdate,
         decimal officialRate
     )
     {
-        var status = await _currenciesRepository.UpdateRate(id, lastDateRateUpdate, officialRate);
+        var status = await _currenciesRepository.UpdateRate(id, lastRateUpdate, officialRate);
 
         if (status == false)
         {

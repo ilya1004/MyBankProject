@@ -1,4 +1,6 @@
-﻿namespace MyBank.Persistence.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MyBank.Persistence.Entities;
 
 public class CreditPaymentEntity
 {
@@ -20,6 +22,7 @@ public class CreditPaymentEntity
     }
 
     public int Id { get; set; }
+    [Column(TypeName = "money")]
     public decimal PaymentAmount { get; set; }
     public int PaymentNumber { get; set; }
     public DateTime Datetime { get; set; }

@@ -1,4 +1,6 @@
-﻿using MyBank.API.DataTransferObjects.UserDtos;
+﻿using Microsoft.AspNetCore.Http;
+using MyBank.API.DataTransferObjects.UserDtos;
+using MyBank.Application.Utils;
 
 namespace MyBank.API.Controllers;
 
@@ -19,7 +21,7 @@ public class UserController : ControllerBase
     public async Task<IResult> Register([FromBody] RegisterUserDto dto)
     {
         var serviceResponse = await _userService.Register(dto.Email, dto.Password, dto.Nickname,
-            dto.Name, dto.Surname, dto.Patronymic, dto.PassportSeries, dto.PassportNumber, dto.Citizenship);
+            dto.Name, dto.Surname, dto.Patronymic, dto.PhoneNumber, dto.PassportSeries, dto.PassportNumber, dto.Citizenship);
         
         if (serviceResponse.Status == false)
         {
@@ -31,7 +33,7 @@ public class UserController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { id = serviceResponse.Data }, statusCode: 201);
     }
 
     [HttpPost]
@@ -54,10 +56,74 @@ public class UserController : ControllerBase
         return Results.Json(new { id = serviceResponse.Data.Item1 }, statusCode: 200);
     }
 
+    [HttpPost]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public IResult Logout()
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        Response.Cookies.Append("my-cookie", "", new CookieOptions { SameSite = SameSiteMode.Lax, Expires = DateTime.Now.AddDays(-1) });
+
+        return Results.Json(new { status = true }, statusCode: 200);
+    }
+
+    [HttpPost]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> UploadAvatarFile(IFormFile file)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _userService.UploadAvatarFile(file, id!.Value);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = serviceResponse.Message
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
+    }
+
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
     public async Task<IResult> GetInfoById(int userId, bool includeData)
     {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
         var serviceResponse = await _userService.GetById(userId, includeData);
 
         if (serviceResponse.Status == false)
@@ -70,7 +136,7 @@ public class UserController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { item = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(serviceResponse.Data, settings: new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore })) }, statusCode: 200);
+        return Results.Json(new { item = MyJsonConverter<User>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
@@ -101,14 +167,26 @@ public class UserController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { item = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(serviceResponse.Data, settings: new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore })) }, statusCode: 200);
+        return Results.Json(new { item = MyJsonConverter<User>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
-    [Authorize(Policy = AuthorizationPolicies.UserAndModeratorAndAdminPolicy)]
-    public async Task<IResult> GetAllInfo()
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> GetAvatarCurrent()
     {
-        var serviceResponse  = await _userService.GetAll();
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _userService.GetAvatarImagePath(id!.Value);
 
         if (serviceResponse.Status == false)
         {
@@ -120,7 +198,38 @@ public class UserController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { list = serviceResponse.Data! }, statusCode: 200);
+        return Results.File(serviceResponse.Data!, $"image/{Path.GetExtension(serviceResponse.Data)![1..]}");
+    }
+
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
+    public async Task<IResult> GetAllInfo(bool includeData)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse  = await _userService.GetAll(includeData);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = serviceResponse.Message
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { list = MyJsonConverter<List<User>>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpPut]
@@ -211,9 +320,21 @@ public class UserController : ControllerBase
 
     [HttpPut]
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    public async Task<IResult> UpdatePersonalInfo([FromBody] UpdateUserPersonalInfoDto dto)
+    public async Task<IResult> UpdatePersonalInfoCurr([FromBody] UpdateUserPersonalInfoDto dto)
     {
-        var serviceResponse = await _userService.UpdatePersonalInfo(dto.Id, dto.Nickname, dto.Name, 
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _userService.UpdatePersonalInfo(id!.Value, dto.Nickname, dto.Name, 
             dto.Surname, dto.Patronymic, dto.PhoneNumber, dto.PassportSeries, dto.PassportNumber, dto.Citizenship);
 
         if (serviceResponse.Status == false)

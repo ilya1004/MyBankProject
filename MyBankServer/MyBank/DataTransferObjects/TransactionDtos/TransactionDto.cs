@@ -7,6 +7,8 @@ public record TransactionDto
     public DateTime Datetime { get; set; }
     public bool Status { get; set; }
     public string Information { get; set; } = string.Empty;
-    public string? AccountReceiverNumber { get; set; } = null;
-    public int? PersonalAccountId { get; set; } = null;
+    public string? AccountSenderNumber { get; set; } = null;
+    public string? UserSenderNickname { get; set; } = null;
+    public string? AccountRecipientNumber { get; set; } = null;
+    public string? UserRecipientNickname { get; set; } = null;
 }

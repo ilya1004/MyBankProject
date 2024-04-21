@@ -4,20 +4,7 @@ public class CreditRequest
 {
     public CreditRequest() { }
 
-    public CreditRequest(
-        int id,
-        decimal startBalance,
-        decimal interestRate,
-        string interestCalculationType,
-        int creditTermInDays,
-        int totalPaymentsNumber,
-        bool hasPrepaymentOption,
-        bool isApproved,
-        int moderatorId,
-        Moderator? moderator,
-        int userId,
-        User? user
-    )
+    public CreditRequest(int id, decimal startBalance, decimal interestRate, string interestCalculationType, int creditTermInDays, int totalPaymentsNumber, bool hasPrepaymentOption, bool isApproved, int? moderatorId, Moderator? moderator, int? userId, User? user, int? currencyId, Currency? currency)
     {
         Id = id;
         StartBalance = startBalance;
@@ -31,6 +18,8 @@ public class CreditRequest
         Moderator = moderator;
         UserId = userId;
         User = user;
+        CurrencyId = currencyId;
+        Currency = currency;
     }
 
     public int Id { get; set; }
@@ -45,4 +34,6 @@ public class CreditRequest
     public Moderator? Moderator { get; set; } = null;
     public int? UserId { get; set; }
     public User? User { get; set; } = null;
+    public int? CurrencyId { get; set; } = null;
+    public Currency? Currency { get; set; } = null;
 }

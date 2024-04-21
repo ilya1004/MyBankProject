@@ -36,21 +36,42 @@ public class CreditAccountsRepository : ICreditAccountsRepository
         return item.Entity.Id;
     }
 
-    public async Task<CreditAccount> GetById(int id)
+    public async Task<CreditAccount> GetById(int id, bool includeData)
     {
-        var creditAccountEntity = await _dbContext
-            .CreditAccounts.AsNoTracking()
-            .FirstOrDefaultAsync(ca => ca.Id == id);
+        var creditAccountEntity = includeData == true ?
+            await _dbContext.CreditAccounts
+                .AsNoTracking()
+                .Include(c => c.User)
+                .Include(c => c.Currency)
+                .Include(c => c.ModeratorApproved)
+                .Include(c => c.Payments)
+                .FirstOrDefaultAsync(ca => ca.Id == id) :
+            await _dbContext.CreditAccounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(ca => ca.Id == id);
 
         return _mapper.Map<CreditAccount>(creditAccountEntity);
     }
 
-    public async Task<List<CreditAccount>> GetAllByUser(int userId)
+    public async Task<List<CreditAccount>> GetAllByUser(int userId, bool includeData)
     {
-        var creditAccountEntitiesList = await _dbContext
-            .CreditAccounts.AsNoTracking()
-            .Where(ca => ca.UserId == userId)
-            .ToListAsync();
+        var creditAccountEntitiesList = includeData == true ?
+            await _dbContext.CreditAccounts
+                .AsNoTracking()
+                .Include(c => c.User)
+                .Include(c => c.Currency)
+                .Include(c => c.ModeratorApproved)
+                .Include(c => c.Payments)
+                .Where(ca => ca.UserId == userId)
+                .ToListAsync() :
+            await _dbContext.CreditAccounts
+                .AsNoTracking()
+                .Include(c => c.User)
+                .Include(c => c.Currency)
+                .Include(c => c.ModeratorApproved)
+                .Include(c => c.Payments)
+                .Where(ca => ca.UserId == userId)
+                .ToListAsync();
 
         return _mapper.Map<List<CreditAccount>>(creditAccountEntitiesList);
     }

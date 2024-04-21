@@ -22,7 +22,19 @@ public class CardsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> Add([FromBody] CardDto dto)
     {
-        var serviceResponse = await _cardsService.Add(_mapper.Map<Card>(dto));
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CardsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _cardsService.Add(id!.Value, dto.Name, dto.Pincode, dto.DurationInYears, dto.CardPackageId!.Value, dto.PersonalAccountId!.Value);
 
         if (serviceResponse.Status == false)
         {
@@ -41,9 +53,9 @@ public class CardsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
-    public async Task<IResult> GetInfoById(int cardId)
+    public async Task<IResult> GetInfoById(int cardId, bool includeData)
     {
-        var serviceResponse = await _cardsService.GetById(cardId);
+        var serviceResponse = await _cardsService.GetById(cardId, includeData);
 
         if (serviceResponse.Status == false)
         {
@@ -57,12 +69,12 @@ public class CardsController : ControllerBase
             );
         }
 
-        return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { item = MyJsonConverter<Card>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    public async Task<IResult> GetInfoByCurrentUser(int cardId)
+    public async Task<IResult> GetInfoByCurrentUser(int cardId, bool includeData)
     {
         var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
 
@@ -76,7 +88,7 @@ public class CardsController : ControllerBase
             statusCode: 401);
         }
 
-        var serviceResponse = await _cardsService.GetById(cardId);
+        var serviceResponse = await _cardsService.GetById(cardId, includeData);
 
         if (status == false)
         {
@@ -88,7 +100,7 @@ public class CardsController : ControllerBase
             statusCode: 400);
         }
 
-        return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { item = MyJsonConverter<Card>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
@@ -121,11 +133,11 @@ public class CardsController : ControllerBase
             );
         }
 
-        return Results.Json(new { list = JsonConvert.DeserializeObject<List<Card>>(JsonConvert.SerializeObject(serviceResponse.Data, settings: new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore })) }, statusCode: 200);
+        return Results.Json(new { list = MyJsonConverter<List<Card>>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
-    [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
+    [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
     public async Task<IResult> GetAllInfoByUserId(int userId, bool includeData)
     {
         var serviceResponse = await _cardsService.GetAllByUser(userId, includeData);
@@ -149,6 +161,18 @@ public class CardsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> UpdatePincode([FromBody] UpdatePincodeDto updatePincodeDto)
     {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CardsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
         var serviceResponse = await _cardsService.UpdatePincode(
             updatePincodeDto.Id,
             updatePincodeDto.Pincode
@@ -173,6 +197,18 @@ public class CardsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> UpdateName(int cardId, string name)
     {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CardsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
         var serviceResponse = await _cardsService.UpdateName(cardId, name);
 
         if (serviceResponse.Status == false)
@@ -192,9 +228,54 @@ public class CardsController : ControllerBase
 
     [HttpPut]
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    public async Task<IResult> UpdateStatus(int cardId, bool status)
+    public async Task<IResult> UpdateOperationsStatus(int cardId, bool isOpersAllowed)
     {
-        var serviceResponse = await _cardsService.UpdateStatus(cardId, status);
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CardsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _cardsService.UpdateOperationsStatus(cardId, isOpersAllowed);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CardsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpPut]
+    [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
+    public async Task<IResult> UpdateStatus(int cardId, bool isActive)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CardsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _cardsService.UpdateStatus(cardId, isActive);
 
         if (serviceResponse.Status == false)
         {
@@ -215,6 +296,18 @@ public class CardsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
     public async Task<IResult> Delete(int cardId)
     {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CardsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
         var serviceResponse = await _cardsService.Delete(cardId);
 
         if (serviceResponse.Status == false)

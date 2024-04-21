@@ -42,6 +42,7 @@ public class Message
     public string RecepientRole { get; set; } = string.Empty;
     public DateTime CreationDatetime { get; set; }
     public bool IsRead { get; set; } = false;
+    public bool IsActive { get; set; } = true;
     public int? SenderAdminId { get; set; } = null;
     public Admin? SenderAdmin { get; set; } = null;
     public int? SenderModeratorId { get; set; } = null;

@@ -7,6 +7,9 @@ public class MappingProfileDatabase : Profile
         CreateMap<Admin, AdminEntity>();
         CreateMap<AdminEntity, Admin>();
 
+        CreateMap<BankSettings, BankSettingsEntity>();
+        CreateMap<BankSettingsEntity, BankSettings>();
+
         CreateMap<Card, CardEntity>();
         CreateMap<CardEntity, Card>();
 

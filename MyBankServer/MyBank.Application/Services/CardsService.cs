@@ -3,14 +3,34 @@
 public class CardsService : ICardsService
 {
     private readonly ICardsRepository _cardsRepository;
+    private readonly ICardNumberProvider _cardNumberProvider;
 
-    public CardsService(ICardsRepository cardsRepository)
+    public CardsService(ICardsRepository cardsRepository, ICardNumberProvider cardNumberProvider)
     {
         _cardsRepository = cardsRepository;
+        _cardNumberProvider = cardNumberProvider;
     }
 
-    public async Task<ServiceResponse<int>> Add(Card card)
+    public async Task<ServiceResponse<int>> Add(int userId, string name, string pincode, int durationInYears, int cardPackageId, int personalAccountId)
     {
+        var cardNumber = _cardNumberProvider.GenerateCardNumber(16);
+        var cvvCode = _cardNumberProvider.GenerateCardCvv(3);
+
+        var card = new Card {
+            Id = 0,
+            Name = name,
+            Number = cardNumber,
+            CreationDate = DateTime.UtcNow,
+            ExpirationDate = DateTime.UtcNow.AddYears(durationInYears),
+            CvvCode = cvvCode,
+            Pincode = pincode,
+            IsOperationsAllowed = true,
+            IsActive = true,
+            CardPackageId = cardPackageId,
+            UserId = userId,
+            PersonalAccountId = personalAccountId
+        };
+
         var id = await _cardsRepository.Add(card);
 
         return new ServiceResponse<int>
@@ -21,9 +41,9 @@ public class CardsService : ICardsService
         };
     }
 
-    public async Task<ServiceResponse<Card>> GetById(int id)
+    public async Task<ServiceResponse<Card>> GetById(int id, bool includeData)
     {
-        var card = await _cardsRepository.GetById(id);
+        var card = await _cardsRepository.GetById(id, includeData);
 
         if (card == null)
         {
@@ -43,9 +63,9 @@ public class CardsService : ICardsService
         };
     }
 
-    public async Task<ServiceResponse<Card>> GetByNumber(string number)
+    public async Task<ServiceResponse<Card>> GetByNumber(string number, bool includeData)
     {
-        var card = await _cardsRepository.GetByNumber(number, false, false);
+        var card = await _cardsRepository.GetByNumber(number, true, true);
 
         if (card == null)
         {
@@ -102,6 +122,28 @@ public class CardsService : ICardsService
     public async Task<ServiceResponse<bool>> UpdateName(int id, string name)
     {
         var status = await _cardsRepository.UpdateName(id, name);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe card with given id ({id}) not found",
+                Data = default
+            };
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
+    }
+
+    public async Task<ServiceResponse<bool>> UpdateOperationsStatus(int id, bool cardOpersStatus)
+    {
+        var status = await _cardsRepository.UpdateOpersStatus(id, cardOpersStatus);
 
         if (status == false)
         {

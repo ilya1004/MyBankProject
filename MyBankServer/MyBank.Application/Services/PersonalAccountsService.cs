@@ -5,21 +5,54 @@ public class PersonalAccountsService : IPersonalAccountsService
     private readonly IPersonalAccountsRepository _personalAccountsRepository;
     private readonly ICardsRepository _cardsRepository;
     private readonly ITransactionsRepository _transactionsRepository;
+    private readonly IAccNumberProvider _accNumberProvider;
 
     public PersonalAccountsService(
         IPersonalAccountsRepository personalAccountsRepository,
         ICardsRepository cardsRepository,
-        ITransactionsRepository transactionsRepository
+        ITransactionsRepository transactionsRepository,
+        IAccNumberProvider accNumberProvider
     )
     {
         _personalAccountsRepository = personalAccountsRepository;
         _cardsRepository = cardsRepository;
         _transactionsRepository = transactionsRepository;
+        _accNumberProvider = accNumberProvider;
     }
 
-    public async Task<ServiceResponse<int>> Add(PersonalAccount personalAccount)
+    public async Task<ServiceResponse<int>> Add(int userId, string name, int currencyId)
     {
+        var personalAccount = new PersonalAccount
+        {
+            Id = 0,
+            Name = name,
+            Number = "",
+            CurrentBalance = decimal.Zero,
+            CreationDate = DateTime.UtcNow,
+            ClosingDate = null,
+            IsActive = true,
+            IsForTransfersByNickname = false,
+            UserId = userId,
+            User = null,
+            CurrencyId = currencyId,
+            Currency = null,
+            Cards = []
+        };
         var id = await _personalAccountsRepository.Add(personalAccount);
+
+        string accNumber = _accNumberProvider.GenerateIBAN(id);
+
+        var status = await _personalAccountsRepository.SetAccountNumber(id, accNumber);
+
+        if (status == false)
+        {
+            return new ServiceResponse<int>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe personal account with given id ({id}) not found",
+                Data = default
+            };
+        }
 
         return new ServiceResponse<int>
         {
@@ -29,9 +62,9 @@ public class PersonalAccountsService : IPersonalAccountsService
         };
     }
 
-    public async Task<ServiceResponse<PersonalAccount>> GetById(int id)
+    public async Task<ServiceResponse<PersonalAccount>> GetById(int id, bool includeData)
     {
-        var personalAccount = await _personalAccountsRepository.GetById(id);
+        var personalAccount = await _personalAccountsRepository.GetById(id, includeData);
 
         if (personalAccount == null)
         {
@@ -51,9 +84,9 @@ public class PersonalAccountsService : IPersonalAccountsService
         };
     }
 
-    public async Task<ServiceResponse<List<PersonalAccount>>> GetAllByUser(int userId)
+    public async Task<ServiceResponse<List<PersonalAccount>>> GetAllByUser(int userId, bool includeData)
     {
-        var list = await _personalAccountsRepository.GetAllByUser(userId);
+        var list = await _personalAccountsRepository.GetAllByUser(userId, includeData);
 
         return new ServiceResponse<List<PersonalAccount>>
         {
@@ -191,7 +224,7 @@ public class PersonalAccountsService : IPersonalAccountsService
                 Data = default
             };
 
-        if (personalAccount.CurrentBalance != 0)
+        if (personalAccount.CurrentBalance != decimal.Zero)
             return new ServiceResponse<bool>
             {
                 Status = false,
@@ -278,7 +311,7 @@ public class PersonalAccountsService : IPersonalAccountsService
                     accountSenderNumber,
                     userSenderNickname,
                     accountRecipientNumber,
-                    accountRecipient.UserOwner!.Nickname
+                    accountRecipient.User!.Nickname
                 )
             );
         }

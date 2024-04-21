@@ -31,11 +31,35 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
         return item.Entity.Id;
     }
 
+    public async Task<PersonalAccount> IsOwned(int userId, int personalAccountId)
+    {
+        var personalAccountEntity = await _dbContext.PersonalAccounts
+            .AnyAsync(pa => pa.Id == personalAccountId && pa.UserId == userId);
+
+        return _mapper.Map<PersonalAccount>(personalAccountEntity);
+    }
+
     public async Task<PersonalAccount> GetById(int id)
     {
         var personalAccountEntity = await _dbContext
             .PersonalAccounts.AsNoTracking()
             .FirstOrDefaultAsync(pa => pa.Id == id);
+
+        return _mapper.Map<PersonalAccount>(personalAccountEntity);
+    }
+
+    public async Task<PersonalAccount> GetById(int id, bool includeData)
+    {
+        var personalAccountEntity = includeData == true ?
+            await _dbContext.PersonalAccounts
+                .AsNoTracking()
+                .Include(pa => pa.Cards)
+                .Include(pa => pa.Currency)
+                .Include(pa => pa.User)
+                .FirstOrDefaultAsync(pa => pa.Id == id) :
+            await _dbContext.PersonalAccounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(pa => pa.Id == id);
 
         return _mapper.Map<PersonalAccount>(personalAccountEntity);
     }
@@ -60,23 +84,39 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
         return _mapper.Map<PersonalAccount>(personalAccountEntity);
     }
 
-    public async Task<List<PersonalAccount>> GetAllByUser(int userId)
+    public async Task<List<PersonalAccount>> GetAllByUser(int userId, bool includeData)
     {
-        var personalAccountEntitiesList = await _dbContext
-            .PersonalAccounts.AsNoTracking()
-            .Where(pa => pa.UserId == userId)
-            .ToListAsync();
+        var personalAccountEntitiesList = includeData == true ?
+            await _dbContext.PersonalAccounts
+                .AsNoTracking()
+                .Where(pa => pa.IsActive == true && pa.UserId == userId)
+                .Include(pa => pa.Currency)
+                .ToListAsync() :
+            await _dbContext.PersonalAccounts
+                .AsNoTracking()
+                .Where(pa => pa.UserId == userId)
+                .ToListAsync();
+
 
         return _mapper.Map<List<PersonalAccount>>(personalAccountEntitiesList);
     }
 
+    public async Task<bool> SetAccountNumber(int id, string accNumber)
+    {
+        var number = await _dbContext.PersonalAccounts
+            .Where(pa => pa.Id == id)
+            .ExecuteUpdateAsync(s =>
+                s.SetProperty(pa => pa.Number, accNumber));
+
+        return (number == 0) ? false : true;
+    }
+
     public async Task<bool> UpdateBalanceDelta(int id, decimal deltaNumber)
     {
-        var number = await _dbContext
-            .PersonalAccounts.Where(pa => pa.Id == id)
+        var number = await _dbContext.PersonalAccounts
+            .Where(pa => pa.Id == id)
             .ExecuteUpdateAsync(s =>
-                s.SetProperty(pa => pa.CurrentBalance, pa => pa.CurrentBalance + deltaNumber)
-            );
+                s.SetProperty(pa => pa.CurrentBalance, pa => pa.CurrentBalance + deltaNumber));
 
         return (number == 0) ? false : true;
     }
@@ -130,12 +170,7 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
         return (number == 0) ? false : true;
     }
 
-    public async Task<bool> UpdateClosingInfo(
-        int id,
-        DateTime dateTime,
-        bool isActive,
-        bool isForTransfersByNickname
-    )
+    public async Task<bool> UpdateClosingInfo(int id, DateTime dateTime, bool isActive, bool isForTransfersByNickname)
     {
         var number = await _dbContext
             .PersonalAccounts.Where(pa => pa.Id == id)
@@ -146,26 +181,6 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
             );
 
         return (number == 0) ? false : true;
-    }
-
-    public async Task<PersonalAccount> GetById(int id, bool withCards)
-    {
-        PersonalAccountEntity? personalAccountEntity = null;
-        if (withCards)
-        {
-            personalAccountEntity = await _dbContext
-                .PersonalAccounts.AsNoTracking()
-                .Include(pa => pa.Cards)
-                .FirstOrDefaultAsync(pa => pa.Id == id);
-        }
-        else
-        {
-            personalAccountEntity = await _dbContext
-                .PersonalAccounts.AsNoTracking()
-                .FirstOrDefaultAsync(pa => pa.Id == id);
-        }
-
-        return _mapper.Map<PersonalAccount>(personalAccountEntity);
     }
 
     public async Task<PersonalAccount> GetIsForTransfersByNickname(string userRecipientNickname)

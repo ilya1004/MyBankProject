@@ -9,10 +9,12 @@ namespace MyBank.API.Controllers;
 public class ModeratorsController : ControllerBase
 {
     private readonly IModeratorsService _moderatorsService;
+    private readonly ICookieValidator _cookieValidator;
 
-    public ModeratorsController(IModeratorsService moderatorsService)
+    public ModeratorsController(IModeratorsService moderatorsService, ICookieValidator cookieValidator)
     {
         _moderatorsService = moderatorsService;
+        _cookieValidator = cookieValidator;
     }
 
     [HttpPost]
@@ -63,10 +65,22 @@ public class ModeratorsController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
-    public async Task<IResult> GetInfoById(int moderatorId)
+    [Authorize(Policy = AuthorizationPolicies.ModeratorPolicy)]
+    public async Task<IResult> GetInfoCurrent(bool includeData)
     {
-        var serviceResponse = await _moderatorsService.GetById(moderatorId);
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "ModeratorsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _moderatorsService.GetById(id!.Value, includeData);
 
         if (serviceResponse.Status == false)
         {
@@ -80,14 +94,35 @@ public class ModeratorsController : ControllerBase
             );
         }
 
-        return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { item = MyJsonConverter<Moderator>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
-    [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
-    public async Task<IResult> GetAllInfo()
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> GetInfoById(int moderatorId, bool includeData)
     {
-        var serviceResponse = await _moderatorsService.GetAll();
+        var serviceResponse = await _moderatorsService.GetById(moderatorId, includeData);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "ModeratorsController",
+                    Message = serviceResponse.Message
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { item = MyJsonConverter<Moderator>.Convert(serviceResponse.Data) }, statusCode: 200);
+    }
+
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> GetAllInfo(bool includeData, bool onlyActive)
+    {
+        var serviceResponse = await _moderatorsService.GetAll(includeData, onlyActive);
 
         if (serviceResponse.Status == false)
         {
@@ -101,7 +136,7 @@ public class ModeratorsController : ControllerBase
             );
         }
 
-        return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { list = MyJsonConverter<List<Moderator>>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpPut]

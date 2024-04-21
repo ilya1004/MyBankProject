@@ -1,4 +1,6 @@
-﻿namespace MyBank.Persistence.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MyBank.Persistence.Entities;
 
 public class DepositAccrualEntity
 {
@@ -13,6 +15,7 @@ public class DepositAccrualEntity
     }
 
     public int Id { get; set; }
+    [Column(TypeName = "money")]
     public decimal AccrualAmount { get; set; }
     public DateTime Datetime { get; set; }
     public string Status { get; set; } = string.Empty;

@@ -1,4 +1,6 @@
-﻿namespace MyBank.Persistence.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MyBank.Persistence.Entities;
 
 public class DepositAccountEntity
 {
@@ -44,7 +46,9 @@ public class DepositAccountEntity
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Number { get; set; } = string.Empty;
+    [Column(TypeName = "money")]
     public decimal CurrentBalance { get; set; }
+    [Column(TypeName = "money")]
     public decimal DepositStartBalance { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ClosingDate { get; set; } = null;

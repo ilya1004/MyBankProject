@@ -9,10 +9,12 @@ namespace MyBank.API.Controllers;
 public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
+    private readonly ICookieValidator _cookieValidator;
 
-    public AdminController(IAdminService adminService)
+    public AdminController(IAdminService adminService, ICookieValidator cookieValidator)
     {
         _adminService = adminService;
+        _cookieValidator = cookieValidator;
     }
 
     [HttpPost]
@@ -52,20 +54,61 @@ public class AdminController : ControllerBase
             );
         }
 
-        Response.Cookies.Append(
-            "my-cookie",
-            serviceResponse.Data.Item2,
-            new CookieOptions { SameSite = SameSiteMode.Lax }
-        );
+        Response.Cookies.Append("my-cookie", serviceResponse.Data.Item2, new CookieOptions { SameSite = SameSiteMode.Lax });
 
         return Results.Json(new { id = serviceResponse.Data.Item1 }, statusCode: 200);
     }
 
-    [HttpPost]
+    [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
-    public async Task<IResult> GetInfoById(int adminId)
+    public async Task<IResult> GetInfoCurrent(bool includeData)
     {
-        var serviceResponse = await _adminService.GetById(adminId);
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "ModeratorsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _adminService.GetById(id!.Value, includeData);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "AdminController",
+                    Message = serviceResponse.Message
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { item = MyJsonConverter<Admin>.Convert(serviceResponse.Data) }, statusCode: 200);
+    }
+
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> GetInfoById(int adminId, bool includeData)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "ModeratorsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _adminService.GetById(adminId, includeData);
 
         if (serviceResponse.Status == false)
         {
@@ -86,6 +129,18 @@ public class AdminController : ControllerBase
     [Authorize(Policy = "AdminPolicy")]
     public async Task<IResult> UpdateInfo(int adminId, string nickname)
     {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "ModeratorsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
         var serviceResponse = await _adminService.UpdateInfo(adminId, nickname);
 
         if (serviceResponse.Status == false)
@@ -107,6 +162,18 @@ public class AdminController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
     public async Task<IResult> Delete(int adminId)
     {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "ModeratorsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
         var serviceResponse = await _adminService.Delete(adminId);
 
         if (serviceResponse.Status == false)

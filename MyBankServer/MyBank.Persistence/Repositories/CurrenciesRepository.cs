@@ -45,12 +45,12 @@ public class CurrenciesRepository : ICurrenciesRepository
         return _mapper.Map<List<Currency>>(currencyEntitiesList);
     }
 
-    public async Task<bool> UpdateRate(int id, DateTime lastDateRateUpdate, decimal officialRate)
+    public async Task<bool> UpdateRate(int id, DateTime lastRateUpdate, decimal officialRate)
     {
         var number = await _dbContext
             .Currencies.Where(c => c.Id == id)
             .ExecuteUpdateAsync(s =>
-                s.SetProperty(c => c.LastDateRateUpdate, lastDateRateUpdate)
+                s.SetProperty(c => c.LastRateUpdate, lastRateUpdate)
                     .SetProperty(c => c.OfficialRate, officialRate)
             );
 

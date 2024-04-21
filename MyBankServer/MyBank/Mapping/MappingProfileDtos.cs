@@ -16,23 +16,14 @@ public class MappingProfileDtos : Profile
     public MappingProfileDtos()
     {
         CreateMap<CardDto, Card>();
-
         CreateMap<CardPackageDto, CardPackage>();
-
         CreateMap<CreditAccountDto, CreditAccount>();
-
         CreateMap<CreditPaymentDto, CreditPayment>();
-
         CreateMap<CurrencyDto, Currency>();
-
         CreateMap<DepositAccountDto, DepositAccount>();
-
         CreateMap<MessageDto, Message>();
-
         CreateMap<PersonalAccountDto, PersonalAccount>();
-
         CreateMap<TransactionDto, Transaction>();
-
         CreateMap<UserDto, User>();
         CreateMap<RegisterUserDto, User>();
     }

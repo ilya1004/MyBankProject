@@ -21,9 +21,9 @@ public class CreditAccountsService : ICreditAccountsService
         };
     }
 
-    public async Task<ServiceResponse<CreditAccount>> GetById(int id)
+    public async Task<ServiceResponse<CreditAccount>> GetById(int id, bool includeData)
     {
-        var card = await _creditAccountsRepository.GetById(id);
+        var card = await _creditAccountsRepository.GetById(id, includeData);
 
         if (card == null)
         {
@@ -43,9 +43,9 @@ public class CreditAccountsService : ICreditAccountsService
         };
     }
 
-    public async Task<ServiceResponse<List<CreditAccount>>> GetAllByUser(int userId)
+    public async Task<ServiceResponse<List<CreditAccount>>> GetAllByUser(int userId, bool includeData)
     {
-        var list = await _creditAccountsRepository.GetAllByUser(userId);
+        var list = await _creditAccountsRepository.GetAllByUser(userId, includeData);
 
         return new ServiceResponse<List<CreditAccount>>
         {

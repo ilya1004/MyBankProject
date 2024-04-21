@@ -1,4 +1,7 @@
-﻿namespace MyBank.Application.Services;
+﻿using Microsoft.AspNetCore.Http;
+using MyBank.Domain.Models;
+
+namespace MyBank.Application.Services;
 
 public class UserService : IUserService
 {
@@ -20,8 +23,7 @@ public class UserService : IUserService
         _moderatorRepository = moderatorRepository;
     }
 
-    public async Task<ServiceResponse<int>> Register(string email, string password, string nickname, 
-        string name, string surname, string patronymic, string passportSeries, string passportNumber, string citizenship)
+    public async Task<ServiceResponse<int>> Register(string email, string password, string nickname, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, string citizenship)
     {
         var isExist = await _userRepository.IsExistByEmail(email);
 
@@ -47,11 +49,12 @@ public class UserService : IUserService
             Name = name,
             Surname = surname,
             Patronymic = patronymic,
-            PhoneNumber = string.Empty,
+            PhoneNumber = phoneNumber,
             PassportSeries = passportSeries,
             PassportNumber = passportNumber,
             RegistrationDate = DateTime.UtcNow,
-            Citizenship = citizenship
+            Citizenship = citizenship,
+            AvatarImagePath = "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Application\\Files\\Avatars\\avatar-placeholder.png"
         };
 
         var userId = await _userRepository.Add(user);
@@ -64,10 +67,12 @@ public class UserService : IUserService
         };
     }
 
-    // Структуры логинов
-    // user@mybank.com
-    // #moderator#234fk09k
-    // #admin#234f234ffr
+    /*
+    Структура логинов:
+    user@mybank.com
+    #moderator#123qwe
+    #admin#123qwe
+    */
 
     public async Task<ServiceResponse<(int, string)>> Login(string email, string password)
     {
@@ -105,6 +110,47 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<ServiceResponse<bool>> UploadAvatarFile(IFormFile file, int id)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = "Вы выбрали неверный файл",
+                Data = false,
+            };
+        }
+
+        const string filePath = "C:\\Users\\user\\source\\repos\\OOP_Project\\MyBankServer\\MyBank.Application\\Files\\Avatars\\";
+
+        var fileExt = Path.GetExtension(file.FileName);
+        var fileFullPath = filePath + $"userAvatar_{id}" + fileExt;
+
+        using (var stream = new FileStream(fileFullPath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+        var status = await _userRepository.UpdateAvatarPath(id, fileFullPath);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Произошла ошибка при сохранении аватара профиля",
+                Data = default
+            };
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
+    }
+
     public async Task<ServiceResponse<User>> GetById(int id, bool includeData)
     {
         var user = await _userRepository.GetById(id, includeData);
@@ -127,9 +173,9 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<ServiceResponse<List<User>>> GetAll()
+    public async Task<ServiceResponse<List<User>>> GetAll(bool includeData)
     {
-        var list = await _userRepository.GetAll();
+        var list = await _userRepository.GetAll(includeData);
 
         return new ServiceResponse<List<User>>
         {
@@ -139,11 +185,25 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<ServiceResponse<string>> GetAvatarImagePath(int id)
+    {
+        var user = await _userRepository.GetById(id, false);
+
+        var imagePath = user.AvatarImagePath;
+
+        return new ServiceResponse<string>
+        {
+            Status = true,
+            Message = "Success",
+            Data = imagePath
+        };
+    }
+
     public async Task<ServiceResponse<bool>> UpdatePassword(int id, string oldEmail, string oldPassword, string newPassword)
     {
         var user = await _userRepository.GetById(id, false);
 
-        if (user.Email == oldEmail) {
+        if (user.Email != oldEmail) {
             return new ServiceResponse<bool>
             {
                 Status = false,

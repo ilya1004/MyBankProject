@@ -8,7 +8,7 @@ namespace MyBank.Application.Utils;
 
 public class JwtProvider : IJwtProvider
 {
-    private JwtOptions _options;
+    private readonly JwtOptions _options;
 
     public JwtProvider(IOptions<JwtOptions> options)
     {
@@ -40,12 +40,12 @@ public class JwtProvider : IJwtProvider
     public string GenerateToken(Moderator moderator)
     {
         Claim[] claims = [
-            new("moderatorId", moderator.Id.ToString()), 
+            new("moderatorId", moderator.Id.ToString()),
             new("Role", "Moderator")];
 
         var signingCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
-            SecurityAlgorithms.HmacSha256
+           new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
+           SecurityAlgorithms.HmacSha256
         );
 
         var token = new JwtSecurityToken(

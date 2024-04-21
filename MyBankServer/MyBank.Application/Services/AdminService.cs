@@ -75,9 +75,9 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<ServiceResponse<Admin>> GetById(int id)
+    public async Task<ServiceResponse<Admin>> GetById(int id, bool includeData)
     {
-        var admin = await _adminRepository.GetById(id);
+        var admin = await _adminRepository.GetById(id, includeData);
 
         if (admin == null)
         {
