@@ -9,7 +9,7 @@ import axios from "axios";
 import { BASE_URL } from "../../Common/Store/constants";
 
 export default function NavigationBar({ loginState, setLoginState }) {
-  const [buttonText, setButtonText] = useState("Войти");
+  const [buttonText, setButtonText] = useState("Выйти");
   const navigate = useNavigate();
   const imageSize = "70px";
 
@@ -27,7 +27,7 @@ export default function NavigationBar({ loginState, setLoginState }) {
       withCredentials: true,
     });
     try {
-      const res = await axiosInstance.post(`User/Logout`);
+      await axiosInstance.post(`User/Logout`);
       setLoginState(false);
       showMessageStc("Вы успешно вышли из учетной записи", "success");
     } catch (err) {
@@ -72,7 +72,7 @@ export default function NavigationBar({ loginState, setLoginState }) {
           }}
         >
           <Menu.Item key={1} icon={<HomeOutlined />}>
-            <Link className="link" to="/">
+            <Link to="/" style={{ fontSize: "20px" }}>
               Главная
             </Link>
           </Menu.Item>
@@ -102,7 +102,14 @@ export default function NavigationBar({ loginState, setLoginState }) {
             </Link>
           </Menu.Item>
         </Menu>
-        <Flex align="center" style={{ height: "65px" }}>
+        <Flex
+          align="center"
+          justify="center"
+          style={{
+            height: "65px",
+            width: "80px",
+          }}
+        >
           <Button onClick={handleLoginLogout}>{buttonText}</Button>
         </Flex>
       </Flex>

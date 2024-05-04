@@ -16,7 +16,9 @@ const getModeratorsData = async () => {
     withCredentials: true,
   });
   try {
-    const res = await axiosInstance.get(`Moderators/GetAllInfo?includeData=${false}`);
+    const res = await axiosInstance.get(
+      `Moderators/GetAllInfo?includeData=${false}`
+    );
     return { moderatorsData: res.data.list, error: null };
   } catch (err) {
     handleResponseError(err.response);
@@ -46,9 +48,8 @@ export async function loader() {
 const infoLabelWidth = "200px";
 const infoValueWidth = "200px";
 
-
 export default function DelModeratorPage() {
-	const [moderator, setModerator] = useState(null);
+  const [moderator, setModerator] = useState(null);
 
   const { moderatorsData, selectModeratorsData } = useLoaderData();
 
@@ -61,11 +62,10 @@ export default function DelModeratorPage() {
     });
     try {
       await axiosInstance.put(
-        `CardPackages/UpdateStatus?cardPackageId=${moderator.id}
-        &isActive=${false}`	
+        `Moderators/UpdateStatus?moderatorId=${moderator.id}&isActive=${false}`
       );
       showMessageStc("Модератор был успешно удален", "success");
-      navigate("/admin/management");
+      navigate("/admin/moderators");
     } catch (err) {
       handleResponseError(err.response);
     }
@@ -83,6 +83,11 @@ export default function DelModeratorPage() {
     setModerator(moderatorsData.find((item) => item.id === id));
   };
 
+  const convertDatetime = (datetime) => {
+    let dt = new Date(datetime);
+    return `${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}`;
+  };
+
   return (
     <>
       <Flex
@@ -94,7 +99,7 @@ export default function DelModeratorPage() {
         }}
       >
         <Flex align="center" gap={30} style={{ margin: "0px 0px 10px 0px" }}>
-          <Title level={3}>Удаление пакета карт</Title>
+          <Title level={3}>Удаление модератора</Title>
         </Flex>
         <Card
           style={{
@@ -118,46 +123,34 @@ export default function DelModeratorPage() {
             <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
               <Col style={{ width: infoLabelWidth }}>
                 <Text type="secondary" style={{ fontSize: "14px" }}>
-                  Название:
+                  Никнейм:
                 </Text>
               </Col>
               <Col style={{ width: infoValueWidth }}>
-                <Text>{moderator !== null ? moderator.name : null}</Text>
+                <Text>{moderator !== null ? moderator.nickname : null}</Text>
               </Col>
             </Row>
             <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
               <Col style={{ width: infoLabelWidth }}>
                 <Text type="secondary" style={{ fontSize: "14px" }}>
-                  Цена:
+                  Логин:
                 </Text>
               </Col>
               <Col style={{ width: infoValueWidth }}>
-                <Text>
-                  {moderator !== null ? `${moderator.price} BYN` : null}
-                </Text>
+                <Text>{moderator !== null ? moderator.login : null}</Text>
               </Col>
             </Row>
             <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
               <Col style={{ width: infoLabelWidth }}>
                 <Text type="secondary" style={{ fontSize: "14px" }}>
-                  Количество операций:
+                  Дата создания учетной записи:
                 </Text>
               </Col>
               <Col style={{ width: infoValueWidth }}>
                 <Text>
-                  {moderator !== null ? moderator.operationsNumber : null}
-                </Text>
-              </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
-              <Col style={{ width: infoLabelWidth }}>
-                <Text type="secondary" style={{ fontSize: "14px" }}>
-                  Сумма операций:
-                </Text>
-              </Col>
-              <Col style={{ width: infoValueWidth }}>
-                <Text>
-                  {moderator !== null ? moderator.operationsSum : null}
+                  {moderator !== null
+                    ? convertDatetime(moderator.creationDate)
+                    : null}
                 </Text>
               </Col>
             </Row>
@@ -179,5 +172,4 @@ export default function DelModeratorPage() {
       </Flex>
     </>
   );
-
 }

@@ -8,6 +8,6 @@ public interface IModeratorsRepository
     Task<Moderator> GetById(int id, bool includeData);
     Task<Moderator> GetByLogin(string login);
     Task<bool> IsExistByLogin(string login);
-    Task<bool> UpdateInfo(int id, bool isActive);
-    Task<bool> UpdateInfo(int id, string nickname);
+    Task<bool> UpdateInfo(int id, string login, string nickname);
+    Task<bool> UpdateStatus(int id, bool isActive);
 }

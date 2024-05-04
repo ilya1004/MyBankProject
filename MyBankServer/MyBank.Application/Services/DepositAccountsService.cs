@@ -5,21 +5,47 @@ public class DepositAccountsService : IDepositAccountsService
     private readonly IDepositAccountsRepository _depositAccountsRepository;
     private readonly IPersonalAccountsRepository _personalAccountsRepository;
     private readonly ITransactionsRepository _transactionsRepository;
+    private readonly IAccNumberProvider _accNumberProvider;
 
-    public DepositAccountsService(
-        IDepositAccountsRepository depositAccountsRepository,
-        IPersonalAccountsRepository personalAccountsRepository,
-        ITransactionsRepository transactionsRepository
-    )
+    public DepositAccountsService(IDepositAccountsRepository depositAccountsRepository, IPersonalAccountsRepository personalAccountsRepository, ITransactionsRepository transactionsRepository, IAccNumberProvider accNumberProvider)
     {
         _depositAccountsRepository = depositAccountsRepository;
         _personalAccountsRepository = personalAccountsRepository;
         _transactionsRepository = transactionsRepository;
+        _accNumberProvider = accNumberProvider;
     }
 
-    public async Task<ServiceResponse<int>> Add(DepositAccount depositAccount)
+    public async Task<ServiceResponse<int>> Add(int userId, string name, decimal depositStartBalance, decimal interestRate, int depositTermInDays, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption, int currencyId)
     {
+        var depositAccount = new DepositAccount
+        {
+            Id = 0,
+            Name = name,
+            Number = "",
+            CurrentBalance = depositStartBalance,
+            DepositStartBalance = depositStartBalance,
+            CreationDate = DateTime.UtcNow,
+            ClosingDate = null,
+            IsActive = true,
+            InterestRate = interestRate,
+            DepositTermInDays = depositTermInDays,
+            TotalAccrualsNumber = depositTermInDays / 30,
+            MadeAccrualsNumber = 0,
+            IsRevocable = isRevocable,
+            HasCapitalisation = hasCapitalisation,
+            HasInterestWithdrawalOption = hasInterestWithdrawalOption,
+            UserId = userId,
+            User = null,
+            CurrencyId = currencyId,
+            Currency = null,
+            Accruals = [],
+        };
+
         var id = await _depositAccountsRepository.Add(depositAccount);
+
+        string accNumber = _accNumberProvider.GenerateIBAN(id);
+
+        var status = _depositAccountsRepository.SetAccountNumber(id, accNumber);
 
         return new ServiceResponse<int>
         {
@@ -29,9 +55,9 @@ public class DepositAccountsService : IDepositAccountsService
         };
     }
 
-    public async Task<ServiceResponse<DepositAccount>> GetById(int id)
+    public async Task<ServiceResponse<DepositAccount>> GetById(int id, bool includeData)
     {
-        var depositAccount = await _depositAccountsRepository.GetById(id, false);
+        var depositAccount = await _depositAccountsRepository.GetById(id, includeData);
 
         if (depositAccount == null)
         {
@@ -51,9 +77,9 @@ public class DepositAccountsService : IDepositAccountsService
         };
     }
 
-    public async Task<ServiceResponse<List<DepositAccount>>> GetAllByUser(int userId)
+    public async Task<ServiceResponse<List<DepositAccount>>> GetAllByUser(int userId, bool includeData, bool onlyActive)
     {
-        var list = await _depositAccountsRepository.GetAllByUser(userId);
+        var list = await _depositAccountsRepository.GetAllByUser(userId, includeData, onlyActive);
 
         return new ServiceResponse<List<DepositAccount>>
         {
@@ -213,9 +239,9 @@ public class DepositAccountsService : IDepositAccountsService
                 true,
                 "Списание средств с депозитного счета",
                 depositAccount.Number,
-                depositAccount.UserOwner!.Nickname,
+                depositAccount.User!.Nickname,
                 personalAccount.Number,
-                depositAccount.UserOwner.Nickname
+                depositAccount.User.Nickname
             )
         );
 
@@ -273,9 +299,9 @@ public class DepositAccountsService : IDepositAccountsService
                 true,
                 "Списание процентов с депозитного счета",
                 depositAccount.Number,
-                depositAccount.UserOwner!.Nickname,
+                depositAccount.User!.Nickname,
                 personalAccount.Number,
-                depositAccount.UserOwner!.Nickname
+                depositAccount.User!.Nickname
             )
         );
 

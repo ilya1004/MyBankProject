@@ -121,9 +121,31 @@ public class ModeratorsService : IModeratorsService
         };
     }
 
-    public async Task<ServiceResponse<bool>> UpdateInfo(int id, string nickname)
+    public async Task<ServiceResponse<bool>> UpdateInfo(int id, string login, string nickname)
     {
-        var status = await _moderatorsRepository.UpdateInfo(id, nickname);
+        var status = await _moderatorsRepository.UpdateInfo(id, login, nickname);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Unknown error. Maybe moderator with given id ({id}) not found",
+                Data = default
+            };
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
+    }
+
+    public async Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive)
+    {
+        var status = await _moderatorsRepository.UpdateStatus(id, isActive);
 
         if (status == false)
         {

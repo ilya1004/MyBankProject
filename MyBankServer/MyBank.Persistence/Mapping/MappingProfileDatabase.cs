@@ -19,6 +19,9 @@ public class MappingProfileDatabase : Profile
         CreateMap<CreditAccount, CreditAccountEntity>();
         CreateMap<CreditAccountEntity, CreditAccount>();
 
+        CreateMap<CreditPackage, CreditPackageEntity>();
+        CreateMap<CreditPackageEntity, CreditPackage>();
+
         CreateMap<CreditPayment, CreditPaymentEntity>();
         CreateMap<CreditPaymentEntity, CreditPayment>();
 
@@ -33,6 +36,9 @@ public class MappingProfileDatabase : Profile
 
         CreateMap<DepositAccrual, DepositAccrualEntity>();
         CreateMap<DepositAccrualEntity, DepositAccrual>();
+
+        CreateMap<DepositPackage, DepositPackageEntity>();
+        CreateMap<DepositPackageEntity, DepositPackage>();
 
         CreateMap<Message, MessageEntity>();
         CreateMap<MessageEntity, Message>();

@@ -22,6 +22,93 @@ namespace MyBank.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("MyBank.Domain.Models.CreditPackageEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("CreditGrantedAmount")
+                        .HasColumnType("money");
+
+                    b.Property<decimal>("CreditStartBalance")
+                        .HasColumnType("money");
+
+                    b.Property<int>("CreditTermInDays")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CurrencyId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("HasPrepaymentOption")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("InterestCalculationType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("InterestRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.ToTable("CreditPackages");
+                });
+
+            modelBuilder.Entity("MyBank.Domain.Models.DepositPackageEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CurrencyId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("DepositStartBalance")
+                        .HasColumnType("money");
+
+                    b.Property<int>("DepositTermInDays")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("HasCapitalisation")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HasInterestWithdrawalOption")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal>("InterestRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRevocable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.ToTable("DepositPackages");
+                });
+
             modelBuilder.Entity("MyBank.Persistence.Entities.AdminEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -250,9 +337,8 @@ namespace MyBank.Persistence.Migrations
                     b.Property<int>("PaymentNumber")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
@@ -274,21 +360,11 @@ namespace MyBank.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreditTermInDays")
+                    b.Property<int?>("CreditPackageId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CurrencyId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("HasPrepaymentOption")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("InterestCalculationType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("InterestRate")
-                        .HasColumnType("numeric");
 
                     b.Property<bool?>("IsApproved")
                         .HasColumnType("boolean");
@@ -296,18 +372,16 @@ namespace MyBank.Persistence.Migrations
                     b.Property<int?>("ModeratorId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("StartBalance")
-                        .HasColumnType("money");
-
-                    b.Property<int>("TotalPaymentsNumber")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CurrencyId");
+                    b.HasIndex("CreditPackageId");
 
                     b.HasIndex("ModeratorId");
 
@@ -327,12 +401,6 @@ namespace MyBank.Persistence.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<decimal>("CreditInterestRate")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("DepositInterestRate")
-                        .HasColumnType("numeric");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -386,10 +454,6 @@ namespace MyBank.Persistence.Migrations
 
                     b.Property<bool>("HasInterestWithdrawalOption")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("InterestPaymentType")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<decimal>("InterestRate")
                         .HasColumnType("numeric");
@@ -687,6 +751,24 @@ namespace MyBank.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("MyBank.Domain.Models.CreditPackageEntity", b =>
+                {
+                    b.HasOne("MyBank.Persistence.Entities.CurrencyEntity", "Currency")
+                        .WithMany("CreditPackages")
+                        .HasForeignKey("CurrencyId");
+
+                    b.Navigation("Currency");
+                });
+
+            modelBuilder.Entity("MyBank.Domain.Models.DepositPackageEntity", b =>
+                {
+                    b.HasOne("MyBank.Persistence.Entities.CurrencyEntity", "Currency")
+                        .WithMany("DepositPackages")
+                        .HasForeignKey("CurrencyId");
+
+                    b.Navigation("Currency");
+                });
+
             modelBuilder.Entity("MyBank.Persistence.Entities.CardEntity", b =>
                 {
                     b.HasOne("MyBank.Persistence.Entities.CardPackageEntity", "CardPackage")
@@ -746,9 +828,9 @@ namespace MyBank.Persistence.Migrations
 
             modelBuilder.Entity("MyBank.Persistence.Entities.CreditRequestEntity", b =>
                 {
-                    b.HasOne("MyBank.Persistence.Entities.CurrencyEntity", "Currency")
+                    b.HasOne("MyBank.Domain.Models.CreditPackageEntity", "CreditPackage")
                         .WithMany("CreditRequests")
-                        .HasForeignKey("CurrencyId");
+                        .HasForeignKey("CreditPackageId");
 
                     b.HasOne("MyBank.Persistence.Entities.ModeratorEntity", "Moderator")
                         .WithMany("CreditRequestsReplied")
@@ -758,7 +840,7 @@ namespace MyBank.Persistence.Migrations
                         .WithMany("CreditRequests")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Currency");
+                    b.Navigation("CreditPackage");
 
                     b.Navigation("Moderator");
 
@@ -825,6 +907,11 @@ namespace MyBank.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MyBank.Domain.Models.CreditPackageEntity", b =>
+                {
+                    b.Navigation("CreditRequests");
+                });
+
             modelBuilder.Entity("MyBank.Persistence.Entities.AdminEntity", b =>
                 {
                     b.Navigation("Messages");
@@ -844,9 +931,11 @@ namespace MyBank.Persistence.Migrations
                 {
                     b.Navigation("CreditAccounts");
 
-                    b.Navigation("CreditRequests");
+                    b.Navigation("CreditPackages");
 
                     b.Navigation("DepositAccounts");
+
+                    b.Navigation("DepositPackages");
 
                     b.Navigation("PersonalAccounts");
                 });

@@ -59,6 +59,27 @@ public class AdminController : ControllerBase
         return Results.Json(new { id = serviceResponse.Data.Item1 }, statusCode: 200);
     }
 
+    [HttpPost]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public IResult Logout()
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "AdminController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        Response.Cookies.Append("my-cookie", "", new CookieOptions { SameSite = SameSiteMode.Lax, Expires = DateTime.Now.AddDays(-1) });
+
+        return Results.Json(new { status = true }, statusCode: 200);
+    }
+
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
     public async Task<IResult> GetInfoCurrent(bool includeData)
@@ -69,7 +90,7 @@ public class AdminController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "ModeratorsController",
+                ControllerName = "AdminController",
                 Message = message!
             },
             statusCode: 400);
@@ -102,7 +123,7 @@ public class AdminController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "ModeratorsController",
+                ControllerName = "AdminController",
                 Message = message!
             },
             statusCode: 400);
@@ -135,7 +156,7 @@ public class AdminController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "ModeratorsController",
+                ControllerName = "AdminController",
                 Message = message!
             },
             statusCode: 400);
@@ -168,7 +189,7 @@ public class AdminController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "ModeratorsController",
+                ControllerName = "AdminController",
                 Message = message!
             },
             statusCode: 400);

@@ -38,7 +38,7 @@ export default function AddModeratorPage() {
   };
 
   const handleCancel = () => {
-    navigate("admin/moderators");
+    navigate("/admin/moderators");
   };
 
   const addModerator = async () => {
@@ -54,7 +54,7 @@ export default function AddModeratorPage() {
     try {
       await axiosInstance.post(`Moderators/Add`, data);
       showMessageStc("Модератор был успешно добавлен", "success");
-      navigate("/moderators");
+      navigate("/admin/moderators");
     } catch (err) {
       handleResponseError(err.response);
     }

@@ -184,10 +184,7 @@ public class PersonalAccountsService : IPersonalAccountsService
         };
     }
 
-    public async Task<ServiceResponse<bool>> UpdateTransfersStatus(
-        int id,
-        bool isForTransfersByNickname
-    )
+    public async Task<ServiceResponse<bool>> UpdateTransfersStatus(int id, bool isForTransfersByNickname)
     {
         var status = await _personalAccountsRepository.UpdateTransfersStatus(
             id,
@@ -246,6 +243,28 @@ public class PersonalAccountsService : IPersonalAccountsService
                     Message = $"Unknown error. Maybe card with given id ({id}) not found",
                     Data = default
                 };
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
+    }
+
+    public async Task<ServiceResponse<bool>> UpdateNicknameTransfersState(int id, bool state)
+    {
+        var status = await _personalAccountsRepository.UpdateTransfersStatus(id, state);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Personal account with given id ({id}) not found",
+                Data = default
+            };
         }
 
         return new ServiceResponse<bool>

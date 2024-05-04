@@ -2,10 +2,11 @@
 
 public interface IDepositAccountsService
 {
-    Task<ServiceResponse<int>> Add(DepositAccount depositAccount);
+    //Task<ServiceResponse<int>> Add(DepositAccount depositAccount);
+    Task<ServiceResponse<int>> Add(int value, string name, decimal depositStartBalance, decimal interestRate, int depositTermInDays, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption, int currencyId);
     Task<ServiceResponse<bool>> Delete(int id);
-    Task<ServiceResponse<List<DepositAccount>>> GetAllByUser(int userId);
-    Task<ServiceResponse<DepositAccount>> GetById(int id);
+    Task<ServiceResponse<List<DepositAccount>>> GetAllByUser(int userId, bool includeData, bool onlyActive);
+    Task<ServiceResponse<DepositAccount>> GetById(int id, bool includeData);
     Task<ServiceResponse<bool>> UpdateBalanceDelta(int id, decimal deltaNumber);
     Task<ServiceResponse<bool>> UpdateBalanceValue(int id, decimal newBalance);
     Task<ServiceResponse<bool>> UpdateName(int id, string name);

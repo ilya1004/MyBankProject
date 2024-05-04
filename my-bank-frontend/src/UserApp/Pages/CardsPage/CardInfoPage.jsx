@@ -58,8 +58,8 @@ export async function loader({ params }) {
   return { cardData };
 }
 
-const infoLabelWidth = "220px";
-const infoValueWidth = "200px";
+const infoLabelWidth = "230px";
+const infoValueWidth = "270px";
 
 export default function CardInfoPage() {
   const [dateStart, setDateStart] = useState(null);
@@ -192,17 +192,14 @@ export default function CardInfoPage() {
       withCredentials: true,
     });
     try {
-      console.log(`oper st = ${operStatus}`);
       const res = await axiosInstance.put(
         `Cards/UpdateOperationsStatus?cardId=${cardData.id}&isOpersAllowed=${operStatus}`
       );
-      console.log(res.data["status"]);
       if (operStatus === false) {
-        showMessageStc("Операции по карте были успешно запрещены", "info");
+        showMessageStc("Операции по карте были успешно запрещены", "success");
       } else {
         showMessageStc("Операции по карте были успешно разрешены", "success");
       }
-
       revalidator.revalidate();
     } catch (err) {
       handleResponseError(err.response);
@@ -350,6 +347,34 @@ export default function CardInfoPage() {
     setOpenModalDelCard(false);
   };
 
+  const setCardState = async (state) => {
+    const axiosInstance = axios.create({
+      baseURL: BASE_URL,
+      withCredentials: true,
+    });
+    try {
+      const res = await axiosInstance.put(
+        `PersonalAccounts/UpdateNicknameTransfersState?personalAccountId=${cardData.personalAccount.id}&state=${state}`
+      );
+      if (state === false) {
+        showMessageStc("Карта была сделана неосновной", "success");
+      } else {
+        showMessageStc("Карта была сделана основной", "success");
+      }
+      revalidator.revalidate();
+    } catch (err) {
+      handleResponseError(err.response);
+    }
+  };
+
+  const handleChangeState = () => {
+    if (cardData.personalAccount.isForTransfersByNickname) {
+      setCardState(false);
+    } else {
+      setCardState(true);
+    }
+  };
+
   return (
     <Flex
       justify="flex-start"
@@ -361,7 +386,7 @@ export default function CardInfoPage() {
       }}
       vertical
     >
-      <Flex align="center" gap={30} style={{ margin: "0px 0px 10px 0px" }}>
+      <Flex align="center" gap={30} style={{ margin: "0px 0px 20px 0px" }}>
         <Button
           style={{ margin: "18px 0px 0px 20px" }}
           onClick={() => navigate(-1)}
@@ -443,7 +468,7 @@ export default function CardInfoPage() {
         <Card
           style={{
             height: "230px",
-            width: "460px",
+            width: "550px",
           }}
         >
           <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
@@ -463,7 +488,7 @@ export default function CardInfoPage() {
               </Text>
             </Col>
             <Col style={{ width: infoValueWidth }}>
-              <Link to="/accounts" component={Typography.Link}>
+              <Link to={`/accounts/${cardData.personalAccount.id}`} component={Typography.Link}>
                 {convertAccountNumber()}
               </Link>
             </Col>
@@ -536,20 +561,37 @@ export default function CardInfoPage() {
       </Flex>
       {isSettingsOpened === true ? (
         <Flex
-          align="center"
-          justify="center"
+          align="flex-start"
+          justify="flex-start"
           style={{ width: "1000px", margin: "20px 0px 0px 0px" }}
-          gap={40}
+          gap={90}
         >
-          <Card style={{ width: "400px" }}>
-            <Flex align="center" justify="center" gap={40}>
-              <Flex align="center" justify="center" gap={30} vertical>
+          <Card style={{ width: "420px" }}>
+            <Flex align="flex-start" justify="center" gap={40}>
+              <Flex
+                align="center"
+                justify="flex-start"
+                gap={30}
+                vertical
+                style={{ width: "170px" }}
+              >
                 <Button onClick={handleChangeName} type="primary">
                   Изменить имя
                 </Button>
+                <Button onClick={handleChangeState}>
+                  {cardData.personalAccount.isForTransfersByNickname === true
+                    ? "Сделать неосновной"
+                    : "Сделать основной"}
+                </Button>
                 <Button onClick={handleCancelSett}>Закрыть</Button>
               </Flex>
-              <Flex align="center" justify="center" gap={30} vertical>
+              <Flex
+                align="center"
+                justify="flex-start"
+                gap={30}
+                vertical
+                style={{ width: "170px" }}
+              >
                 <Button onClick={handleChangePincode} type="primary">
                   Изменить пин-код
                 </Button>
@@ -574,14 +616,8 @@ export default function CardInfoPage() {
             </Text>
           </Modal>
           {isChangingPincode === true ? (
-            <Card style={{ width: "460px" }}>
-              <Flex
-                vertical
-                align="center"
-                justify="center"
-                gap={30}
-                style={{ width: "100%" }}
-              >
+            <Card style={{ width: "440px" }}>
+              <Flex vertical align="center" justify="center" gap={30}>
                 <Flex align="center" justify="center" gap={20}>
                   <Text style={{ width: "125px", fontSize: "16px" }}>
                     Новый пин-код:
@@ -601,7 +637,7 @@ export default function CardInfoPage() {
             </Card>
           ) : null}
           {isChangingName === true ? (
-            <Card style={{ width: "460px" }}>
+            <Card style={{ width: "440px" }}>
               <Flex
                 vertical
                 align="center"
@@ -728,7 +764,7 @@ export default function CardInfoPage() {
               key="paymentAmount"
               render={(amount) => (
                 <Text>
-                  {amount + " " + cardData.personalAccount.currency.code}
+                  {amount.toFixed(2) + " " + cardData.personalAccount.currency.code}
                 </Text>
               )}
             />

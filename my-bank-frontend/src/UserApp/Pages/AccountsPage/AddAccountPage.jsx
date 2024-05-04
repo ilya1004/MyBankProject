@@ -53,7 +53,7 @@ export default function AddAccountPage() {
 
   const { currenciesData } = useLoaderData();
 
-  const { navigate } = useNavigate();
+  const navigate = useNavigate();
 
   const addAccount = async () => {
     const axiosInstance = axios.create({
@@ -66,7 +66,7 @@ export default function AddAccountPage() {
     };
     try {
       const res = await axiosInstance.post(`PersonalAccounts/Add`, data);
-      console.log(res.data["id"]);
+      console.log(res.data.id);
       showMessageStc("Счет был успешно создан", "success");
       navigate("/accounts");
     } catch (err) {

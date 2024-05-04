@@ -4,24 +4,7 @@ public class DepositAccount
 {
     public DepositAccount() { }
 
-    public DepositAccount(
-        int id,
-        string name,
-        string number,
-        decimal currentBalance,
-        decimal depositStartBalance,
-        DateTime creationDate,
-        DateTime closingDate,
-        bool isActive,
-        decimal interestRate,
-        int depositTermInDays,
-        int totalAccrualsNumber,
-        int madeAccrualsNumber,
-        bool isRevocable,
-        string interestPaymentType,
-        bool hasCapitalisation,
-        bool hasInterestWithdrawalOption
-    )
+    public DepositAccount(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime? closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption, int? userId, User? user, int? currencyId, Currency? currency)
     {
         Id = id;
         Name = name;
@@ -36,9 +19,12 @@ public class DepositAccount
         TotalAccrualsNumber = totalAccrualsNumber;
         MadeAccrualsNumber = madeAccrualsNumber;
         IsRevocable = isRevocable;
-        InterestPaymentType = interestPaymentType;
         HasCapitalisation = hasCapitalisation;
         HasInterestWithdrawalOption = hasInterestWithdrawalOption;
+        UserId = userId;
+        User = user;
+        CurrencyId = currencyId;
+        Currency = currency;
     }
 
     public int Id { get; set; }
@@ -54,11 +40,10 @@ public class DepositAccount
     public int TotalAccrualsNumber { get; set; }
     public int MadeAccrualsNumber { get; set; }
     public bool IsRevocable { get; set; }
-    public string InterestPaymentType { get; set; } = string.Empty;
     public bool HasCapitalisation { get; set; }
     public bool HasInterestWithdrawalOption { get; set; }
     public int? UserId { get; set; }
-    public User? UserOwner { get; set; } = null;
+    public User? User { get; set; } = null;
     public int? CurrencyId { get; set; }
     public Currency? Currency { get; set; } = null;
     public List<DepositAccrual> Accruals { get; set; } = [];

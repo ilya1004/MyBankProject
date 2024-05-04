@@ -14,7 +14,7 @@ const getModeratorsData = async () => {
   });
   try {
     const res = await axiosInstance.get(
-      `Moderators/GetAllInfo?includeData=${false}`
+      `Moderators/GetAllInfo?includeData=${false}&onlyActive=${false}`
     );
     return { moderatorsData: res.data.list, error: null };
   } catch (err) {

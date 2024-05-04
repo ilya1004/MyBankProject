@@ -37,6 +37,9 @@ public class ModeratorsRepository : IModeratorsRepository
                 .Include(m => m.Messages)
                 .Include(m => m.CreditRequestsReplied)
                 .Include(m => m.CreditsApproved)
+                    .ThenInclude(cr => cr.Currency)
+                .Include(m => m.CreditsApproved)
+                    .ThenInclude(cr => cr.User)
                 .FirstOrDefaultAsync(m => m.Id == id) :
             await _dbContext.Moderators
                 .AsNoTracking()
@@ -71,28 +74,21 @@ public class ModeratorsRepository : IModeratorsRepository
         return await _dbContext.Moderators.AnyAsync(m => m.Login == login);
     }
 
-    public async Task<bool> UpdateInfo(int id, string nickname)
+    public async Task<bool> UpdateInfo(int id, string login, string nickname)
     {
         var number = await _dbContext
             .Moderators.Where(m => m.Id == id)
-            .ExecuteUpdateAsync(s => s.SetProperty(m => m.Nickname, nickname));
-
-        return (number == 0) ? false : true;
-    }
-
-    public async Task<bool> UpdateInfo(int id, bool isActive)
-    {
-        var number = await _dbContext
-            .Moderators.Where(m => m.Id == id)
-            .ExecuteUpdateAsync(s => s.SetProperty(m => m.IsActive, isActive));
+            .ExecuteUpdateAsync(s => s
+            .SetProperty(m => m.Login, login)
+            .SetProperty(m => m.Nickname, nickname));
 
         return (number == 0) ? false : true;
     }
 
     public async Task<bool> UpdateStatus(int id, bool isActive)
     {
-        var number = await _dbContext
-            .Moderators.Where(m => m.Id == id)
+        var number = await _dbContext.Moderators
+            .Where(m => m.Id == id)
             .ExecuteUpdateAsync(s => s.SetProperty(m => m.IsActive, isActive));
 
         return (number == 0) ? false : true;

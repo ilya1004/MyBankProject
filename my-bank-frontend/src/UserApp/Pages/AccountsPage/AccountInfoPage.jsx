@@ -10,7 +10,6 @@ import {
   DatePicker,
   Modal,
   Input,
-  List,
 } from "antd";
 import { useState } from "react";
 import {
@@ -61,7 +60,6 @@ export default function AccountInfoPage() {
   const [transData, setTransData] = useState();
   const [openModalCloseAcc, setOpenModalCloseAcc] = useState(false);
   const [accName, setAccName] = useState();
-  // const [isSettingsOpened, setIsSettingsOpened] = useState(false);
   const [isAccountClosable, setIsAccountClosable] = useState(false);
   const [modalText, setModalText] = useState("");
   const [isChangingName, setIsChangingName] = useState(false);
@@ -263,7 +261,7 @@ export default function AccountInfoPage() {
       }}
       vertical
     >
-      <Flex align="center" gap={30} style={{ margin: "0px 0px 10px 0px" }}>
+      <Flex align="center" gap={30} style={{ margin: "0px 0px 20px 0px" }}>
         <Link to="/accounts">
           <Button
             style={{ margin: "18px 0px 0px 20px" }}
@@ -274,12 +272,7 @@ export default function AccountInfoPage() {
         </Link>
         <Title level={3}>Детальная информация по счету</Title>
       </Flex>
-      <Flex
-        align="flex-start"
-        justify="center"
-        gap={70}
-        // style={{ width: "1000px" }}
-      >
+      <Flex align="flex-start" justify="center" gap={70}>
         <Flex vertical>
           <Card
             style={{
@@ -359,7 +352,7 @@ export default function AccountInfoPage() {
         </Flex>
         <Card
           title={<Text>Привязанные карты</Text>}
-          styles={{ body: { paddingTop: "10px", paddingBottom: "10px" } }}
+          styles={{ body: { padding: "10px 15px 10px 15px" } }}
           style={{ width: "500px", minHeight: "230px" }}
         >
           {accData.cards.length === 0 ? (
@@ -377,14 +370,14 @@ export default function AccountInfoPage() {
               <Column
                 title="Название карты"
                 key="name"
-                width={"100px"}
+                width={"150px"}
                 dataIndex="name"
                 render={(_, record) => <Text>{record.name}</Text>}
               />
               <Column
                 title="Номер карты"
                 key="number"
-                width={"250px"}
+                width={"220px"}
                 dataIndex="number"
                 render={(_, record) => (
                   <Link to={`/cards/${record.id}`} component={Typography.Link}>
@@ -444,6 +437,7 @@ export default function AccountInfoPage() {
                 Новое название счета:
               </Text>
               <Input
+                maxLength={30}
                 style={{ width: "180px" }}
                 onChange={handleNewAccNameEdit}
               />
@@ -476,6 +470,24 @@ export default function AccountInfoPage() {
                   value={[dateStart, dateEnd]}
                   maxDate={dayjs()}
                   onChange={handleDateRangeChange}
+                  presets={[
+                    {
+                      label: "Последние 7 дней",
+                      value: [dayjs().add(-7, "d"), dayjs()],
+                    },
+                    {
+                      label: "Последние 14 дней",
+                      value: [dayjs().add(-14, "d"), dayjs()],
+                    },
+                    {
+                      label: "Последние 30 дней",
+                      value: [dayjs().add(-30, "d"), dayjs()],
+                    },
+                    {
+                      label: "Последние 90 дней",
+                      value: [dayjs().add(-90, "d"), dayjs()],
+                    },
+                  ]}
                 />
                 <Button type="primary" onClick={handleShowTrans}>
                   Показать
@@ -532,7 +544,7 @@ export default function AccountInfoPage() {
               dataIndex="paymentAmount"
               key="paymentAmount"
               render={(amount) => (
-                <Text>{amount + " " + accData.currency.code}</Text>
+                <Text>{amount.toFixed(2) + " " + accData.currency.code}</Text>
               )}
             />
             <Column

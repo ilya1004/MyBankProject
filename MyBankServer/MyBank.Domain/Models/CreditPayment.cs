@@ -4,17 +4,7 @@ public class CreditPayment
 {
     public CreditPayment() { }
 
-    public CreditPayment(
-        int id,
-        decimal paymentAmount,
-        int paymentNumber,
-        DateTime datetime,
-        string status,
-        int creditAccountId,
-        CreditAccount? creditAccount,
-        int userId,
-        User? user
-    )
+    public CreditPayment(int id, decimal paymentAmount, int paymentNumber, DateTime datetime, bool status, int? creditAccountId, CreditAccount? creditAccount, int? userId, User? user)
     {
         Id = id;
         PaymentAmount = paymentAmount;
@@ -31,7 +21,7 @@ public class CreditPayment
     public decimal PaymentAmount { get; set; }
     public int PaymentNumber { get; set; }
     public DateTime Datetime { get; set; }
-    public string Status { get; set; } = string.Empty;
+    public bool Status { get; set; }
     public int? CreditAccountId { get; set; }
     public CreditAccount? CreditAccount { get; set; } = null;
     public int? UserId { get; set; }

@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace MyBank.Persistence.Repositories;
+﻿namespace MyBank.Persistence.Repositories;
 
 public class UsersRepository : IUsersRepository
 {
@@ -24,11 +22,11 @@ public class UsersRepository : IUsersRepository
 
     public async Task<User> GetById(int id, bool includeData)
     {
-        UserEntity? userEntity = null;
+        IQueryable<UserEntity> query = _dbContext.Users.AsNoTracking();
+        
         if (includeData)
         {
-            userEntity = await _dbContext.Users
-                .AsNoTracking()
+            query = query
                 .Include(u => u.Cards)
                 .Include(u => u.PersonalAccounts)
                     .ThenInclude(pa => pa.Currency)
@@ -37,13 +35,9 @@ public class UsersRepository : IUsersRepository
                 .Include(u => u.DepositAccounts)
                     .ThenInclude(pa => pa.Currency)
                 .Include(u => u.CreditRequests)
-                .Include(u => u.Messages)
-                .FirstOrDefaultAsync(u => u.Id == id && u.IsActive == true);
+                .Include(u => u.Messages);
         }
-        else
-        {
-            userEntity = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
-        }
+        var userEntity = await query.FirstOrDefaultAsync(u => u.Id == id && u.IsActive == true);
 
         return _mapper.Map<User>(userEntity);
     }

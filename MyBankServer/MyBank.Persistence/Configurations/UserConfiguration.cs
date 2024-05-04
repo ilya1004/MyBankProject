@@ -25,7 +25,10 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
             .WithOne(da => da.User)
             .HasForeignKey(da => da.UserId);
 
-        builder.HasMany(u => u.Cards).WithOne(c => c.User).HasForeignKey(c => c.UserId);
+        builder
+            .HasMany(u => u.Cards)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId);
 
         builder
             .HasMany(u => u.CreditRequests)

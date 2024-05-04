@@ -1,4 +1,6 @@
-﻿namespace MyBank.Persistence.Repositories;
+﻿using System.Data.SqlTypes;
+
+namespace MyBank.Persistence.Repositories;
 
 public class PersonalAccountsRepository : IPersonalAccountsRepository
 {
@@ -97,7 +99,6 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
                 .Where(pa => pa.UserId == userId)
                 .ToListAsync();
 
-
         return _mapper.Map<List<PersonalAccount>>(personalAccountEntitiesList);
     }
 
@@ -113,10 +114,16 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
 
     public async Task<bool> UpdateBalanceDelta(int id, decimal deltaNumber)
     {
+        var personalAccountEntity = await _dbContext.PersonalAccounts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(pa => pa.Id == id);
+
+        decimal delta = deltaNumber + personalAccountEntity!.CurrentBalance;
+
         var number = await _dbContext.PersonalAccounts
             .Where(pa => pa.Id == id)
-            .ExecuteUpdateAsync(s =>
-                s.SetProperty(pa => pa.CurrentBalance, pa => pa.CurrentBalance + deltaNumber));
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(pa => pa.CurrentBalance, delta));
 
         return (number == 0) ? false : true;
     }
@@ -161,11 +168,10 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
 
     public async Task<bool> UpdateTransfersStatus(int id, bool isForTransfersByNickname)
     {
-        var number = await _dbContext
-            .PersonalAccounts.Where(pa => pa.Id == id)
+        var number = await _dbContext.PersonalAccounts
+            .Where(pa => pa.Id == id)
             .ExecuteUpdateAsync(s =>
-                s.SetProperty(pa => pa.IsForTransfersByNickname, isForTransfersByNickname)
-            );
+                s.SetProperty(pa => pa.IsForTransfersByNickname, isForTransfersByNickname));
 
         return (number == 0) ? false : true;
     }

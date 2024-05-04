@@ -81,4 +81,25 @@ public class TransactionsController : ControllerBase
 
         return Results.Json(new { list = MyJsonConverter<List<Transaction>>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
+
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> GetAll()
+    {
+        var serviceResponse = await _transactionsService.GetAll();
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "TransactionsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { list = MyJsonConverter<List<Transaction>>.Convert(serviceResponse.Data) }, statusCode: 200);
+    }
 }

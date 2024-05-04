@@ -71,8 +71,8 @@ export default function CardsPage() {
         vertical
         style={{ minHeight: "82vh" }}
       >
-        <Flex justify="space-between" style={{ width: "80%" }}>
-          <Title style={{ marginLeft: "10px" }} level={2}>
+        <Flex style={{ width: "80%" }}>
+          <Title style={{ marginLeft: "20px" }} level={2}>
             Мои карты
           </Title>
         </Flex>

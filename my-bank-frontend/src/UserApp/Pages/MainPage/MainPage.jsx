@@ -65,12 +65,14 @@ export default function MainPage() {
         <Title level={2} align="center">
           Конвертер валют
         </Title>
-        <CurrencyConventer currenciesData={currenciesData}/>
+        <CurrencyConventer currenciesData={currenciesData} />
         <Divider />
         <Title level={2} align="center">
           Пакеты карт
         </Title>
-        <PackagesList packagesData={packagesData} />
+        <Flex align="center" justify="flex-start" style={{ margin: "0px 0px 0px 60px", width: "90%"}}>
+          <PackagesList packagesData={packagesData} />
+        </Flex>
       </Flex>
     </>
   );

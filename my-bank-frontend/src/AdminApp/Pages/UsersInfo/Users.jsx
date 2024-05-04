@@ -35,7 +35,7 @@ export async function loader() {
   return { usersData };
 }
 
-export function UsersInfo() {
+export function Users() {
   const navigate = useNavigate();
 
   const { usersData } = useLoaderData();
@@ -56,7 +56,7 @@ export function UsersInfo() {
       >
         <Flex
           justify="space-between"
-          style={{ width: "80%", margin: "0px 0px 10px 0px" }}
+          style={{ width: "70%", margin: "0px 0px 10px 0px" }}
         >
           <Title style={{ marginLeft: "10px" }} level={2}>
             Информация о пользователях
@@ -64,7 +64,7 @@ export function UsersInfo() {
         </Flex>
         <Table
           dataSource={usersData}
-          style={{ width: "80%" }}
+          style={{ width: "70%" }}
           pagination={{ position: ["none", "none"] }}
         >
           <Column

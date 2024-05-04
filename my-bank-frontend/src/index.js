@@ -13,8 +13,12 @@ import CardsPage, {
 import AccountsPage, {
   loader as accountsLoader,
 } from "./UserApp/Pages/AccountsPage/AccountsPage";
-import CreditsPage from "./UserApp/Pages/CreditsPage/CreditsPage";
-import DepositsPage from "./UserApp/Pages/DepositsPage/DepositsPage";
+import CreditsPage, {
+  loader as creditsLoader,
+} from "./UserApp/Pages/CreditsPage/CreditsPage";
+import DepositsPage, {
+  loader as depositsLoader,
+} from "./UserApp/Pages/DepositsPage/DepositsPage";
 import ProfilePage, {
   loader as userLoader,
 } from "./UserApp/Pages/ProfilePage/ProfilePage";
@@ -32,8 +36,12 @@ import AddAccountPage, {
 import AccountInfoPage, {
   loader as accInfoLoader,
 } from "./UserApp/Pages/AccountsPage/AccountInfoPage";
+import CreditInfoPage, {
+  loader as creditInfoLoader,
+} from "./UserApp/Pages/CreditsPage/CreditInfoPage";
+// import AddCreditPage, {loader as addCreditLoader} from "./UserApp/Pages/CreditsPage/AddCreditPage";
 
-import { App as ModeratorApp } from "./ModeratorApp/Pages/App";
+import ModeratorApp, {loader as appModeratorLoader} from "./ModeratorApp/Pages/App";
 import {
   ProfilePage as ModerProfilePage,
   loader as moderProfileLoader,
@@ -44,15 +52,15 @@ import {
 } from "./ModeratorApp/Pages/UsersInfo/UsersInfo";
 import CreditRequests from "./ModeratorApp/Pages/CreditRequests/CreditRequests";
 
-import { App as AdminApp } from "./AdminApp/Pages/App";
+import AdminApp, {loader as adminAppLoader} from "./AdminApp/Pages/App";
 import {
   ProfilePage as AdminProfilePage,
   loader as adminProfileLoader,
 } from "./AdminApp/Pages/ProfilePage/ProfilePage";
 import {
-  UsersInfo as AdminUsersInfo,
+  Users as AdminUsersInfo,
   loader as adminUsersInfoLoader,
-} from "./AdminApp/Pages/UsersInfo/UsersInfo";
+} from "./AdminApp/Pages/UsersInfo/Users";
 import ModeratorsPage, {
   loader as moderatorsLoader,
 } from "./AdminApp/Pages/ModeratorsPage/ModeratorsPage";
@@ -64,9 +72,18 @@ import EditPackagePage, {
   loader as editPackageLoader,
 } from "./AdminApp/Pages/ManagementPage/Components/EditPackagePage";
 import DelPackagePage, {
-  loader as loaderDelPackage,
+  loader as delPackageLoader,
 } from "./AdminApp/Pages/ManagementPage/Components/DelPackagePage";
 import AddModeratorPage from "./AdminApp/Pages/ModeratorsPage/Components/AddModeratorPage";
+import EditModeratorPage, {
+  loader as editModeratorLoader,
+} from "./AdminApp/Pages/ModeratorsPage/Components/EditModeratorPage";
+import DelModeratorPage, {
+  loader as delModeratorLoader,
+} from "./AdminApp/Pages/ModeratorsPage/Components/DelModeratorPage";
+import ModeratorInfoPage, {
+  loader as moderatorInfoLoader,
+} from "./AdminApp/Pages/ModeratorsPage/ModeratorInfoPage";
 
 const routers = createBrowserRouter([
   {
@@ -112,10 +129,22 @@ const routers = createBrowserRouter([
       {
         path: "credits",
         element: <CreditsPage />,
+        loader: creditsLoader,
       },
+      {
+        path: "credits/:accountId",
+        element: <CreditInfoPage />,
+        loader: creditInfoLoader,
+      },
+      // {
+      //   path: "credits/add",
+      //   element: <AddCreditPage />,
+      //   loader: addCreditLoader
+      // },
       {
         path: "deposits",
         element: <DepositsPage />,
+        loader: depositsLoader,
       },
       {
         path: "profile",
@@ -136,6 +165,7 @@ const routers = createBrowserRouter([
     path: "/moderator",
     element: <ModeratorApp />,
     errorElement: <ErrorPage />,
+    loader: appModeratorLoader,
     children: [
       {
         path: "credit-requests",
@@ -157,6 +187,7 @@ const routers = createBrowserRouter([
     path: "/admin",
     element: <AdminApp />,
     errorElement: <ErrorPage />,
+    loader: adminAppLoader,
     children: [
       {
         path: "management",
@@ -175,10 +206,10 @@ const routers = createBrowserRouter([
       {
         path: "management/delete-package",
         element: <DelPackagePage />,
-        loader: loaderDelPackage,
+        loader: delPackageLoader,
       },
       {
-        path: "users-info",
+        path: "users",
         element: <AdminUsersInfo />,
         loader: adminUsersInfoLoader,
       },
@@ -188,8 +219,23 @@ const routers = createBrowserRouter([
         loader: moderatorsLoader,
       },
       {
+        path: "moderators/:moderatorId",
+        element: <ModeratorInfoPage />,
+        loader: moderatorInfoLoader,
+      },
+      {
         path: "moderators/add",
         element: <AddModeratorPage />,
+      },
+      {
+        path: "moderators/edit",
+        element: <EditModeratorPage />,
+        loader: editModeratorLoader,
+      },
+      {
+        path: "moderators/delete",
+        element: <DelModeratorPage />,
+        loader: delModeratorLoader,
       },
       {
         path: "profile",

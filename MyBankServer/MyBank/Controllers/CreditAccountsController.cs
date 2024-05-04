@@ -20,7 +20,7 @@ public class CreditAccountsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
     public async Task<IResult> Add([FromBody] CreditAccountDto dto)
     {
         var serviceResponse = await _creditAccountsService.Add(_mapper.Map<CreditAccount>(dto));
@@ -76,7 +76,7 @@ public class CreditAccountsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    public async Task<IResult> GetAllInfoByCurrentUser(bool includeData)
+    public async Task<IResult> GetAllInfoByCurrentUser(bool includeData, bool onlyActive)
     {
         var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
 
@@ -90,7 +90,7 @@ public class CreditAccountsController : ControllerBase
             statusCode: 400);
         }
 
-        var serviceResponse = await _creditAccountsService.GetAllByUser(id!.Value, includeData);
+        var serviceResponse = await _creditAccountsService.GetAllByUser(id!.Value, includeData, onlyActive);
 
         if (serviceResponse.Status == false)
         {
@@ -130,9 +130,9 @@ public class CreditAccountsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
-    public async Task<IResult> GetAllInfoByUserId(int userId, bool includeData)
+    public async Task<IResult> GetAllInfoByUserId(int userId, bool includeData, bool onlyActive)
     {
-        var serviceResponse = await _creditAccountsService.GetAllByUser(userId, includeData);
+        var serviceResponse = await _creditAccountsService.GetAllByUser(userId, includeData, onlyActive);
 
         if (serviceResponse.Status == false)
         {
@@ -147,5 +147,105 @@ public class CreditAccountsController : ControllerBase
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> GetNextPayment(int creditAccountId)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CreditAccountsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _creditAccountsService.GetNextPayment(id!.Value, creditAccountId);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { item = MyJsonConverter<CreditPayment>.Convert(serviceResponse.Data) }, statusCode: 200);
+    }
+
+    [HttpPut]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> UpdateName(int creditAccountId, string name)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CreditAccountsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _creditAccountsService.UpdateName(creditAccountId, name);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
+    }
+
+
+    [HttpPut]
+    [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
+    public async Task<IResult> UpdateStatus(int creditAccountId, bool isActive)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CreditAccountsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _creditAccountsService.UpdateStatus(creditAccountId, isActive);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 }

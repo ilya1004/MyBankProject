@@ -140,10 +140,31 @@ public class ModeratorsController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Policy = AuthorizationPolicies.ModeratorPolicy)]
-    public async Task<IResult> UpdateInfo(int moderatorId, string nickname)
+    [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
+    public async Task<IResult> UpdateInfo([FromBody] UpdateModeratorDto dto)
     {
-        var serviceResponse = await _moderatorsService.UpdateInfo(moderatorId, nickname);
+        var serviceResponse = await _moderatorsService.UpdateInfo(dto.Id, dto.Login, dto.Nickname);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "ModeratorsController",
+                    Message = serviceResponse.Message
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpPut]
+    [Authorize(Policy = AuthorizationPolicies.AdminPolicy)]
+    public async Task<IResult> UpdateStatus(int moderatorId, bool isActive)
+    {
+        var serviceResponse = await _moderatorsService.UpdateStatus(moderatorId, isActive);
 
         if (serviceResponse.Status == false)
         {

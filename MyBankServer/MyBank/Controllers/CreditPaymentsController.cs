@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using MyBank.API.DataTransferObjects.CreditPaymentDtos;
+using MyBank.Application.Utils;
+using MyBank.Domain.Models;
 
 namespace MyBank.API.Controllers;
 
@@ -9,11 +11,13 @@ namespace MyBank.API.Controllers;
 public class CreditPaymentsController : ControllerBase
 {
     private readonly ICreditPaymentsService _creditPaymentsService;
+    private readonly ICookieValidator _cookieValidator;
     private readonly IMapper _mapper;
 
-    public CreditPaymentsController(ICreditPaymentsService creditPaymentsService, IMapper mapper)
+    public CreditPaymentsController(ICreditPaymentsService creditPaymentsService, IMapper mapper, ICookieValidator cookieValidator)
     {
         _creditPaymentsService = creditPaymentsService;
+        _cookieValidator = cookieValidator;
         _mapper = mapper;
     }
 
@@ -21,7 +25,19 @@ public class CreditPaymentsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> Add([FromBody] CreditPaymentDto dto)
     {
-        var serviceResponse = await _creditPaymentsService.Add(_mapper.Map<CreditPayment>(dto));
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "PersonalAccountsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _creditPaymentsService.Add(dto.PaymentAmount, dto.PaymentNumber, dto.CreditAccountId, dto.CreditAccountNumber, dto.PersonalAccountId, dto.PersonalAccountNumber, dto.UserNickname, id!.Value);
 
         if (serviceResponse.Status == false)
         {
@@ -78,5 +94,26 @@ public class CreditPaymentsController : ControllerBase
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpPut]
+    [Authorize(Policy = AuthorizationPolicies.UserAndModeratorAndAdminPolicy)]
+    public async Task<IResult> UpdateStatus(int id, bool paymentStatus)
+    {
+        var serviceResponse = await _creditPaymentsService.UpdateStatus(id, paymentStatus);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditPaymentsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 }

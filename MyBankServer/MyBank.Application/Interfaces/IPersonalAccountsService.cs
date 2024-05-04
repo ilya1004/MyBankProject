@@ -20,4 +20,5 @@ public interface IPersonalAccountsService
         string? userRecipientNickname,
         decimal amount
     );
+    Task<ServiceResponse<bool>> UpdateNicknameTransfersState(int personalAccountId, bool state);
 }

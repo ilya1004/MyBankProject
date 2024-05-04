@@ -63,8 +63,11 @@ const getUserAvatar = async (imgExt) => {
     const res = await axiosInstance.get(`User/GetAvatarCurrent`, {
       responseType: "arraybuffer",
     });
-    new Blob(["."]);
+    // const imageBlob1 = new Blob([res.data], { type: `image/${imgExt}` });
+    // const avatarUrl1 = URL.createObjectURL(imageBlob1);
     const imageBlob = new Blob([res.data], { type: `image/${imgExt}` });
+    // const avatarUrl = ;
+    URL.revokeObjectURL(URL.createObjectURL(imageBlob));
     const avatarUrl = URL.createObjectURL(imageBlob);
     return { avatarUrl, error: null };
   } catch (err) {
@@ -208,10 +211,12 @@ export default function ProfilePage() {
           }}
         >
           <Image
-            style={{ maxHeight: "300px", maxWidth: "300px" }}
+            style={{ 
+              maxHeight: "350px", 
+              maxWidth: "300px" 
+            }}
             src={avatarUrl}
             preview={false}
-            // placeholder={AvatarPlaceholder}
           />
           <Flex gap={15} vertical align="center">
             <Flex gap={15}>

@@ -50,7 +50,7 @@ public class CreditPaymentsRepository : ICreditPaymentsRepository
         return _mapper.Map<List<CreditPayment>>(creditPaymentEntitiesList);
     }
 
-    public async Task<bool> UpdateStatus(int id, string status)
+    public async Task<bool> UpdateStatus(int id, bool status)
     {
         var number = await _dbContext
             .CreditPayments.Where(cp => cp.Id == id)

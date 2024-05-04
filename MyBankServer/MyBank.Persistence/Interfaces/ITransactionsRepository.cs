@@ -11,4 +11,5 @@ public interface ITransactionsRepository
         DateTime dateTimeStart,
         DateTime dateTimeEnd
     );
+    Task<List<Transaction>> GetAll();
 }

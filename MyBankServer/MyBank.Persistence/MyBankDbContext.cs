@@ -12,11 +12,13 @@ public class MyBankDbContext : DbContext
     public DbSet<CardEntity> Cards { get; set; }
     public DbSet<CardPackageEntity> CardPackages { get; set; }
     public DbSet<CreditAccountEntity> CreditAccounts { get; set; }
+    public DbSet<CreditPackageEntity> CreditPackages { get; set; }
     public DbSet<CreditPaymentEntity> CreditPayments { get; set; }
     public DbSet<CreditRequestEntity> CreditRequests { get; set; }
     public DbSet<CurrencyEntity> Currencies { get; set; }
     public DbSet<DepositAccountEntity> DepositAccounts { get; set; }
     public DbSet<DepositAccrualEntity> DepositAccruals { get; set; }
+    public DbSet<DepositPackageEntity> DepositPackages { get; set; }
     public DbSet<MessageEntity> Messages { get; set; }
     public DbSet<ModeratorEntity> Moderators { get; set; }
     public DbSet<PersonalAccountEntity> PersonalAccounts { get; set; }
@@ -30,11 +32,13 @@ public class MyBankDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CardConfiguration());
         modelBuilder.ApplyConfiguration(new CardPackageConfiguration());
         modelBuilder.ApplyConfiguration(new CreditAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new CreditPackageConfiguration());
         modelBuilder.ApplyConfiguration(new CreditPaymentConfiguration());
         modelBuilder.ApplyConfiguration(new CreditRequestConfiguration());
         modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
         modelBuilder.ApplyConfiguration(new DepositAccountConfiguration());
         modelBuilder.ApplyConfiguration(new DepositAccrualConfiguration());
+        modelBuilder.ApplyConfiguration(new DepositPackageConfiguration());
         modelBuilder.ApplyConfiguration(new MessageConfiguration());
         modelBuilder.ApplyConfiguration(new ModeratorConfiguration());
         modelBuilder.ApplyConfiguration(new PersonalAccountConfiguration());

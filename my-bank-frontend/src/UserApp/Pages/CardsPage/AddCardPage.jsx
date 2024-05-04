@@ -44,9 +44,9 @@ const getUserAccountsData = async () => {
   });
   try {
     const res = await axiosInstance.get(
-      `PersonalAccounts/GetAllInfoByCurrentUser`
+      `PersonalAccounts/GetAllInfoByCurrentUser?includeData=${false}`
     );
-    console.log(res.data["list"]);
+    console.log(res.data.list);
     return res.data["list"];
   } catch (err) {
     handleResponseError(err.response);
@@ -106,7 +106,14 @@ export default function AddCardPage() {
     setCardName(e.target.value);
   };
 
+  function isNumber(value) {
+    return /^\d+$/.test(value);
+  }
+
   const handlePincode = (e) => {
+    if (!isNumber(e.target.value.at(-1)) && e.target.value.length !== 0) {
+      return;
+    }
     setPincode(e.target.value);
   };
 
@@ -127,6 +134,10 @@ export default function AddCardPage() {
   };
 
   const handleEnter = () => {
+    if (pincode.length !== 4) {
+      showMessageStc("Пин-код должен иметь длину 4 цифры")
+      return;
+    }
     addCard();
   };
 
@@ -230,7 +241,7 @@ export default function AddCardPage() {
               <Col style={{ width: colInputWidth }}>
                 <Select
                   defaultValue=""
-                  style={{ minWidth: "130px" }}
+                  style={{ minWidth: "170px" }}
                   onChange={handleCardPackage}
                   options={cardPackagesData}
                 />
@@ -257,7 +268,7 @@ export default function AddCardPage() {
               <Col style={{ width: colInputWidth }}>
                 <Select
                   defaultValue=""
-                  style={{ minWidth: "130px" }}
+                  style={{ minWidth: "170px" }}
                   onChange={handlePersonalAccount}
                   options={userAccountsData}
                 />

@@ -53,61 +53,82 @@ public class CreditAccountsRepository : ICreditAccountsRepository
         return _mapper.Map<CreditAccount>(creditAccountEntity);
     }
 
-    public async Task<List<CreditAccount>> GetAllByUser(int userId, bool includeData)
+    public async Task<List<CreditAccount>> GetAllByUser(int userId, bool includeData, bool onlyActive)
     {
-        var creditAccountEntitiesList = includeData == true ?
-            await _dbContext.CreditAccounts
-                .AsNoTracking()
-                .Include(c => c.User)
-                .Include(c => c.Currency)
-                .Include(c => c.ModeratorApproved)
-                .Include(c => c.Payments)
-                .Where(ca => ca.UserId == userId)
-                .ToListAsync() :
-            await _dbContext.CreditAccounts
-                .AsNoTracking()
-                .Include(c => c.User)
-                .Include(c => c.Currency)
-                .Include(c => c.ModeratorApproved)
-                .Include(c => c.Payments)
-                .Where(ca => ca.UserId == userId)
-                .ToListAsync();
+        IQueryable<CreditAccountEntity> query = _dbContext.CreditAccounts.AsNoTracking();
+
+        if (includeData)
+        {
+            query = query.Include(c => c.User)
+                         .Include(c => c.Currency)
+                         .Include(c => c.ModeratorApproved)
+                         .Include(c => c.Payments);
+        }
+
+        query = query.Where(c => c.UserId == userId);
+
+        if (onlyActive)
+        {
+            query = query.Where(c => c.IsActive == true);
+        }
+
+        var creditAccountEntitiesList = await query.ToListAsync();
 
         return _mapper.Map<List<CreditAccount>>(creditAccountEntitiesList);
     }
 
-    public async Task<bool> UpdateInfo(int id, string name, bool isActive)
+    public async Task<bool> UpdateName(int id, string name)
     {
-        var number = await _dbContext
-            .CreditAccounts.Where(ca => ca.Id == id)
+        var number = await _dbContext.CreditAccounts
+            .Where(ca => ca.Id == id)
             .ExecuteUpdateAsync(s =>
-                s.SetProperty(ca => ca.Name, name).SetProperty(ca => ca.IsActive, isActive)
-            );
+                s.SetProperty(ca => ca.Name, name));
 
         return (number == 0) ? false : true;
     }
 
-    public async Task<bool> UpdateBalance(int id, decimal deltaNumber)
+    public async Task<bool> UpdateBalanceDelta(int id, decimal deltaNumber)
     {
-        var number = await _dbContext
-            .CreditAccounts.Where(ca => ca.Id == id)
-            .ExecuteUpdateAsync(s =>
-                s.SetProperty(ca => ca.CurrentBalance, ca => ca.CurrentBalance + deltaNumber)
-            );
+        var creditAccountEntity = await _dbContext.CreditAccounts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(ca => ca.Id == id);
+
+        decimal delta = deltaNumber + creditAccountEntity!.CurrentBalance;
+
+        var number = await _dbContext.CreditAccounts
+            .Where(pa => pa.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(ca => ca.CurrentBalance, delta));
 
         return (number == 0) ? false : true;
     }
 
     public async Task<bool> UpdatePaymentNumber(int id, int deltaNumber)
     {
-        var number = await _dbContext
-            .CreditAccounts.Where(ca => ca.Id == id)
+        var number = await _dbContext.CreditAccounts
+            .Where(ca => ca.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(ca => ca.MadePaymentsNumber, ca => ca.MadePaymentsNumber + deltaNumber));
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> UpdateStatus(int id, bool isActive)
+    {
+        var number = await _dbContext.CreditAccounts
+            .Where(ca => ca.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(ca => ca.IsActive, isActive));
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> SetAccountNumber(int id, string accNumber)
+    {
+        var number = await _dbContext.CreditAccounts
+            .Where(ca => ca.Id == id)
             .ExecuteUpdateAsync(s =>
-                s.SetProperty(
-                    ca => ca.MadePaymentsNumber,
-                    ca => ca.MadePaymentsNumber + deltaNumber
-                )
-            );
+                s.SetProperty(ca => ca.Number, accNumber));
 
         return (number == 0) ? false : true;
     }

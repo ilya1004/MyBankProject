@@ -23,9 +23,7 @@ public class TransactionsService : ITransactionsService
 
     public async Task<ServiceResponse<List<Transaction>>> GetAllByPersonalAccountNumber(string personalAccountNumber)
     {
-        var list = await _transactionsRepository.GetAllByPersonalAccountNumber(
-            personalAccountNumber
-        );
+        var list = await _transactionsRepository.GetAllByPersonalAccountNumber(personalAccountNumber);
 
         return new ServiceResponse<List<Transaction>>
         {
@@ -37,12 +35,21 @@ public class TransactionsService : ITransactionsService
 
     public async Task<ServiceResponse<List<Transaction>>> GetAllByPersonalAccountNumber(string personalAccountNumber, DateOnly dateStart, DateOnly dateEnd)
     {
-        TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
-        var list = await _transactionsRepository.GetAllByPersonalAccountDate(
-            personalAccountNumber,
-            TimeZoneInfo.ConvertTimeToUtc(new DateTime(dateStart, new TimeOnly(0, 0, 0)), localTimeZone),
-            TimeZoneInfo.ConvertTimeToUtc(new DateTime(dateEnd, new TimeOnly(23, 59, 59)), localTimeZone)
-        );
+        var list = await _transactionsRepository.GetAllByPersonalAccountDate(personalAccountNumber, 
+            new DateTime(dateStart, TimeOnly.MinValue, DateTimeKind.Utc),
+            new DateTime(dateEnd, TimeOnly.MaxValue, DateTimeKind.Utc));
+
+        return new ServiceResponse<List<Transaction>>
+        {
+            Status = true,
+            Message = "Success",
+            Data = list
+        };
+    }
+
+    public async Task<ServiceResponse<List<Transaction>>> GetAll()
+    {
+        var list = await _transactionsRepository.GetAll();
 
         return new ServiceResponse<List<Transaction>>
         {

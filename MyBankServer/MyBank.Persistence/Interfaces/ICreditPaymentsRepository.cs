@@ -8,7 +8,7 @@ public interface ICreditPaymentsRepository
 
     Task<List<CreditPayment>> GetAllByCredit(int creditAccountId);
 
-    Task<bool> UpdateStatus(int id, string status);
+    Task<bool> UpdateStatus(int id, bool status);
 
     Task<bool> Delete(int id);
 }

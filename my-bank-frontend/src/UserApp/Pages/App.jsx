@@ -1,13 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
-
 import "./App.css";
 import NavigationBar from "../Components/NavigationBar.jsx";
 import { useState } from "react";
 
 const { Header, Footer, Content } = Layout;
 
-export default function App() {
+export default function UserApp() {
   const [loginState, setLoginState] = useState(
     document.cookie === "login-cookie=user"
   );

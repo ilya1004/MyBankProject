@@ -84,7 +84,14 @@ export default function SignUpPage() {
     setBirthdayDate(date);
   };
 
+  function isNumber(value) {
+    return /^\d+$/.test(value);
+  }
+
   const handleChangePhoneNumber = (e) => {
+    if (!isNumber(e.target.value.at(-1)) && e.target.value.length !== 0) {
+      return;
+    }
     setPhoneNumber(e.target.value);
   };
 
@@ -114,23 +121,13 @@ export default function SignUpPage() {
     }
   };
 
-  const handleSubmit = (e) => {
-    // e.preventDefault();
+  const handleSubmit = () => {
     registerUser();
   };
 
   const filterOption = (input, option) => {
     return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
   };
-
-  const handleBeforeUploadFile = (file) => {
-    console.log("qwe");
-    console.log(file);
-  };
-
-  // const handleChangeFileState = (info) => {
-  // console.log(info)
-  // };
 
   return (
     <Flex
@@ -165,10 +162,10 @@ export default function SignUpPage() {
                 required: true,
                 message: "Введите электронную почту!",
               },
-              // {
-              //   type: "email",
-              //   message: "Вы ввели неверную электронную почту",
-              // },
+              {
+                type: "email",
+                message: "Вы ввели неверную электронную почту",
+              },
             ]}
             hasFeedback
           >

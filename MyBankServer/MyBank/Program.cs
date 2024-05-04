@@ -1,11 +1,9 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MyBank.API.Mapping;
 using MyBank.Application.Extensions;
-using MyBank.Application.Interfaces;
 using MyBank.Application.Utils;
 using MyBank.Persistence;
 using MyBank.Persistence.Extensions;
@@ -15,11 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 
-services
-    .AddControllers()
-    .AddJsonOptions(options =>
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
-    );
+services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 services.AddAutoMapper(
     typeof(MappingProfileDatabase).Assembly,
@@ -54,6 +48,7 @@ services.AddCors(options =>
         policyBuilder =>
         {
             policyBuilder.WithOrigins("http://localhost:3000");
+            policyBuilder.WithOrigins("http://192.168.242.249:3000");
             policyBuilder.AllowAnyMethod();
             policyBuilder.AllowAnyHeader();
             policyBuilder.AllowCredentials();
