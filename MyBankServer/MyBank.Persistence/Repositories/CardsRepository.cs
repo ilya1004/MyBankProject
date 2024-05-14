@@ -92,7 +92,7 @@ public class CardsRepository : ICardsRepository
         var cardEntitiesList = includeData == true ?
             await _dbContext.Cards
                 .AsNoTracking()
-                .Where(c => c.IsActive == true && c.UserId == userId)
+                .Where(c => c.UserId == userId)
                 .Include(c => c.CardPackage)
                 .Include(c => c.PersonalAccount)
                     .ThenInclude(pa => pa!.Currency)
@@ -104,6 +104,12 @@ public class CardsRepository : ICardsRepository
                 .ToListAsync(); 
 
         return _mapper.Map<List<Card>>(cardEntitiesList);
+    }
+
+    public async Task<bool> IsExist(string cardNumber)
+    {
+        return await _dbContext.Cards
+            .AnyAsync(c => c.Number == cardNumber && c.IsActive == true);
     }
 
     public async Task<bool> UpdatePincode(int id, string pincode)

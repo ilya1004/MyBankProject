@@ -4,29 +4,17 @@ public class Message
 {
     public Message() { }
 
-    public Message(
-        int id,
-        string title,
-        string text,
-        int recepientId,
-        string recepientRole,
-        DateTime creationDatetime,
-        bool isRead,
-        int? senderAdminId,
-        Admin? senderAdmin,
-        int? senderModeratorId,
-        Moderator? senderModerator,
-        int? senderUserId,
-        User? senderUser
-    )
+    public Message(int id, string title, string text, int recepientId, string recepientNickname, string recepientRole, DateTime creationDatetime, bool isRead, bool isActive, int? senderAdminId, Admin? senderAdmin, int? senderModeratorId, Moderator? senderModerator, int? senderUserId, User? senderUser)
     {
         Id = id;
         Title = title;
         Text = text;
         RecepientId = recepientId;
+        RecepientNickname = recepientNickname;
         RecepientRole = recepientRole;
         CreationDatetime = creationDatetime;
         IsRead = isRead;
+        IsActive = isActive;
         SenderAdminId = senderAdminId;
         SenderAdmin = senderAdmin;
         SenderModeratorId = senderModeratorId;
@@ -39,6 +27,7 @@ public class Message
     public string Title { get; set; } = string.Empty;
     public string Text { get; set; } = string.Empty;
     public int RecepientId { get; set; }
+    public string RecepientNickname { get; set; } = string.Empty;
     public string RecepientRole { get; set; } = string.Empty;
     public DateTime CreationDatetime { get; set; }
     public bool IsRead { get; set; } = false;

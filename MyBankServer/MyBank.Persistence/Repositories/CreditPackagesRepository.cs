@@ -42,7 +42,7 @@ public class CreditPackagesRepository : ICreditPackagesRepository
         return _mapper.Map<CreditPackage>(creditPackageEntity);
     }
 
-    public async Task<List<CreditPackage>> GetAll(bool includeData)
+    public async Task<List<CreditPackage>> GetAll(bool includeData, bool onlyActive)
     {
         IQueryable<CreditPackageEntity> query = _dbContext.CreditPackages.AsNoTracking();
 
@@ -51,7 +51,10 @@ public class CreditPackagesRepository : ICreditPackagesRepository
             query = query.Include(cp => cp.Currency);
         }
 
-        query = query.Where(cp => cp.IsActive == true);
+        if (onlyActive)
+        {
+            query = query.Where(cp => cp.IsActive == true);
+        }
 
         var creditPackageEntitiesList = await query.ToListAsync();
 

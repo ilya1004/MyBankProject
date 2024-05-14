@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using MyBank.API.DataTransferObjects.CurrencyDtos;
+using MyBank.Domain.Models;
 
 namespace MyBank.API.Controllers;
 
@@ -95,6 +96,42 @@ public class CurrencyController : ControllerBase
         }
 
         return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpPut]
+    public async Task<IResult> UpdateRates([FromBody] List<UpdateNBCurrencyDto> list)
+    {
+        var listCurr = new List<Currency>();
+
+        foreach (var item in list)
+        {
+            listCurr.Add(new Currency
+            {
+                Id = 0,
+                Code = item.Cur_Abbreviation,
+                Name = item.Cur_Name,
+                Scale = item.Cur_Scale,
+                LastRateUpdate = DateTime.UtcNow,
+                OfficialRate = item.Cur_OfficialRate,
+                IsActive = true,
+            });
+        }
+
+        var serviceResponse = await _currencyService.UpdateRates(listCurr);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CurrencyController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpDelete]

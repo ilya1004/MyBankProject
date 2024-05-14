@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./Common/Utils/index.css";
 import App from "./UserApp/Pages/App";
-import ErrorPage from "./Common/Pages/ErrorPage";
+import ErrorPage from "./UserApp/Pages/ErrorPage";
 import MainPage, {
   loader as mainLoader,
 } from "./UserApp/Pages/MainPage/MainPage";
@@ -39,41 +39,71 @@ import AccountInfoPage, {
 import CreditInfoPage, {
   loader as creditInfoLoader,
 } from "./UserApp/Pages/CreditsPage/CreditInfoPage";
-// import AddCreditPage, {loader as addCreditLoader} from "./UserApp/Pages/CreditsPage/AddCreditPage";
+import AddCreditPage, {
+  loader as addCreditLoader,
+} from "./UserApp/Pages/CreditsPage/AddCreditPage";
+import AddDepositPage, {
+  loader as addDepositLoader,
+} from "./UserApp/Pages/DepositsPage/AddDepositPage";
+import DepositInfoPage, {
+  loader as depositInfoLoader,
+} from "./UserApp/Pages/DepositsPage/DepositInfoPage";
+import MessagesPage, {
+  loader as messagesLoader,
+} from "./UserApp/Pages/MessagesPage/MessagesPage";
+import MakeTransactionPage, {
+  loader as makeTransactionLoader,
+} from "./UserApp/Pages/TransactionsPage/MakeTransactionPage";
 
-import ModeratorApp, {loader as appModeratorLoader} from "./ModeratorApp/Pages/App";
+import ModeratorApp, {
+  loader as appModeratorLoader,
+} from "./ModeratorApp/Pages/App";
 import {
   ProfilePage as ModerProfilePage,
   loader as moderProfileLoader,
 } from "./ModeratorApp/Pages/ProfilePage/ProfilePage";
 import {
-  UsersInfo as ModerUsersInfo,
+  ModeratorUsersPage,
   loader as moderUsersInfoLoader,
-} from "./ModeratorApp/Pages/UsersInfo/UsersInfo";
-import CreditRequests from "./ModeratorApp/Pages/CreditRequests/CreditRequests";
+} from "./ModeratorApp/Pages/UsersPage/UsersPage";
+import CreditRequests, {
+  loader as creditRequestsLoader,
+} from "./ModeratorApp/Pages/CreditRequests/CreditRequests";
+import ModerMessagesPage, {
+  loader as moderMessagesLoader,
+} from "./ModeratorApp/Pages/MessagesPage/MessagesPage";
+import ModeratorUserInfoPage, {
+  loader as moderUserInfoLoader,
+} from "./ModeratorApp/Pages/UsersPage/UserInfoPage";
+import ModeratorCreditsPage, {
+  loader as moderCreditsLoader,
+} from "./ModeratorApp/Pages/CreditsPage/CreditsPage";
+import ModeratorCreditInfoPage, {
+  loader as moderCreditInfoLoader,
+} from "./ModeratorApp/Pages/CreditsPage/CreditInfoPage";
 
-import AdminApp, {loader as adminAppLoader} from "./AdminApp/Pages/App";
+import AdminApp, { loader as adminAppLoader } from "./AdminApp/Pages/App";
 import {
   ProfilePage as AdminProfilePage,
   loader as adminProfileLoader,
 } from "./AdminApp/Pages/ProfilePage/ProfilePage";
 import {
-  Users as AdminUsersInfo,
+  AdminUsersPage as AdminUsersInfo,
   loader as adminUsersInfoLoader,
-} from "./AdminApp/Pages/UsersInfo/Users";
+} from "./AdminApp/Pages/UsersPage/UsersPage";
 import ModeratorsPage, {
   loader as moderatorsLoader,
 } from "./AdminApp/Pages/ModeratorsPage/ModeratorsPage";
 import ManagementPage, {
   loader as managementLoader,
 } from "./AdminApp/Pages/ManagementPage/ManagementPage";
-import AddPackagePage from "./AdminApp/Pages/ManagementPage/Components/AddPackagePage";
-import EditPackagePage, {
-  loader as editPackageLoader,
-} from "./AdminApp/Pages/ManagementPage/Components/EditPackagePage";
-import DelPackagePage, {
+import AddCardPackagePage from "./AdminApp/Pages/ManagementPage/Components/AddCardPackagePage";
+import EditCardPackagePage, {
+  loader as editCardPackageLoader,
+} from "./AdminApp/Pages/ManagementPage/Components/EditCardPackagePage";
+import DelCardPackagePage, {
   loader as delPackageLoader,
-} from "./AdminApp/Pages/ManagementPage/Components/DelPackagePage";
+} from "./AdminApp/Pages/ManagementPage/Components/DelCardPackagePage";
 import AddModeratorPage from "./AdminApp/Pages/ModeratorsPage/Components/AddModeratorPage";
 import EditModeratorPage, {
   loader as editModeratorLoader,
@@ -84,6 +114,24 @@ import DelModeratorPage, {
 import ModeratorInfoPage, {
   loader as moderatorInfoLoader,
 } from "./AdminApp/Pages/ModeratorsPage/ModeratorInfoPage";
+import AdminUserInfoPage, {
+  loader as adminUserInfoLoader,
+} from "./AdminApp/Pages/UsersPage/UserInfoPage";
+import AdminMessagesPage, {
+  loader as adminMessagesLoader,
+} from "./AdminApp/Pages/MessagesPage/MessagesPage";
+import AddCreditPackagePage, {
+  loader as addCreditPackageLoader,
+} from "./AdminApp/Pages/ManagementPage/Components/AddCreditPackagePage";
+import EditCreditPackagePage, {
+  loader as editCreditPackageLoader,
+} from "./AdminApp/Pages/ManagementPage/Components/EditCreditPackagePage";
+import AddDepositPackagePage, {
+  loader as addDepositPackageLoader,
+} from "./AdminApp/Pages/ManagementPage/Components/AddDepositPackagePage";
+import EditDepositPackagePage, {
+  loader as editDepositPackageLoader,
+} from "./AdminApp/Pages/ManagementPage/Components/EditDepositPackagePage";
 
 const routers = createBrowserRouter([
   {
@@ -122,6 +170,11 @@ const routers = createBrowserRouter([
         loader: accInfoLoader,
       },
       {
+        path: "make-transaction",
+        element: <MakeTransactionPage />,
+        loader: makeTransactionLoader,
+      },
+      {
         path: "accounts/create",
         element: <AddAccountPage />,
         loader: addAccountLoader,
@@ -136,15 +189,30 @@ const routers = createBrowserRouter([
         element: <CreditInfoPage />,
         loader: creditInfoLoader,
       },
-      // {
-      //   path: "credits/add",
-      //   element: <AddCreditPage />,
-      //   loader: addCreditLoader
-      // },
+      {
+        path: "credits/add",
+        element: <AddCreditPage />,
+        loader: addCreditLoader,
+      },
       {
         path: "deposits",
         element: <DepositsPage />,
         loader: depositsLoader,
+      },
+      {
+        path: "deposits/:accountId",
+        element: <DepositInfoPage />,
+        loader: depositInfoLoader,
+      },
+      {
+        path: "deposits/add",
+        element: <AddDepositPage />,
+        loader: addDepositLoader,
+      },
+      {
+        path: "messages",
+        element: <MessagesPage />,
+        loader: messagesLoader,
       },
       {
         path: "profile",
@@ -165,16 +233,37 @@ const routers = createBrowserRouter([
     path: "/moderator",
     element: <ModeratorApp />,
     errorElement: <ErrorPage />,
-    loader: appModeratorLoader,
+    // loader: appModeratorLoader,
     children: [
       {
         path: "credit-requests",
         element: <CreditRequests />,
+        loader: creditRequestsLoader,
       },
       {
-        path: "users-info",
-        element: <ModerUsersInfo />,
+        path: "users",
+        element: <ModeratorUsersPage />,
         loader: moderUsersInfoLoader,
+      },
+      {
+        path: "users/:userId",
+        element: <ModeratorUserInfoPage />,
+        loader: moderUserInfoLoader,
+      },
+      {
+        path: "credits",
+        element: <ModeratorCreditsPage />,
+        loader: moderCreditsLoader,
+      },
+      {
+        path: "credits/:accountId",
+        element: <ModeratorCreditInfoPage />,
+        loader: moderCreditInfoLoader,
+      },
+      {
+        path: "messages",
+        element: <ModerMessagesPage />,
+        loader: moderMessagesLoader,
       },
       {
         path: "profile",
@@ -187,7 +276,7 @@ const routers = createBrowserRouter([
     path: "/admin",
     element: <AdminApp />,
     errorElement: <ErrorPage />,
-    loader: adminAppLoader,
+    // loader: adminAppLoader,
     children: [
       {
         path: "management",
@@ -195,23 +284,43 @@ const routers = createBrowserRouter([
         loader: managementLoader,
       },
       {
-        path: "management/add-package",
-        element: <AddPackagePage />,
+        path: "management/add-card-package",
+        element: <AddCardPackagePage />,
       },
       {
-        path: "management/edit-package",
-        element: <EditPackagePage />,
-        loader: editPackageLoader,
+        path: "management/edit-card-package",
+        element: <EditCardPackagePage />,
+        loader: editCardPackageLoader,
       },
       {
-        path: "management/delete-package",
-        element: <DelPackagePage />,
-        loader: delPackageLoader,
+        path: "management/add-credit-package",
+        element: <AddCreditPackagePage />,
+        loader: addCreditPackageLoader,
+      },
+      {
+        path: "management/edit-credit-package",
+        element: <EditCreditPackagePage />,
+        loader: editCreditPackageLoader,
+      },
+      {
+        path: "management/add-deposit-package",
+        element: <AddDepositPackagePage />,
+        loader: addDepositPackageLoader,
+      },
+      {
+        path: "management/edit-deposit-package",
+        element: <EditDepositPackagePage />,
+        loader: editDepositPackageLoader,
       },
       {
         path: "users",
         element: <AdminUsersInfo />,
         loader: adminUsersInfoLoader,
+      },
+      {
+        path: "users/:userId",
+        element: <AdminUserInfoPage />,
+        loader: adminUserInfoLoader,
       },
       {
         path: "moderators",
@@ -236,6 +345,11 @@ const routers = createBrowserRouter([
         path: "moderators/delete",
         element: <DelModeratorPage />,
         loader: delModeratorLoader,
+      },
+      {
+        path: "messages",
+        element: <AdminMessagesPage />,
+        loader: adminMessagesLoader,
       },
       {
         path: "profile",

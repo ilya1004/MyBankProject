@@ -43,9 +43,9 @@ public class CreditPackagesService : ICreditPackagesService
         };
     }
 
-    public async Task<ServiceResponse<List<CreditPackage>>> GetAll(bool includeData)
+    public async Task<ServiceResponse<List<CreditPackage>>> GetAll(bool includeData, bool onlyActive)
     {
-        var list = await _creditPackagesRepository.GetAll(includeData);
+        var list = await _creditPackagesRepository.GetAll(includeData, onlyActive);
 
         return new ServiceResponse<List<CreditPackage>>
         {

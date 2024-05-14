@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
-using MyBank.API.DataTransferObjects.TransactionDtos;
+﻿using MyBank.API.DataTransferObjects.TransactionDtos;
 
 namespace MyBank.API.Controllers;
 
@@ -21,7 +20,8 @@ public class TransactionsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> Add([FromBody] TransactionDto dto)
     {
-        var serviceResponse = await _transactionsService.Add(_mapper.Map<Transaction>(dto));
+        var serviceResponse = await _transactionsService.Add(dto.PaymentAmount, dto.CurrencyId, dto.Information, dto.TransactionType, 
+            dto.AccountSenderNumber, dto.UserSenderNickname, dto.CardRecipientNumber, dto.AccountRecipientNumber, dto.UserRecipientNickname);
 
         if (serviceResponse.Status == false)
         {
@@ -35,7 +35,7 @@ public class TransactionsController : ControllerBase
             );
         }
 
-        return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpGet]
@@ -63,7 +63,7 @@ public class TransactionsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
-    public async Task<IResult> GetAllInfoByPersonalAccountNumber(string accountNumber, DateOnly dateStart, DateOnly dateEnd)
+    public async Task<IResult> GetAllInfoByPersonalAccountNumber(string accountNumber, DateTime dateStart, DateTime dateEnd)
     {
         var serviceResponse = await _transactionsService.GetAllByPersonalAccountNumber(accountNumber, dateStart, dateEnd);
 

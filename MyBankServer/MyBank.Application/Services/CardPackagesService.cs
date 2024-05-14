@@ -43,9 +43,9 @@ public class CardPackagesService : ICardPackagesService
         };
     }
 
-    public async Task<ServiceResponse<List<CardPackage>>> GetAll()
+    public async Task<ServiceResponse<List<CardPackage>>> GetAll(bool onlyActive)
     {
-        var list = await _cardPackagesRepository.GetAll();
+        var list = await _cardPackagesRepository.GetAll(onlyActive);
 
         return new ServiceResponse<List<CardPackage>>
         {

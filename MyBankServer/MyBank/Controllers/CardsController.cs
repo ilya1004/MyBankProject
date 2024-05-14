@@ -104,7 +104,7 @@ public class CardsController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> GetAllInfoByCurrentUser(bool includeData)
     {
         var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);

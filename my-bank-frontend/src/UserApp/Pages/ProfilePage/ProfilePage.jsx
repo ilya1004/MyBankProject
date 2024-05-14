@@ -66,11 +66,13 @@ const getUserAvatar = async (imgExt) => {
     // const imageBlob1 = new Blob([res.data], { type: `image/${imgExt}` });
     // const avatarUrl1 = URL.createObjectURL(imageBlob1);
     const imageBlob = new Blob([res.data], { type: `image/${imgExt}` });
-    // const avatarUrl = ;
     URL.revokeObjectURL(URL.createObjectURL(imageBlob));
     const avatarUrl = URL.createObjectURL(imageBlob);
     return { avatarUrl, error: null };
   } catch (err) {
+    if (err.response.status === 401) {
+      return { userData: null, error: err.response };
+    }
     handleResponseError(err.response);
     return { avatarUrl: null, error: err.response };
   }
@@ -100,7 +102,7 @@ export default function ProfilePage() {
   const [isChangingEmail, setIsChangingEmail] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [loadingModal, setLoadingModal] = useState(false);
-  let revalidator = useRevalidator();
+  const revalidator = useRevalidator();
   const navigate = useNavigate();
 
   const [loginState, setLoginState] = useOutletContext();
@@ -211,9 +213,10 @@ export default function ProfilePage() {
           }}
         >
           <Image
-            style={{ 
-              maxHeight: "350px", 
-              maxWidth: "300px" 
+            style={{
+              maxHeight: "350px",
+              maxWidth: "300px",
+              borderRadius: "10px",
             }}
             src={avatarUrl}
             preview={false}
@@ -254,6 +257,7 @@ export default function ProfilePage() {
           align="center"
           style={{
             width: "65%",
+            margin: "0px 0px 10px 0px"
           }}
         >
           <Card
@@ -289,7 +293,7 @@ export default function ProfilePage() {
               <ListCards value={userData.cards} />
               <ListAccounts value={userData.personalAccounts} />
               <ListCredits value={userData.creditAccounts} />
-              <ListDeposits value={userData.depositAccount} />
+              <ListDeposits value={userData.depositAccounts} />
             </>
           ) : null}
           {isOpenSettings === true ? (
@@ -361,13 +365,6 @@ export default function ProfilePage() {
               onReload={handleReload}
             />
           ) : null}
-          {/* {isUploadingFile === true ? (
-            <UploadFile
-              onSetIsOpenSettings={setIsOpenSettings}
-              onSetIsUploadingFile={setIsUploadingFile}
-              onReload={handleReload}
-            />
-          ) : null} */}
         </Flex>
       </Flex>
     </>

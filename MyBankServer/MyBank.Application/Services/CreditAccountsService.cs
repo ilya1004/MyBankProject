@@ -7,11 +7,18 @@ public class CreditAccountsService : ICreditAccountsService
 {
     private readonly ICreditAccountsRepository _creditAccountsRepository;
     private readonly IAccNumberProvider _accNumberProvider;
+    private readonly IPersonalAccountsRepository _personalAccountsRepository;
+    private readonly ICreditPaymentsRepository _creditPaymentsRepository;
+    private readonly ICreditPaymentsService _creditPaymentsService;
 
-    public CreditAccountsService(ICreditAccountsRepository creditAccountsRepository, IAccNumberProvider accNumberProvider)
+    public CreditAccountsService(ICreditAccountsRepository creditAccountsRepository, IAccNumberProvider accNumberProvider, 
+        IPersonalAccountsRepository personalAccountsRepository, ICreditPaymentsRepository creditPaymentsRepository, ICreditPaymentsService creditPaymentsService)
     {
         _creditAccountsRepository = creditAccountsRepository;
         _accNumberProvider = accNumberProvider;
+        _personalAccountsRepository = personalAccountsRepository;
+        _creditPaymentsRepository = creditPaymentsRepository;
+        _creditPaymentsService = creditPaymentsService;
     }
 
     public async Task<ServiceResponse<int>> Add(CreditAccount creditAcc)
@@ -76,9 +83,6 @@ public class CreditAccountsService : ICreditAccountsService
             };
         }
 
-
-
-
         return new ServiceResponse<int>
         {
             Status = true,
@@ -138,7 +142,7 @@ public class CreditAccountsService : ICreditAccountsService
             payment.PaymentAmount = credit.CreditStartBalance / (credit.CreditTermInDays / 30);
         }
 
-        payment.Datetime = credit.CreationDate.AddMonths((DateTime.UtcNow - credit.CreationDate).Days / 30 - credit.MadePaymentsNumber + 1);
+        payment.Datetime = credit.CreationDate.AddMonths((DateTime.UtcNow - credit.CreationDate).Days / 30 + credit.MadePaymentsNumber + 1);
 
         return new ServiceResponse<CreditPayment>
         {
@@ -151,6 +155,18 @@ public class CreditAccountsService : ICreditAccountsService
     public async Task<ServiceResponse<List<CreditAccount>>> GetAllByUser(int userId, bool includeData, bool onlyActive)
     {
         var list = await _creditAccountsRepository.GetAllByUser(userId, includeData, onlyActive);
+
+        return new ServiceResponse<List<CreditAccount>>
+        {
+            Status = true,
+            Message = "Success",
+            Data = list
+        };
+    }
+
+    public async Task<ServiceResponse<List<CreditAccount>>> GetAll(bool includeData, bool onlyActive)
+    {
+        var list = await _creditAccountsRepository.GetAll(includeData, onlyActive);
 
         return new ServiceResponse<List<CreditAccount>>
         {
@@ -258,6 +274,75 @@ public class CreditAccountsService : ICreditAccountsService
             {
                 Status = false,
                 Message = $"Unknown error. Maybe credit account with given id ({id}) not found",
+                Data = default
+            };
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = status
+        };
+    }
+
+    public async Task<ServiceResponse<bool>> MakePrepayment(int creditAccountId, int personalAccountId)
+    {
+        var account = await _personalAccountsRepository.GetById(personalAccountId, true);
+        
+        if (account == null)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Лицевой счет с данным id ({personalAccountId}) не найден",
+                Data = default
+            };
+        }
+
+        var credit = await _creditAccountsRepository.GetById(creditAccountId, true);
+
+        if (credit == null)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Кредитный счет с данным id ({creditAccountId}) не найден",
+                Data = default
+            };
+        }
+
+        if (credit.CurrentBalance > account.CurrentBalance)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"На счете недостаточно средств для погашения кредита",
+                Data = default
+            };
+        }
+
+        var id = await _creditPaymentsService.Add(credit.CurrentBalance, credit.MadePaymentsNumber + 1, creditAccountId, 
+            credit.Number, personalAccountId, account.Number, account.User!.Nickname, account.UserId);
+
+        if (id == null)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Произошла ошибка при выполнении платежа",
+                Data = default
+            };
+        }
+
+        var status = await _creditAccountsRepository.UpdateClosingInfo(creditAccountId, 0, credit.TotalPaymentsNumber, DateTime.UtcNow, false);
+
+        if (status == false)
+        {
+            return new ServiceResponse<bool>
+            {
+                Status = false,
+                Message = $"Произошла ошибка при закрытии кредита",
                 Data = default
             };
         }

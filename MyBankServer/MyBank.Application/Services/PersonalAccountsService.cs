@@ -6,18 +6,15 @@ public class PersonalAccountsService : IPersonalAccountsService
     private readonly ICardsRepository _cardsRepository;
     private readonly ITransactionsRepository _transactionsRepository;
     private readonly IAccNumberProvider _accNumberProvider;
+    private readonly IUsersRepository _usersRepository;
 
-    public PersonalAccountsService(
-        IPersonalAccountsRepository personalAccountsRepository,
-        ICardsRepository cardsRepository,
-        ITransactionsRepository transactionsRepository,
-        IAccNumberProvider accNumberProvider
-    )
+    public PersonalAccountsService(IPersonalAccountsRepository personalAccountsRepository, ICardsRepository cardsRepository, ITransactionsRepository transactionsRepository, IAccNumberProvider accNumberProvider, IUsersRepository usersRepository)
     {
         _personalAccountsRepository = personalAccountsRepository;
         _cardsRepository = cardsRepository;
         _transactionsRepository = transactionsRepository;
         _accNumberProvider = accNumberProvider;
+        _usersRepository = usersRepository;
     }
 
     public async Task<ServiceResponse<int>> Add(int userId, string name, int currencyId)
@@ -186,10 +183,32 @@ public class PersonalAccountsService : IPersonalAccountsService
 
     public async Task<ServiceResponse<bool>> UpdateTransfersStatus(int id, bool isForTransfersByNickname)
     {
-        var status = await _personalAccountsRepository.UpdateTransfersStatus(
-            id,
-            isForTransfersByNickname
-        );
+        if (isForTransfersByNickname == true)
+        {
+            var account = await _personalAccountsRepository.GetById(id, false);
+
+            var user = await _usersRepository.GetById(account.UserId, true);
+
+            foreach (var item in user.PersonalAccounts)
+            {
+                if (item.Id != id)
+                {
+                    var status1 = await _personalAccountsRepository.UpdateTransfersStatus(item.Id, false);
+
+                    if (status1 == false)
+                    {
+                        return new ServiceResponse<bool>
+                        {
+                            Status = false,
+                            Message = $"Personal account with given id ({id}) not found",
+                            Data = default
+                        };
+                    }
+                }
+            }
+        }
+
+        var status = await _personalAccountsRepository.UpdateTransfersStatus(id, isForTransfersByNickname);
 
         if (status == false)
         {
@@ -253,176 +272,144 @@ public class PersonalAccountsService : IPersonalAccountsService
         };
     }
 
-    public async Task<ServiceResponse<bool>> UpdateNicknameTransfersState(int id, bool state)
-    {
-        var status = await _personalAccountsRepository.UpdateTransfersStatus(id, state);
 
-        if (status == false)
-        {
-            return new ServiceResponse<bool>
-            {
-                Status = false,
-                Message = $"Personal account with given id ({id}) not found",
-                Data = default
-            };
-        }
+    //public async Task<ServiceResponse<bool>> MakeTransfer(int personalAccountId, string accountSenderNumber, string userSenderNickname, string? accountRecipientNumber, string? cardRecipientNumber, string? userRecipientNickname, decimal amount)
+    //{
+    //    var status = await _personalAccountsRepository.UpdateBalanceDelta(personalAccountId, -amount);
 
-        return new ServiceResponse<bool>
-        {
-            Status = true,
-            Message = "Success",
-            Data = status
-        };
-    }
+    //    if (status == false)
+    //        return new ServiceResponse<bool>
+    //        {
+    //            Status = false,
+    //            Message =
+    //                $"Unknown error. Maybe personal account with given id ({personalAccountId}) not found",
+    //            Data = default
+    //        };
 
-    public async Task<ServiceResponse<bool>> MakeTransfer(
-        int personalAccountId,
-        string accountSenderNumber,
-        string userSenderNickname,
-        string? accountRecipientNumber,
-        string? cardRecipientNumber,
-        string? userRecipientNickname,
-        decimal amount
-    )
-    {
-        var status = await _personalAccountsRepository.UpdateBalanceDelta(
-            personalAccountId,
-            -amount
-        );
+    //    if (accountRecipientNumber != null)
+    //    {
+    //        status = await _personalAccountsRepository.UpdateBalanceDelta(
+    //            accountRecipientNumber,
+    //            amount
+    //        );
 
-        if (status == false)
-            return new ServiceResponse<bool>
-            {
-                Status = false,
-                Message =
-                    $"Unknown error. Maybe personal account with given id ({personalAccountId}) not found",
-                Data = default
-            };
+    //        if (status == false)
+    //            return new ServiceResponse<bool>
+    //            {
+    //                Status = false,
+    //                Message =
+    //                    $"Unknown error. Maybe personal account with given number ({accountRecipientNumber}) not found",
+    //                Data = default
+    //            };
 
-        if (accountRecipientNumber != null)
-        {
-            status = await _personalAccountsRepository.UpdateBalanceDelta(
-                accountRecipientNumber,
-                amount
-            );
+    //        var accountRecipient = await _personalAccountsRepository.GetByNumber(
+    //            accountRecipientNumber,
+    //            true
+    //        );
 
-            if (status == false)
-                return new ServiceResponse<bool>
-                {
-                    Status = false,
-                    Message =
-                        $"Unknown error. Maybe personal account with given number ({accountRecipientNumber}) not found",
-                    Data = default
-                };
+    //        await _transactionsRepository.Add(
+    //            new Transaction(
+    //                0,
+    //                amount,
+    //                DateTime.UtcNow,
+    //                true,
+    //                "Перевод средств по номеру счета",
+    //                accountSenderNumber,
+    //                userSenderNickname,
+    //                accountRecipientNumber,
+    //                accountRecipient.User!.Nickname
+    //            )
+    //        );
+    //    }
+    //    else if (cardRecipientNumber != null)
+    //    {
+    //        var card = await _cardsRepository.GetByNumber(cardRecipientNumber, true, true);
 
-            var accountRecipient = await _personalAccountsRepository.GetByNumber(
-                accountRecipientNumber,
-                true
-            );
+    //        if (card == null)
+    //            return new ServiceResponse<bool>
+    //            {
+    //                Status = false,
+    //                Message =
+    //                    $"Unknown error. Maybe card with given number ({cardRecipientNumber}) not found",
+    //                Data = default
+    //            };
 
-            await _transactionsRepository.Add(
-                new Transaction(
-                    0,
-                    amount,
-                    DateTime.UtcNow,
-                    true,
-                    "Перевод средств по номеру счета",
-                    accountSenderNumber,
-                    userSenderNickname,
-                    accountRecipientNumber,
-                    accountRecipient.User!.Nickname
-                )
-            );
-        }
-        else if (cardRecipientNumber != null)
-        {
-            var card = await _cardsRepository.GetByNumber(cardRecipientNumber, true, true);
+    //        status = await _personalAccountsRepository.UpdateBalanceDelta(
+    //            card.PersonalAccount!.Number,
+    //            amount
+    //        );
 
-            if (card == null)
-                return new ServiceResponse<bool>
-                {
-                    Status = false,
-                    Message =
-                        $"Unknown error. Maybe card with given number ({cardRecipientNumber}) not found",
-                    Data = default
-                };
+    //        if (status == false)
+    //            return new ServiceResponse<bool>
+    //            {
+    //                Status = false,
+    //                Message =
+    //                    $"Unknown error. Maybe personal account with given number ({card.PersonalAccount!.Number}) not found",
+    //                Data = default
+    //            };
 
-            status = await _personalAccountsRepository.UpdateBalanceDelta(
-                card.PersonalAccount!.Number,
-                amount
-            );
+    //        await _transactionsRepository.Add(
+    //            new Transaction(
+    //                0,
+    //                amount,
+    //                DateTime.UtcNow,
+    //                true,
+    //                "Перевод средств по номеру карты",
+    //                accountSenderNumber,
+    //                userSenderNickname,
+    //                card.PersonalAccount!.Number,
+    //                card.User!.Nickname
+    //            )
+    //        );
+    //    }
+    //    else if (userRecipientNickname != null)
+    //    {
+    //        var personalAccount = await _personalAccountsRepository.GetIsForTransfersByNickname(
+    //            userRecipientNickname
+    //        );
 
-            if (status == false)
-                return new ServiceResponse<bool>
-                {
-                    Status = false,
-                    Message =
-                        $"Unknown error. Maybe personal account with given number ({card.PersonalAccount!.Number}) not found",
-                    Data = default
-                };
+    //        if (personalAccount == null)
+    //            return new ServiceResponse<bool>
+    //            {
+    //                Status = false,
+    //                Message = $"Неизвестная ошибка.",
+    //                Data = default
+    //            };
 
-            await _transactionsRepository.Add(
-                new Transaction(
-                    0,
-                    amount,
-                    DateTime.UtcNow,
-                    true,
-                    "Перевод средств по номеру карты",
-                    accountSenderNumber,
-                    userSenderNickname,
-                    card.PersonalAccount!.Number,
-                    card.User!.Nickname
-                )
-            );
-        }
-        else if (userRecipientNickname != null)
-        {
-            var personalAccount = await _personalAccountsRepository.GetIsForTransfersByNickname(
-                userRecipientNickname
-            );
+    //        status = await _personalAccountsRepository.UpdateBalanceDelta(
+    //            personalAccount.Id,
+    //            amount
+    //        );
 
-            if (personalAccount == null)
-                return new ServiceResponse<bool>
-                {
-                    Status = false,
-                    Message = $"Неизвестная ошибка.",
-                    Data = default
-                };
+    //        if (status == false)
+    //            return new ServiceResponse<bool>
+    //            {
+    //                Status = false,
+    //                Message =
+    //                    $"Unknown error. Maybe personal account with given id ({personalAccount.Id}) not found",
+    //                Data = default
+    //            };
 
-            status = await _personalAccountsRepository.UpdateBalanceDelta(
-                personalAccount.Id,
-                amount
-            );
+    //        await _transactionsRepository.Add(
+    //            new Transaction(
+    //                0,
+    //                amount,
+    //                DateTime.UtcNow,
+    //                true,
+    //                "Перевод средств по номеру карты",
+    //                accountSenderNumber,
+    //                userSenderNickname,
+    //                personalAccount.Number,
+    //                userRecipientNickname
+    //            )
+    //        );
+    //    }
 
-            if (status == false)
-                return new ServiceResponse<bool>
-                {
-                    Status = false,
-                    Message =
-                        $"Unknown error. Maybe personal account with given id ({personalAccount.Id}) not found",
-                    Data = default
-                };
-
-            await _transactionsRepository.Add(
-                new Transaction(
-                    0,
-                    amount,
-                    DateTime.UtcNow,
-                    true,
-                    "Перевод средств по номеру карты",
-                    accountSenderNumber,
-                    userSenderNickname,
-                    personalAccount.Number,
-                    userRecipientNickname
-                )
-            );
-        }
-
-        return new ServiceResponse<bool>
-        {
-            Status = true,
-            Message = "Success",
-            Data = status
-        };
-    }
+    //    return new ServiceResponse<bool>
+    //    {
+    //        Status = true,
+    //        Message = "Success",
+    //        Data = status
+    //    };
+    //}
 }

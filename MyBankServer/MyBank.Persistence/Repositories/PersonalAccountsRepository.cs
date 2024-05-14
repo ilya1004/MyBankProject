@@ -1,4 +1,5 @@
-﻿using System.Data.SqlTypes;
+﻿using MyBank.Domain.Models;
+using System.Data.SqlTypes;
 
 namespace MyBank.Persistence.Repositories;
 
@@ -41,6 +42,12 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
         return _mapper.Map<PersonalAccount>(personalAccountEntity);
     }
 
+    public async Task<bool> IsExist(string accountNumber)
+    {
+        return await _dbContext.PersonalAccounts
+            .AnyAsync(pa => pa.Number == accountNumber && pa.IsActive == true);
+    }
+
     public async Task<PersonalAccount> GetById(int id)
     {
         var personalAccountEntity = await _dbContext
@@ -68,36 +75,50 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
 
     public async Task<PersonalAccount> GetByNumber(string personalAccountNumber, bool withUser)
     {
-        PersonalAccountEntity? personalAccountEntity = null;
+        IQueryable<PersonalAccountEntity> query = _dbContext.PersonalAccounts.AsNoTracking();
+        
         if (withUser)
         {
-            personalAccountEntity = await _dbContext
-                .PersonalAccounts.AsNoTracking()
-                .Include(pa => pa.User)
-                .FirstOrDefaultAsync(pa => pa.Number == personalAccountNumber);
+            query = query.Include(pa => pa.User);
         }
-        else
-        {
-            personalAccountEntity = await _dbContext
-                .PersonalAccounts.AsNoTracking()
-                .FirstOrDefaultAsync(pa => pa.Number == personalAccountNumber);
-        }
+
+        var personalAccountEntity = await query.FirstOrDefaultAsync(pa => pa.Number == personalAccountNumber);
 
         return _mapper.Map<PersonalAccount>(personalAccountEntity);
     }
 
     public async Task<List<PersonalAccount>> GetAllByUser(int userId, bool includeData)
     {
-        var personalAccountEntitiesList = includeData == true ?
-            await _dbContext.PersonalAccounts
-                .AsNoTracking()
-                .Where(pa => pa.IsActive == true && pa.UserId == userId)
-                .Include(pa => pa.Currency)
-                .ToListAsync() :
-            await _dbContext.PersonalAccounts
-                .AsNoTracking()
-                .Where(pa => pa.UserId == userId)
-                .ToListAsync();
+        IQueryable<PersonalAccountEntity> query = _dbContext.PersonalAccounts.AsNoTracking();
+
+        if (includeData)
+        {
+            query = query.Include(pa => pa.Cards)
+                         .Include(pa => pa.Currency)
+                         .Include(pa => pa.User);
+        }
+
+        query = query.Where(pa => pa.UserId == userId);
+
+        var personalAccountEntitiesList = await query.ToListAsync();
+
+        return _mapper.Map<List<PersonalAccount>>(personalAccountEntitiesList);
+    }
+
+    public async Task<List<PersonalAccount>> GetAllByUser(string userNickname, bool includeData)
+    {
+        IQueryable<PersonalAccountEntity> query = _dbContext.PersonalAccounts.AsNoTracking();
+
+        if (includeData)
+        {
+            query = query.Include(pa => pa.Cards)
+                         .Include(pa => pa.Currency)
+                         .Include(pa => pa.User);
+        }
+
+        query = query.Where(pa => pa.User!.Nickname == userNickname);
+
+        var personalAccountEntitiesList = await query.ToListAsync();         
 
         return _mapper.Map<List<PersonalAccount>>(personalAccountEntitiesList);
     }
@@ -130,11 +151,16 @@ public class PersonalAccountsRepository : IPersonalAccountsRepository
 
     public async Task<bool> UpdateBalanceDelta(string accountNumber, decimal deltaNumber)
     {
-        var number = await _dbContext
-            .PersonalAccounts.Where(pa => pa.Number == accountNumber)
-            .ExecuteUpdateAsync(s =>
-                s.SetProperty(pa => pa.CurrentBalance, pa => pa.CurrentBalance + deltaNumber)
-            );
+        var personalAccountEntity = await _dbContext.PersonalAccounts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(pa => pa.Number == accountNumber);
+
+        decimal delta = deltaNumber + personalAccountEntity!.CurrentBalance;
+
+        var number = await _dbContext.PersonalAccounts
+            .Where(pa => pa.Number == accountNumber)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(pa => pa.CurrentBalance, delta));
 
         return (number == 0) ? false : true;
     }

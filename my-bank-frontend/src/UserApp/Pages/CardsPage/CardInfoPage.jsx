@@ -8,15 +8,14 @@ import {
   Tag,
   Table,
   DatePicker,
-  message,
   Modal,
   Input,
   Space,
 } from "antd";
 import {
+  ExclamationCircleTwoTone,
   CheckCircleTwoTone,
   CloseCircleTwoTone,
-  ExclamationCircleTwoTone,
 } from "@ant-design/icons";
 import { useState } from "react";
 import {
@@ -24,6 +23,7 @@ import {
   Link,
   useRevalidator,
   useNavigate,
+  redirect,
 } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../../Common/Store/constants";
@@ -32,6 +32,7 @@ import {
   showMessageStc,
 } from "../../../Common/Services/ResponseErrorHandler";
 import dayjs from "dayjs";
+import { mkConfig, generateCsv, download } from "export-to-csv";
 
 const { Title, Text, Paragraph } = Typography;
 const { RangePicker } = DatePicker;
@@ -46,16 +47,77 @@ const getCardData = async (cardId) => {
     const res = await axiosInstance.get(
       `Cards/GetInfoByCurrentUser?cardId=${cardId}&includeData=${true}`
     );
-    console.log(res.data["item"]);
-    return res.data["item"];
+    return { cardData: res.data.item, error: null };
   } catch (err) {
+    if (err.response.status === 401) {
+      return { cardData: null, error: err.response };
+    }
     handleResponseError(err.response);
+    return { cardData: null, error: err.response };
+  }
+};
+
+const getMonthTransactionsData = async (accountNumber) => {
+  const axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
+  });
+  try {
+    let dateS = dayjs().startOf("month").toJSON();
+    let dateE = dayjs().startOf("day").toJSON();
+    console.log(dateS);
+    console.log(dateE);
+    const res = await axiosInstance.get(
+      `Transactions/GetAllInfoByPersonalAccountNumber?accountNumber=${accountNumber}&dateStart=${dateS}&dateEnd=${dateE}`
+    );
+    console.log(res.data);
+    return { transactionsData: res.data.list, error: null };
+  } catch (err) {
+    if (err.response.status === 401) {
+      return { transactionsData: null, error: err.response };
+    }
+    handleResponseError(err.response);
+    return { transactionsData: null, error: err.response };
   }
 };
 
 export async function loader({ params }) {
-  const cardData = await getCardData(params.cardId);
-  return { cardData };
+  const { cardData, error } = await getCardData(params.cardId);
+  if (!cardData) {
+    if (error.status === 401 || error.status === 403) {
+      return redirect("/login");
+    } else {
+      throw new Response("", {
+        status: error.status,
+      });
+    }
+  }
+  const { transactionsData, error: error1 } = await getMonthTransactionsData(
+    cardData.personalAccount.number
+  );
+  if (!transactionsData) {
+    if (error1.status === 401 || error1.status === 403) {
+      return redirect("/login");
+    } else {
+      throw new Response("", {
+        status: error1.status,
+      });
+    }
+  }
+
+  console.log(transactionsData);
+
+  let transNum = transactionsData.length;
+  let transSum = 0;
+
+  for (let i = 0; i < transactionsData.length; i++) {
+    transSum += transactionsData[i].paymentAmount;
+  }
+
+  console.log(transNum);
+  console.log(transSum);
+
+  return { cardData, transNum, transSum };
 }
 
 const infoLabelWidth = "230px";
@@ -75,7 +137,7 @@ export default function CardInfoPage() {
   let revalidator = useRevalidator();
   const navigate = useNavigate();
 
-  const { cardData } = useLoaderData();
+  const { cardData, transNum, transSum } = useLoaderData();
 
   const convertNumberCard = () => {
     let numStr = cardData.number.toString();
@@ -123,14 +185,14 @@ export default function CardInfoPage() {
       withCredentials: true,
     });
     try {
-      let dateS = dateStart.toJSON().substring(0, 10);
-      let dateE = dateEnd.toJSON().substring(0, 10);
-      let num = cardData.personalAccount.number;
+      let dateS = dateStart.toJSON();
+      let dateE = dateEnd.toJSON();
+      console.log(dateS);
+      console.log(dateE);
       const res = await axiosInstance.get(
-        `Transactions/GetAllInfoByPersonalAccountNumber?accountNumber=${num}&dateStart=${dateS}&dateEnd=${dateE}`
+        `Transactions/GetAllInfoByPersonalAccountNumber?accountNumber=${cardData.personalAccount.number}&dateStart=${dateS}&dateEnd=${dateE}`
       );
-      console.log(res.data["list"]);
-      return res.data["list"];
+      return res.data.list;
     } catch (err) {
       handleResponseError(err.response);
     }
@@ -138,6 +200,7 @@ export default function CardInfoPage() {
 
   const handleShowTrans = async () => {
     if (dateEnd === null && dateStart === null) {
+      showMessageStc("Вы не выбрали период для отображения выписки", "info");
       setTransData([]);
     } else {
       setTransData(await getTransactionsData());
@@ -252,8 +315,7 @@ export default function CardInfoPage() {
       const res = await axiosInstance.put(
         `Cards/UpdateStatus?cardId=${cardData.id}&isActive=${false}`
       );
-      console.log(res.data["status"]);
-      showMessageStc("Карта была успешно удалена", "success");
+      showMessageStc("Карта была успешно заблокирована", "success");
       navigate("/cards");
     } catch (err) {
       handleResponseError(err.response);
@@ -341,37 +403,26 @@ export default function CardInfoPage() {
   const handleOkModalDelCard = () => {
     setOpenModalDelCard(false);
     deleteCard();
+    setCardOperationsStatus(false);
   };
 
   const handleCancelModalDelCard = () => {
     setOpenModalDelCard(false);
   };
 
-  const setCardState = async (state) => {
-    const axiosInstance = axios.create({
-      baseURL: BASE_URL,
-      withCredentials: true,
-    });
-    try {
-      const res = await axiosInstance.put(
-        `PersonalAccounts/UpdateNicknameTransfersState?personalAccountId=${cardData.personalAccount.id}&state=${state}`
-      );
-      if (state === false) {
-        showMessageStc("Карта была сделана неосновной", "success");
-      } else {
-        showMessageStc("Карта была сделана основной", "success");
-      }
-      revalidator.revalidate();
-    } catch (err) {
-      handleResponseError(err.response);
-    }
-  };
+  const csvConfig = mkConfig({
+    useKeysAsHeaders: true,
+    filename: "transaction",
+  });
 
-  const handleChangeState = () => {
-    if (cardData.personalAccount.isForTransfersByNickname) {
-      setCardState(false);
+  const exportToCSV = async () => {
+    if (dateEnd === null && dateStart === null) {
+      showMessageStc("Вы не выбрали период для скачивания выписки", "info");
+      setTransData([]);
     } else {
-      setCardState(true);
+      const data = await getTransactionsData();
+      const csv = generateCsv(csvConfig)(data);
+      download(csvConfig)(csv);
     }
   };
 
@@ -380,8 +431,9 @@ export default function CardInfoPage() {
       justify="flex-start"
       align="center"
       style={{
-        margin: "0px 15px",
-        height: "100vh",
+        margin: "0px 15px 20px 15px",
+        minHeight: "80vh",
+        height: "fit-content",
         width: "99%",
       }}
       vertical
@@ -398,18 +450,18 @@ export default function CardInfoPage() {
       <Flex
         align="flex-start"
         justify="center"
-        gap={100}
-        style={{ width: "1000px" }}
+        gap={30}
+        style={{ width: "90%" }}
       >
         <Flex vertical>
           <Card
             style={{
               width: "340px",
-              height: "175px",
+              height: "170px",
               backgroundColor: "#C9D6AD",
             }}
           >
-            <Flex vertical gap={10}>
+            <Flex vertical gap={7}>
               <Title level={3} style={{ margin: "0px 0px 10px 0px" }}>
                 {cardData.name}
               </Title>
@@ -426,7 +478,11 @@ export default function CardInfoPage() {
             style={{ margin: "20px 0px 0px 0px" }}
           >
             {cardData.isOperationsAllowed === true ? (
-              <Button onClick={handleOperStatus} danger>
+              <Button
+                onClick={handleOperStatus}
+                danger
+                disabled={!cardData.isActive}
+              >
                 Запретить операции
               </Button>
             ) : (
@@ -462,12 +518,14 @@ export default function CardInfoPage() {
                   : "Вы действительно хотите разрешить операции по этой карте?"}
               </Text>
             </Modal>
-            <Button onClick={handleOpenSettings}>Настройки карты</Button>
+            <Button onClick={handleOpenSettings} disabled={!cardData.isActive}>
+              Настройки карты
+            </Button>
           </Flex>
         </Flex>
         <Card
           style={{
-            height: "230px",
+            height: "210px",
             width: "550px",
           }}
         >
@@ -488,7 +546,10 @@ export default function CardInfoPage() {
               </Text>
             </Col>
             <Col style={{ width: infoValueWidth }}>
-              <Link to={`/accounts/${cardData.personalAccount.id}`} component={Typography.Link}>
+              <Link
+                to={`/accounts/${cardData.personalAccount.id}`}
+                component={Typography.Link}
+              >
                 {convertAccountNumber()}
               </Link>
             </Col>
@@ -522,17 +583,17 @@ export default function CardInfoPage() {
           <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
             <Col style={{ width: infoLabelWidth }}>
               <Text type="secondary" style={{ fontSize: "14px" }}>
-                Статус карты:
+                Операции по карте:
               </Text>
             </Col>
             <Col style={{ width: infoValueWidth }}>
               {cardData.isOperationsAllowed === true ? (
                 <Tag color={"green"} key="active">
-                  Активна
+                  Разрешены
                 </Tag>
               ) : (
                 <Tag color={"red"} key="no-active">
-                  Неактивна
+                  Запрещены
                 </Tag>
               )}
             </Col>
@@ -540,23 +601,89 @@ export default function CardInfoPage() {
           <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
             <Col style={{ width: infoLabelWidth }}>
               <Text type="secondary" style={{ fontSize: "14px" }}>
-                Основная карта:
+                Статус карты:
               </Text>
             </Col>
             <Col style={{ width: infoValueWidth }}>
-              {cardData.personalAccount.isForTransfersByNickname === true ? (
-                <CheckCircleTwoTone
-                  twoToneColor="#52c41a"
-                  style={{ fontSize: "18px" }}
-                />
+              {cardData.isActive === true ? (
+                <Tag color={"green"} key="active">
+                  Активна
+                </Tag>
               ) : (
-                <CloseCircleTwoTone
-                  twoToneColor="red"
-                  style={{ fontSize: "18px" }}
-                />
+                <Tag color={"red"} key="no-active">
+                  Заблокирована
+                </Tag>
               )}
             </Col>
           </Row>
+        </Card>
+        <Card
+          title={
+            <Flex vertical align="center" style={{ width: "100%" }}>
+              <Text style={{ fontSize: "14px" }}>
+                Критерии бесплатности за текущий месяц
+              </Text>
+            </Flex>
+          }
+          style={{
+            height: "210px",
+            width: "340px",
+          }}
+          styles={{ header: { padding: "0px" } }}
+        >
+          <Flex vertical gap={3}>
+            <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
+              <Col style={{ width: "190px" }}>
+                <Text type="secondary" style={{ fontSize: "14px" }}>
+                  Стоимость обслуживания:
+                </Text>
+              </Col>
+              <Col style={{ width: "100px" }}>
+                <Text>{`${cardData.cardPackage.price} ${cardData.personalAccount.currency.code}`}</Text>
+              </Col>
+            </Row>
+            <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
+              <Col style={{ width: "190px" }}>
+                <Text type="secondary" style={{ fontSize: "14px" }}>
+                  Количество операций:
+                </Text>
+              </Col>
+              <Col style={{ width: "100px" }}>
+                <Text>{`${transNum}/${cardData.cardPackage.operationsNumber}`}</Text>
+              </Col>
+            </Row>
+            <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
+              <Col style={{ width: "190px" }}>
+                <Text type="secondary" style={{ fontSize: "14px" }}>
+                  Сумма операций:
+                </Text>
+              </Col>
+              <Col style={{ width: "100px" }}>
+                <Text>{`${transSum}/${cardData.cardPackage.operationsSum} ${cardData.personalAccount.currency.code}`}</Text>
+              </Col>
+            </Row>
+            <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
+              <Col style={{ width: "190px" }}>
+                <Text type="secondary" style={{ fontSize: "14px" }}>
+                  Выполнено:
+                </Text>
+              </Col>
+              <Col style={{ width: "100px" }}>
+                {transNum >= cardData.cardPackage.operationsNumber ||
+                transSum >= cardData.cardPackage.operationsSum ? (
+                  <CheckCircleTwoTone
+                    twoToneColor="#52c41a"
+                    style={{ fontSize: "16px" }}
+                  />
+                ) : (
+                  <CloseCircleTwoTone
+                    twoToneColor="red"
+                    style={{ fontSize: "16px" }}
+                  />
+                )}
+              </Col>
+            </Row>
+          </Flex>
         </Card>
       </Flex>
       {isSettingsOpened === true ? (
@@ -578,11 +705,7 @@ export default function CardInfoPage() {
                 <Button onClick={handleChangeName} type="primary">
                   Изменить имя
                 </Button>
-                <Button onClick={handleChangeState}>
-                  {cardData.personalAccount.isForTransfersByNickname === true
-                    ? "Сделать неосновной"
-                    : "Сделать основной"}
-                </Button>
+
                 <Button onClick={handleCancelSett}>Закрыть</Button>
               </Flex>
               <Flex
@@ -596,23 +719,23 @@ export default function CardInfoPage() {
                   Изменить пин-код
                 </Button>
                 <Button type="primary" danger onClick={handleDeleteCard}>
-                  Удалить карту
+                  Заблокировать карту
                 </Button>
               </Flex>
             </Flex>
           </Card>
           <Modal
-            title="Удаление карты"
+            title="Блокировка карты"
             open={openModalDelCard}
             onOk={handleOkModalDelCard}
             onCancel={handleCancelModalDelCard}
             okButtonProps={{ type: "primary" }}
             okType="danger"
-            okText="Удалить"
+            okText="Заблокировать"
             cancelText="Отмена"
           >
             <Text style={{ fontSize: "16px" }}>
-              Вы действительно хотите удалить эту карту?
+              Вы действительно хотите навсегда заблокировать эту карту?
             </Text>
           </Modal>
           {isChangingPincode === true ? (
@@ -680,41 +803,60 @@ export default function CardInfoPage() {
           }}
         >
           <Card style={{ width: "900px" }}>
-            <Flex vertical>
-              <Flex gap={10}>
-                <Text style={{ padding: "2px 0px 0px 0px" }}>
-                  Выписка по карте за период:{" "}
-                </Text>
-                <RangePicker
-                  value={[dateStart, dateEnd]}
-                  maxDate={dayjs()}
-                  onChange={handleDateRangeChange}
-                  presets={[
-                    {
-                      label: "Последние 7 дней",
-                      value: [dayjs().add(-7, "d"), dayjs()],
-                    },
-                    {
-                      label: "Последние 14 дней",
-                      value: [dayjs().add(-14, "d"), dayjs()],
-                    },
-                    {
-                      label: "Последние 30 дней",
-                      value: [dayjs().add(-30, "d"), dayjs()],
-                    },
-                    {
-                      label: "Последние 90 дней",
-                      value: [dayjs().add(-90, "d"), dayjs()],
-                    },
-                  ]}
-                />
-                <Button type="primary" onClick={handleShowTrans}>
-                  Показать
-                </Button>
-              </Flex>
-              <Flex>
-                <Text>Экспорт в ...</Text>
-              </Flex>
+            <Flex gap={10}>
+              <Text style={{ padding: "3px 0px 0px 0px" }}>
+                Выписка по счету за период:{" "}
+              </Text>
+              <RangePicker
+                value={[dateStart, dateEnd]}
+                maxDate={dayjs()}
+                onChange={handleDateRangeChange}
+                presets={[
+                  {
+                    label: "Последние 7 дней",
+                    value: [
+                      dayjs().startOf("day").add(-7, "d"),
+                      dayjs().startOf("day"),
+                    ],
+                  },
+                  {
+                    label: "Последние 14 дней",
+                    value: [
+                      dayjs().startOf("day").add(-14, "d"),
+                      dayjs().startOf("day"),
+                    ],
+                  },
+                  {
+                    label: "Последние 30 дней",
+                    value: [
+                      dayjs().startOf("day").add(-30, "d"),
+                      dayjs().startOf("day"),
+                    ],
+                  },
+                  {
+                    label: "Последние 3 месяца",
+                    value: [
+                      dayjs().startOf("day").add(-3, "M"),
+                      dayjs().startOf("day"),
+                    ],
+                  },
+                  {
+                    label: "Последние 6 месяцев",
+                    value: [
+                      dayjs().startOf("day").add(-6, "M"),
+                      dayjs().startOf("day"),
+                    ],
+                  },
+                ]}
+              />
+              <Button
+                type="primary"
+                style={{ margin: "0px 5px" }}
+                onClick={handleShowTrans}
+              >
+                Показать
+              </Button>
+              <Button onClick={exportToCSV}>Экспорт в csv</Button>
             </Flex>
           </Card>
           <Table dataSource={transData} style={{ width: "100%" }}>
@@ -764,7 +906,9 @@ export default function CardInfoPage() {
               key="paymentAmount"
               render={(amount) => (
                 <Text>
-                  {amount.toFixed(2) + " " + cardData.personalAccount.currency.code}
+                  {amount.toFixed(2) +
+                    " " +
+                    cardData.personalAccount.currency.code}
                 </Text>
               )}
             />

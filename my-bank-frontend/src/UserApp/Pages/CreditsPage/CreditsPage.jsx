@@ -42,11 +42,35 @@ export async function loader() {
       });
     }
   }
-  return { creditsData };
+
+  const creditsDataTable = [];
+  for (let i = 0; i < creditsData.length; i++) {
+    creditsDataTable.push({
+      key: i.toString(),
+      id: creditsData[i].id,
+      name: creditsData[i].name,
+      number: creditsData[i].number,
+      currentBalance: creditsData[i].currentBalance,
+      creditStartBalance: creditsData[i].creditStartBalance,
+      creditGrantedAmount: creditsData[i].creditGrantedAmount,
+      creationDate: creditsData[i].creationDate,
+      interestRate: creditsData[i].interestRate,
+      interestCalculationType: creditsData[i].interestCalculationType,
+      creditTermInDays: creditsData[i].creditTermInDays,
+      totalPaymentsNumber: creditsData[i].totalPaymentsNumber,
+      madePaymentsNumber: creditsData[i].madePaymentsNumber,
+      hasPrepaymentOption: creditsData[i].hasPrepaymentOption,
+      isActive: creditsData[i].isActive,
+      user: creditsData[i].user,
+      currency: creditsData[i].currency,
+    });
+  }
+
+  return { creditsData, creditsDataTable };
 }
 
 export default function CreditsPage() {
-  const { creditsData } = useLoaderData();
+  const { creditsData, creditsDataTable } = useLoaderData();
 
   const navigate = useNavigate();
 
@@ -85,11 +109,12 @@ export default function CreditsPage() {
     return res.trim();
   };
 
-  const expandedRowRender = () => {
+  const expandedRowRender = (record) => {
     return (
       <Table
-        dataSource={creditsData}
-        pagination={{ position: ["none", "none"] }}
+        dataSource={[record]}
+        // pagination={{ position: ["none", "none"] }}
+        pagination={false}
       >
         <Column
           width="170px"
@@ -128,15 +153,13 @@ export default function CreditsPage() {
           title="Возможность досрочного погашения"
           dataIndex="hasPrepaymentOption"
           key="hasPrepaymentOption"
-          render={(hasPrepaymentOption) => (
-            <Text>
-              {hasPrepaymentOption === true ? (
-                <Tag color="green">Да</Tag>
-              ) : (
-                <Tag color="red">Нет</Tag>
-              )}
-            </Text>
-          )}
+          render={(hasPrepaymentOption) =>
+            hasPrepaymentOption === true ? (
+              <Tag color="green">Да</Tag>
+            ) : (
+              <Tag color="red">Нет</Tag>
+            )
+          }
         />
       </Table>
     );
@@ -148,7 +171,7 @@ export default function CreditsPage() {
         align="center"
         justify="flex-start"
         vertical
-        style={{ minHeight: "82vh" }}
+        style={{ minHeight: "80vh", height: "fit-content" }}
       >
         <Flex style={{ width: "80%" }}>
           <Title style={{ marginLeft: "40px" }} level={2}>
@@ -157,9 +180,11 @@ export default function CreditsPage() {
         </Flex>
         <Flex align="center" justify="center" style={{ width: "100%" }}>
           <Table
-            dataSource={creditsData}
+            dataSource={creditsDataTable}
             style={{ width: "80%" }}
-            expandable={{ expandedRowRender, defaultExpandedRowKeys: ["0"] }}
+            expandable={{
+              expandedRowRender: (record) => expandedRowRender(record),
+            }}
             pagination={{ position: ["none", "none"] }}
           >
             <Column
@@ -213,7 +238,7 @@ export default function CreditsPage() {
           <Button
             style={{ margin: "20px 0px 20px 20px" }}
             type="primary"
-            onClick={() => navigate('add')}
+            onClick={() => navigate("add")}
           >
             Оформить кредит
           </Button>

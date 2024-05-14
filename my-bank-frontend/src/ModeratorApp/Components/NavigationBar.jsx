@@ -2,9 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../Common/Store/constants";
-import { showMessageStc, handleResponseError } from "../../Common/Services/ResponseErrorHandler";
+import {
+  showMessageStc,
+  handleResponseError,
+} from "../../Common/Services/ResponseErrorHandler";
 import { Flex, Image, Menu, Button } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
 
 import BankLogo from "../../Common/Assets/bank_logo.jpg";
 
@@ -27,7 +29,7 @@ export default function NavigationBar({ loginState, setLoginState }) {
       withCredentials: true,
     });
     try {
-      await axiosInstance.post(`Moderator/Logout`);
+      await axiosInstance.post(`Moderators/Logout`);
       setLoginState(false);
       showMessageStc("Вы успешно вышли из учетной записи", "success");
     } catch (err) {
@@ -60,32 +62,40 @@ export default function NavigationBar({ loginState, setLoginState }) {
           src={BankLogo}
           preview={false}
           style={{
-            margin: "0px 0px 0px 0px",
+            margin: "0px",
+            borderRadius: "10px",
           }}
         />
         <Menu
           mode="horizontal"
           style={{
-            width: "65%",
-            margin: "0px 20px",
+            width: "fit-content",
+            margin: "0px 15px",
+            padding: "0px 10px",
+            borderRadius: "30px",
           }}
         >
-          <Menu.Item key={1} icon={<HomeOutlined />}>
-            <Link to="/" style={{ fontSize: "20px" }}>
-              Главная
-            </Link>
-          </Menu.Item>
-          <Menu.Item key={2}>
+          <Menu.Item key={1}>
             <Link to="credit-requests" style={{ fontSize: "20px" }}>
               Выдача кредитов
             </Link>
           </Menu.Item>
-          <Menu.Item key={3}>
-            <Link to="users-info" style={{ fontSize: "20px" }}>
+          <Menu.Item key={2}>
+            <Link to="users" style={{ fontSize: "20px" }}>
               Пользователи
             </Link>
           </Menu.Item>
+          <Menu.Item key={3}>
+            <Link to="credits" style={{ fontSize: "20px" }}>
+              Кредиты
+            </Link>
+          </Menu.Item>
           <Menu.Item key={4}>
+            <Link to="messages" style={{ fontSize: "20px" }}>
+              Мои сообщения
+            </Link>
+          </Menu.Item>
+          <Menu.Item key={5}>
             <Link to="profile" style={{ fontSize: "20px" }}>
               Мой профиль
             </Link>
@@ -96,7 +106,7 @@ export default function NavigationBar({ loginState, setLoginState }) {
           justify="center"
           style={{
             height: "65px",
-            width: "80px",
+            width: "70px",
           }}
         >
           <Button onClick={handleLoginLogout}>{buttonText}</Button>

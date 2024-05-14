@@ -90,11 +90,16 @@ public class DepositAccountsRepository : IDepositAccountsRepository
 
     public async Task<bool> UpdateBalanceDelta(int id, decimal deltaNumber)
     {
-        var number = await _dbContext
-            .DepositAccounts.Where(pa => pa.Id == id)
-            .ExecuteUpdateAsync(s =>
-                s.SetProperty(pa => pa.CurrentBalance, pa => pa.CurrentBalance + deltaNumber)
-            );
+        var depositAccountEntity = await _dbContext.DepositAccounts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(da => da.Id == id);
+
+        decimal delta = deltaNumber + depositAccountEntity!.CurrentBalance;
+
+        var number = await _dbContext.DepositAccounts
+            .Where(da => da.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(pa => pa.CurrentBalance, delta));
 
         return (number == 0) ? false : true;
     }

@@ -44,14 +44,12 @@ public class AdminController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(
-                new ErrorDto
-                {
-                    ControllerName = "AdminController",
-                    Message = serviceResponse.Message
-                },
-                statusCode: 400
-            );
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "AdminController",
+                Message = serviceResponse.Message
+            },
+            statusCode: 401);
         }
 
         Response.Cookies.Append("my-cookie", serviceResponse.Data.Item2, new CookieOptions { SameSite = SameSiteMode.Lax });

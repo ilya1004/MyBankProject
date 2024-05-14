@@ -70,8 +70,8 @@ public class UserService : IUserService
     /*
     Структура логинов:
     user@mybank.com
-    #moderator#123qwe
-    #admin#123qwe
+    #moderator#123
+    #admin#123
     */
 
     public async Task<ServiceResponse<(int, string)>> Login(string email, string password)
@@ -79,12 +79,14 @@ public class UserService : IUserService
         var isExist = await _userRepository.IsExistByEmail(email);
 
         if (!isExist)
+        {
             return new ServiceResponse<(int, string)>
             {
                 Status = false,
-                Message = "Пользователя с данной электронной почтой не найдено",
+                Message = "Неверная электронная почта или пароль",
                 Data = (-1, string.Empty)
             };
+        }
 
         var user = await _userRepository.GetByEmail(email);
 
@@ -96,6 +98,16 @@ public class UserService : IUserService
             {
                 Status = false,
                 Message = "Неверная электронная почта или пароль",
+                Data = (-1, string.Empty)
+            };
+        }
+
+        if (user.IsActive == false)
+        {
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Ваша учетная запись была заблокирована",
                 Data = (-1, string.Empty)
             };
         }

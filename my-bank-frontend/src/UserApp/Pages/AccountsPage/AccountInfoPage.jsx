@@ -17,6 +17,7 @@ import {
   Link,
   useRevalidator,
   useNavigate,
+  redirect,
 } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../../Common/Store/constants";
@@ -25,8 +26,9 @@ import {
   showMessageStc,
 } from "../../../Common/Services/ResponseErrorHandler";
 import dayjs from "dayjs";
+import { mkConfig, generateCsv, download } from "export-to-csv";
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;
 const { Column } = Table;
 
@@ -39,15 +41,27 @@ const getAccData = async (accountId) => {
     const res = await axiosInstance.get(
       `PersonalAccounts/GetInfoByCurrentUser?personalAccountId=${accountId}&includeData=${true}`
     );
-    console.log(res.data["item"]);
-    return res.data["item"];
+    return { accData: res.data.item, error: null };
   } catch (err) {
+    if (err.response.status === 401) {
+      return { accData: null, error: err.response };
+    }
     handleResponseError(err.response);
+    return { accData: null, error: err.response };
   }
 };
 
 export async function loader({ params }) {
-  const accData = await getAccData(params.accountId);
+  const { accData, error } = await getAccData(params.accountId);
+  if (!accData) {
+    if (error.status === 401 || error.status === 403) {
+      return redirect("/login");
+    } else {
+      throw new Response("", {
+        status: error.status,
+      });
+    }
+  }
   return { accData };
 }
 
@@ -63,6 +77,7 @@ export default function AccountInfoPage() {
   const [isAccountClosable, setIsAccountClosable] = useState(false);
   const [modalText, setModalText] = useState("");
   const [isChangingName, setIsChangingName] = useState(false);
+  const [isSettingsOpened, setIsSettingsOpened] = useState(false);
 
   const revalidator = useRevalidator();
   const navigate = useNavigate();
@@ -84,14 +99,12 @@ export default function AccountInfoPage() {
       withCredentials: true,
     });
     try {
-      let dateS = dateStart.toJSON().substring(0, 10);
-      let dateE = dateEnd.toJSON().substring(0, 10);
-      let num = accData.number;
+      let dateS = dateStart.toJSON();
+      let dateE = dateEnd.toJSON();
       const res = await axiosInstance.get(
-        `Transactions/GetAllInfoByPersonalAccountNumber?accountNumber=${num}&dateStart=${dateS}&dateEnd=${dateE}`
+        `Transactions/GetAllInfoByPersonalAccountNumber?accountNumber=${accData.number}&dateStart=${dateS}&dateEnd=${dateE}`
       );
-      console.log(res.data["list"]);
-      return res.data["list"];
+      return res.data.list;
     } catch (err) {
       handleResponseError(err.response);
     }
@@ -139,8 +152,29 @@ export default function AccountInfoPage() {
     }
   };
 
+  const setAccountState = async (state) => {
+    const axiosInstance = axios.create({
+      baseURL: BASE_URL,
+      withCredentials: true,
+    });
+    try {
+      await axiosInstance.put(
+        `PersonalAccounts/UpdateNicknameTransfersState?personalAccountId=${accData.id}&state=${state}`
+      );
+      if (state === false) {
+        showMessageStc("Счет был сделан неосновным", "success");
+      } else {
+        showMessageStc("Счет был сделан основным", "success");
+      }
+      revalidator.revalidate();
+    } catch (err) {
+      handleResponseError(err.response);
+    }
+  };
+
   const handleShowTrans = async () => {
     if (dateEnd === null && dateStart === null) {
+      showMessageStc("Вы не выбрали период для отображения выписки", "info");
       setTransData([]);
     } else {
       setTransData(await getTransactionsData());
@@ -195,14 +229,6 @@ export default function AccountInfoPage() {
       : setIsChangingName(false);
   };
 
-  const handleNewAccNameEdit = (e) => {
-    setAccName(e.target.value);
-  };
-
-  const handleCancelName = () => {
-    setIsChangingName(false);
-  };
-
   const handleEnterName = () => {
     setAccNewName();
     setIsChangingName(false);
@@ -250,13 +276,53 @@ export default function AccountInfoPage() {
     return `${numStr.substring(0, 1)}XXX XXXX XXXX ${numStr.substring(12, 16)}`;
   };
 
+  const csvConfig = mkConfig({
+    useKeysAsHeaders: true,
+    filename: "transaction",
+  });
+
+  const exportToCSV = async () => {
+    if (dateEnd === null && dateStart === null) {
+      showMessageStc("Вы не выбрали период для скачивания выписки", "info");
+      setTransData([]);
+    } else {
+      const data = await getTransactionsData();
+      const csv = generateCsv(csvConfig)(data);
+      download(csvConfig)(csv);
+    }
+  };
+
+  const handleChangeState = () => {
+    if (accData.isForTransfersByNickname) {
+      setAccountState(false);
+    } else {
+      setAccountState(true);
+    }
+  };
+
+  const handleCancelSett = () => {
+    setIsSettingsOpened(false);
+    setIsChangingName(false);
+  };
+
+  const handleOpenSettings = () => {
+    isSettingsOpened === false
+      ? setIsSettingsOpened(true)
+      : setIsSettingsOpened(false);
+    setIsChangingName(false);
+  };
+
+  const handleMakeTransaction = () => {
+    navigate("/make-transaction");
+  };
+
   return (
     <Flex
       justify="flex-start"
       align="center"
       style={{
-        margin: "0px 15px",
-        height: "100vh",
+        margin: "0px 15px 20px 15px",
+        height: "fit-content",
         width: "99%",
       }}
       vertical
@@ -276,7 +342,7 @@ export default function AccountInfoPage() {
         <Flex vertical>
           <Card
             style={{
-              height: "180px",
+              height: "200px",
               width: "540px",
             }}
           >
@@ -338,22 +404,42 @@ export default function AccountInfoPage() {
                 >{`${accData.currentBalance} ${accData.currency.code}`}</Text>
               </Col>
             </Row>
+            <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
+              <Col style={{ width: infoLabelWidth }}>
+                <Text type="secondary" style={{ fontSize: "14px" }}>
+                  Основной счет:
+                </Text>
+              </Col>
+              <Col style={{ width: infoValueWidth }}>
+                {accData.isForTransfersByNickname === true ? (
+                  <Tag color="green">Да</Tag>
+                ) : (
+                  <Tag color="red">Нет</Tag>
+                )}
+              </Col>
+            </Row>
           </Card>
           <Flex
             justify="center"
             gap={20}
             style={{ margin: "20px 0px 0px 0px" }}
           >
-            <Button onClick={handleChangeName}>Изменить имя</Button>
-            <Button onClick={handleCloseAccount} danger>
-              Закрыть счет
+            <Button
+              type="primary"
+              onClick={handleMakeTransaction}
+              disabled={!accData.isActive}
+            >
+              Сделать перевод
+            </Button>
+            <Button onClick={handleOpenSettings} disabled={!accData.isActive}>
+              Настройки счета
             </Button>
           </Flex>
         </Flex>
         <Card
           title={<Text>Привязанные карты</Text>}
           styles={{ body: { padding: "10px 15px 10px 15px" } }}
-          style={{ width: "500px", minHeight: "230px" }}
+          style={{ width: "600px", height: "240px" }}
         >
           {accData.cards.length === 0 ? (
             <Flex align="center" justify="center" style={{ height: "140px" }}>
@@ -370,14 +456,14 @@ export default function AccountInfoPage() {
               <Column
                 title="Название карты"
                 key="name"
-                width={"150px"}
+                width={"170px"}
                 dataIndex="name"
                 render={(_, record) => <Text>{record.name}</Text>}
               />
               <Column
                 title="Номер карты"
                 key="number"
-                width={"220px"}
+                width={"290px"}
                 dataIndex="number"
                 render={(_, record) => (
                   <Link to={`/cards/${record.id}`} component={Typography.Link}>
@@ -405,7 +491,6 @@ export default function AccountInfoPage() {
           )}
         </Card>
       </Flex>
-
       <Modal
         title={
           isAccountClosable === true
@@ -423,33 +508,80 @@ export default function AccountInfoPage() {
         <Text style={{ fontSize: "16px" }}>{modalText}</Text>
       </Modal>
 
-      {isChangingName === true ? (
-        <Card style={{ width: "450px", margin: "20px 0px 0px 0px" }}>
-          <Flex
-            vertical
-            align="center"
-            justify="center"
-            gap={25}
-            style={{ width: "100%" }}
-          >
-            <Flex align="center" justify="center" gap={20}>
-              <Text style={{ width: "185px", fontSize: "16px" }}>
-                Новое название счета:
-              </Text>
-              <Input
-                maxLength={30}
-                style={{ width: "180px" }}
-                onChange={handleNewAccNameEdit}
-              />
+      {isSettingsOpened === true ? (
+        <Flex
+          align="flex-start"
+          justify="flex-start"
+          style={{ width: "80%", margin: "20px 0px 0px 100px" }}
+          gap={100}
+        >
+          <Card style={{ width: "420px" }}>
+            <Flex align="flex-start" justify="center" gap={40}>
+              <Flex
+                align="center"
+                justify="flex-start"
+                gap={30}
+                vertical
+                style={{ width: "170px" }}
+              >
+                <Button type="primary" onClick={handleChangeName}>
+                  Изменить имя
+                </Button>
+
+                <Button onClick={handleCancelSett}>Закрыть</Button>
+              </Flex>
+              <Flex
+                align="center"
+                justify="flex-start"
+                gap={30}
+                vertical
+                style={{ width: "170px" }}
+              >
+                <Button onClick={handleChangeState}>
+                  {accData.isForTransfersByNickname === true
+                    ? "Сделать неосновным"
+                    : "Сделать основным"}
+                </Button>
+                <Button onClick={handleCloseAccount} danger>
+                  Закрыть счет
+                </Button>
+              </Flex>
             </Flex>
-            <Flex gap={20} align="center" justify="center">
-              <Button onClick={handleCancelName}>Отмена</Button>
-              <Button type="primary" onClick={handleEnterName}>
-                Применить
-              </Button>
-            </Flex>
-          </Flex>
-        </Card>
+          </Card>
+
+          {isChangingName === true ? (
+            <Card style={{ width: "450px", margin: "0px 0px 0px 100px" }}>
+              <Flex
+                vertical
+                align="center"
+                justify="center"
+                gap={25}
+                style={{ width: "100%" }}
+              >
+                <Flex align="center" justify="center" gap={20}>
+                  <Text style={{ width: "185px", fontSize: "16px" }}>
+                    Новое название счета:
+                  </Text>
+                  <Input
+                    maxLength={30}
+                    style={{ width: "180px" }}
+                    onChange={(e) => {
+                      setAccName(e.target.value);
+                    }}
+                  />
+                </Flex>
+                <Flex gap={20} align="center" justify="center">
+                  <Button onClick={() => setIsChangingName(false)}>
+                    Отмена
+                  </Button>
+                  <Button type="primary" onClick={handleEnterName}>
+                    Применить
+                  </Button>
+                </Flex>
+              </Flex>
+            </Card>
+          ) : null}
+        </Flex>
       ) : (
         <Flex
           vertical
@@ -461,41 +593,45 @@ export default function AccountInfoPage() {
           }}
         >
           <Card style={{ width: "900px" }}>
-            <Flex vertical>
-              <Flex gap={10}>
-                <Text style={{ padding: "2px 0px 0px 0px" }}>
-                  Выписка по счету за период:{" "}
-                </Text>
-                <RangePicker
-                  value={[dateStart, dateEnd]}
-                  maxDate={dayjs()}
-                  onChange={handleDateRangeChange}
-                  presets={[
-                    {
-                      label: "Последние 7 дней",
-                      value: [dayjs().add(-7, "d"), dayjs()],
-                    },
-                    {
-                      label: "Последние 14 дней",
-                      value: [dayjs().add(-14, "d"), dayjs()],
-                    },
-                    {
-                      label: "Последние 30 дней",
-                      value: [dayjs().add(-30, "d"), dayjs()],
-                    },
-                    {
-                      label: "Последние 90 дней",
-                      value: [dayjs().add(-90, "d"), dayjs()],
-                    },
-                  ]}
-                />
-                <Button type="primary" onClick={handleShowTrans}>
-                  Показать
-                </Button>
-              </Flex>
-              <Flex>
-                <Text>Экспорт в ...</Text>
-              </Flex>
+            <Flex gap={10}>
+              <Text style={{ padding: "3px 0px 0px 0px" }}>
+                Выписка по счету за период:{" "}
+              </Text>
+              <RangePicker
+                value={[dateStart, dateEnd]}
+                maxDate={dayjs()}
+                onChange={handleDateRangeChange}
+                presets={[
+                  {
+                    label: "Последние 7 дней",
+                    value: [dayjs().startOf("day").add(-7, "d"), dayjs().startOf("day")],
+                  },
+                  {
+                    label: "Последние 14 дней",
+                    value: [dayjs().startOf("day").add(-14, "d"), dayjs().startOf("day")],
+                  },
+                  {
+                    label: "Последние 30 дней",
+                    value: [dayjs().startOf("day").add(-30, "d"), dayjs().startOf("day")],
+                  },
+                  {
+                    label: "Последние 3 месяца",
+                    value: [dayjs().startOf("day").add(-3, "M"), dayjs().startOf("day")],
+                  },
+                  {
+                    label: "Последние 6 месяцев",
+                    value: [dayjs().startOf("day").add(-6, "M"), dayjs().startOf("day")],
+                  },
+                ]}
+              />
+              <Button
+                type="primary"
+                style={{ margin: "0px 5px" }}
+                onClick={handleShowTrans}
+              >
+                Показать
+              </Button>
+              <Button onClick={exportToCSV}>Экспорт в csv</Button>
             </Flex>
           </Card>
           <Table dataSource={transData} style={{ width: "100%" }}>

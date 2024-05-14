@@ -55,59 +55,42 @@ export function ProfilePage() {
   return (
     <>
       <Flex
-        justify="center"
-        align="flex-start"
+        gap={30}
+        justify="flex-start"
+        align="center"
+        vertical
         style={{
-          margin: "10px 15px",
-          minHeight: "90vh",
+          width: "98%",
+          minHeight: "80vh",
         }}
       >
-        <Flex
-          gap={20}
-          justify="flex-start"
-          align="center"
-          vertical
+        <Image
+          height="300px"
+          width="300px"
+          src={ModerAvatar}
+          preview={false}
+          style={{ borderRadius: "10px", margin: "10px 0px 0px 0px" }}
+        />
+        <Card
           style={{
-            width: "35%",
-            minHeight: "91vh",
+            width: "300px",
           }}
         >
-          <Image
-            height={"200px"}
-            width={"200px"}
-            src={ModerAvatar}
-            preview={false}
-          />
-        </Flex>
-        <Flex
-          gap={20}
-          vertical
-          justify="flex-start"
-          style={{
-            width: "65%",
-          }}
-        >
-          <Card
-            style={{
-              width: "400px",
-            }}
-          >
-            <Flex vertical gap={5}>
-              <Title
-                level={2}
-                style={{ margin: "0px 0px 15px 0px" }}
-              >{`${moderatorData.nickname}`}</Title>
-              <Flex gap={7}>
-                <CalendarOutlined />
-                <Text>{printRegDate(moderatorData.creationDate)}</Text>
-              </Flex>
-              <Flex gap={7}>
-                <MailOutlined style={{ margin: "4px 0px 0px 0px" }} />
-                <Text>{moderatorData.login}</Text>
-              </Flex>
+          <Flex vertical gap={5}>
+            <Title
+              level={2}
+              style={{ margin: "0px 0px 15px 0px" }}
+            >{`${moderatorData.nickname}`}</Title>
+            <Flex gap={7}>
+              <CalendarOutlined />
+              <Text>{printRegDate(moderatorData.creationDate)}</Text>
             </Flex>
-          </Card>
-        </Flex>
+            <Flex gap={7}>
+              <MailOutlined style={{ margin: "4px 0px 0px 0px" }} />
+              <Text>{moderatorData.login}</Text>
+            </Flex>
+          </Flex>
+        </Card>
       </Flex>
     </>
   );

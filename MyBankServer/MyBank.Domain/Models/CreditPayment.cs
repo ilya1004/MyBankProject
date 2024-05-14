@@ -21,7 +21,7 @@ public class CreditPayment
     public decimal PaymentAmount { get; set; }
     public int PaymentNumber { get; set; }
     public DateTime Datetime { get; set; }
-    public bool Status { get; set; }
+    public bool Status { get; set; } = true;
     public int? CreditAccountId { get; set; }
     public CreditAccount? CreditAccount { get; set; } = null;
     public int? UserId { get; set; }

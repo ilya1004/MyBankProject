@@ -46,7 +46,7 @@ export async function loader() {
 const infoLabelWidth = "200px";
 const infoValueWidth = "200px";
 
-export default function DelPackagePage() {
+export default function DelCardPackagePage() {
   const [packageItem, setPackageItem] = useState(null);
 
   const { packagesData, selectPackagesData } = useLoaderData();
@@ -89,7 +89,8 @@ export default function DelPackagePage() {
         align="center"
         justify="flex-start"
         style={{
-          minHeight: "90vh",
+          minHeight: "80vh",
+          height: "fit-content",
         }}
       >
         <Flex align="center" gap={30} style={{ margin: "0px 0px 10px 0px" }}>

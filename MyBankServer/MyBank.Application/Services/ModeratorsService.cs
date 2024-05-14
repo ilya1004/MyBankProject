@@ -1,4 +1,6 @@
-﻿namespace MyBank.Application.Services;
+﻿using MyBank.Domain.Models;
+
+namespace MyBank.Application.Services;
 
 public class ModeratorsService : IModeratorsService
 {
@@ -59,7 +61,7 @@ public class ModeratorsService : IModeratorsService
             return new ServiceResponse<(int, string)>
             {
                 Status = false,
-                Message = "Модератора с данным логином не найдено",
+                Message = "Неверный логин или пароль",
                 Data = (-1, string.Empty)
             };
 
@@ -73,6 +75,16 @@ public class ModeratorsService : IModeratorsService
             {
                 Status = false,
                 Message = "Неверный логин или пароль",
+                Data = (-1, string.Empty)
+            };
+        }
+
+        if (moderator.IsActive == false)
+        {
+            return new ServiceResponse<(int, string)>
+            {
+                Status = false,
+                Message = "Ваша учетная запись неактивна",
                 Data = (-1, string.Empty)
             };
         }

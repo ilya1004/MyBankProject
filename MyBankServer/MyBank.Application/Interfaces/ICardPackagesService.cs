@@ -3,7 +3,7 @@
 public interface ICardPackagesService
 {
     Task<ServiceResponse<int>> Add(CardPackage cardPackage);
-    Task<ServiceResponse<List<CardPackage>>> GetAll();
+    Task<ServiceResponse<List<CardPackage>>> GetAll(bool onlyActive);
     Task<ServiceResponse<CardPackage>> GetById(int id);
     Task<ServiceResponse<bool>> UpdateInfo(
         int id,

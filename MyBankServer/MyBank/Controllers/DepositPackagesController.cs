@@ -57,9 +57,9 @@ public class DepositPackagesController
     }
 
     [HttpGet]
-    public async Task<IResult> GetAllInfo(bool includeData)
+    public async Task<IResult> GetAllInfo(bool includeData, bool onlyActive)
     {
-        var serviceResponse = await _depositPackagesService.GetAll(includeData);
+        var serviceResponse = await _depositPackagesService.GetAll(includeData, onlyActive);
 
         if (serviceResponse.Status == false)
         {

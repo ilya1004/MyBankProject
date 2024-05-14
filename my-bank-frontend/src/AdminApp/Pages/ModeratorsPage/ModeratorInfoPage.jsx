@@ -315,7 +315,7 @@ export default function ModeratorInfoPage() {
           <Table
             dataSource={creditAccountsData}
             style={{ width: "90%" }}
-            expandable={{ expandedRowRender, defaultExpandedRowKeys: ["0"] }}
+            expandable={{ expandedCreditsTable: expandedRowRender, defaultExpandedRowKeys: ["0"] }}
           >
             <Column
               width="80px"

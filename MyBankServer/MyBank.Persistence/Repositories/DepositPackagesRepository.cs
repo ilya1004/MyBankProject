@@ -41,20 +41,23 @@ public class DepositPackagesRepository : IDepositPackagesRepository
         return _mapper.Map<DepositPackage>(depositPackageEntity);
     }
 
-    public async Task<List<DepositPackage>> GetAll(bool includeData)
+    public async Task<List<DepositPackage>> GetAll(bool includeData, bool onlyActive)
     {
         IQueryable<DepositPackageEntity> query = _dbContext.DepositPackages.AsNoTracking();
 
         if (includeData)
         {
-            query = query.Include(cp => cp.Currency);
+            query = query.Include(dp => dp.Currency);
         }
 
-        query = query.Where(cp => cp.IsActive == true);
+        if (onlyActive)
+        {
+            query = query.Where(dp => dp.IsActive == true);
+        }
 
-        var creditPackageEntitiesList = await query.ToListAsync();
+        var depositPackageEntitiesList = await query.ToListAsync();
 
-        return _mapper.Map<List<DepositPackage>>(creditPackageEntitiesList);
+        return _mapper.Map<List<DepositPackage>>(depositPackageEntitiesList);
     }
 
     public async Task<bool> UpdateInfo(int id, string name, decimal depositStartBalance, decimal interestRate, int depositTermInDays, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption, int currencyId)
@@ -76,7 +79,7 @@ public class DepositPackagesRepository : IDepositPackagesRepository
 
     public async Task<bool> UpdateStatus(int id, bool isActive)
     {
-        var number = await _dbContext.CreditPackages
+        var number = await _dbContext.DepositPackages
             .Where(cp => cp.Id == id)
             .ExecuteUpdateAsync(s => s
                 .SetProperty(cp => cp.IsActive, isActive));
@@ -86,7 +89,7 @@ public class DepositPackagesRepository : IDepositPackagesRepository
 
     public async Task<bool> Delete(int id)
     {
-        var number = await _dbContext.CreditPackages
+        var number = await _dbContext.DepositPackages
             .Where(cp => cp.Id == id)
             .ExecuteDeleteAsync();
 

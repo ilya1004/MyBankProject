@@ -4,7 +4,10 @@ import { HomeOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../Common/Store/constants";
-import { showMessageStc, handleResponseError } from "../../Common/Services/ResponseErrorHandler";
+import {
+  showMessageStc,
+  handleResponseError,
+} from "../../Common/Services/ResponseErrorHandler";
 
 import BankLogo from "../../Common/Assets/bank_logo.jpg";
 
@@ -60,40 +63,55 @@ export default function NavigationBar({ loginState, setLoginState }) {
           src={BankLogo}
           preview={false}
           style={{
-            margin: "0px 0px 0px 0px",
+            margin: "0px",
+            borderRadius: "10px",
           }}
         />
         <Menu
           mode="horizontal"
-          theme={"light"}
+          theme="light"
           style={{
-            width: "65%",
-            margin: "0px 20px",
+            width: "fit-content",
+            margin: "0px 15px",
+            padding: "0px 10px",
+            borderRadius: "30px",
           }}
         >
           <Menu.Item key={1}>
-            <Link to="/admin/management" style={{ fontSize: "20px" }}>
+            <Link to="management" style={{ fontSize: "20px" }}>
               Управление
             </Link>
           </Menu.Item>
           <Menu.Item key={2}>
-            <Link to="/admin/users" style={{ fontSize: "20px" }}>
+            <Link to="users" style={{ fontSize: "20px" }}>
               Пользователи
             </Link>
           </Menu.Item>
           <Menu.Item key={3}>
-            <Link to="/admin/moderators" style={{ fontSize: "20px" }}>
+            <Link to="moderators" style={{ fontSize: "20px" }}>
               Модераторы
             </Link>
           </Menu.Item>
           <Menu.Item key={4}>
-            <Link to="/admin/profile" style={{ fontSize: "20px" }}>
+            <Link to="messages" style={{ fontSize: "20px" }}>
+              Мои сообщения
+            </Link>
+          </Menu.Item>
+          <Menu.Item key={5}>
+            <Link to="profile" style={{ fontSize: "20px" }}>
               Мой профиль
             </Link>
           </Menu.Item>
         </Menu>
 
-        <Flex align="center" style={{ height: "65px" }}>
+        <Flex
+          align="center"
+          justify="center"
+          style={{
+            height: "65px",
+            width: "70px",
+          }}
+        >
           <Button onClick={handleLoginLogout}>{buttonText}</Button>
         </Flex>
       </Flex>

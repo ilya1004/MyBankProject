@@ -13,23 +13,22 @@ public class DepositAccrualsRepository : IDepositAccrualsRepository
 
     public async Task<int> Add(DepositAccrual depositAccrual)
     {
-        var depositAccountEntity = await _dbContext.DepositAccounts.FirstOrDefaultAsync(da =>
-            da.Id == depositAccrual.DepositAccountId
-        );
+        var depositAccountEntity = await _dbContext.DepositAccounts
+            .FirstOrDefaultAsync(da => da.Id == depositAccrual.DepositAccountId);
 
         var depositAccrualEntity = _mapper.Map<DepositAccrualEntity>(depositAccrual);
 
         depositAccrualEntity.DepositAccount = depositAccountEntity;
 
-        var item = await _dbContext.DepositAccounts.AddAsync(depositAccountEntity!);
+        var item = await _dbContext.DepositAccruals.AddAsync(depositAccrualEntity!);
         await _dbContext.SaveChangesAsync();
         return item.Entity.Id;
     }
 
     public async Task<DepositAccrual> GetById(int id)
     {
-        var depositAccrualEntity = await _dbContext
-            .DepositAccruals.AsNoTracking()
+        var depositAccrualEntity = await _dbContext.DepositAccruals
+            .AsNoTracking()
             .FirstOrDefaultAsync(da => da.Id == id);
 
         return _mapper.Map<DepositAccrual>(depositAccrualEntity);
@@ -37,8 +36,8 @@ public class DepositAccrualsRepository : IDepositAccrualsRepository
 
     public async Task<List<DepositAccrual>> GetAllByDepositId(int depositId)
     {
-        var depositAccrualEntitiesList = await _dbContext
-            .DepositAccruals.AsNoTracking()
+        var depositAccrualEntitiesList = await _dbContext.DepositAccruals
+            .AsNoTracking()
             .Where(da => da.DepositAccountId == depositId)
             .ToListAsync();
 

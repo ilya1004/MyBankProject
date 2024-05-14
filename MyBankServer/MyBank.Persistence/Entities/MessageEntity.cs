@@ -4,12 +4,13 @@ public class MessageEntity
 {
     public MessageEntity() { }
 
-    public MessageEntity(int id, string title, string text, int recepientId, string recepientRole, DateTime creationDatetime, bool isRead, bool isActive, int? senderAdminId, AdminEntity? senderAdmin, int? senderModeratorId, ModeratorEntity? senderModerator, int? senderUserId, UserEntity? senderUser)
+    public MessageEntity(int id, string title, string text, int recepientId, string recepientNickname, string recepientRole, DateTime creationDatetime, bool isRead, bool isActive, int? senderAdminId, AdminEntity? senderAdmin, int? senderModeratorId, ModeratorEntity? senderModerator, int? senderUserId, UserEntity? senderUser)
     {
         Id = id;
         Title = title;
         Text = text;
         RecepientId = recepientId;
+        RecepientNickname = recepientNickname;
         RecepientRole = recepientRole;
         CreationDatetime = creationDatetime;
         IsRead = isRead;
@@ -26,6 +27,7 @@ public class MessageEntity
     public string Title { get; set; } = string.Empty;
     public string Text { get; set; } = string.Empty;
     public int RecepientId { get; set; }
+    public string RecepientNickname { get; set; } = string.Empty;
     public string RecepientRole { get; set; } = string.Empty;
     public DateTime CreationDatetime { get; set; }
     public bool IsRead { get; set; } = false;

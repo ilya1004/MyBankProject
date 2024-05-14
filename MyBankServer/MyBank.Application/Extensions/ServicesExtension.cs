@@ -12,11 +12,13 @@ public static class ServicesExtension
         services.AddScoped<ICardPackagesService, CardPackagesService>();
         services.AddScoped<ICardsService, CardsService>();
         services.AddScoped<ICreditAccountsService, CreditAccountsService>();
+        services.AddScoped<ICreditPackagesService, CreditPackagesService>();
         services.AddScoped<ICreditPaymentsService, CreditPaymentsService>();
         services.AddScoped<ICreditRequestsService, CreditRequestsService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IDepositAccountsService, DepositAccountsService>();
         services.AddScoped<IDepositAccrualsService, DepositAccrualsService>();
+        services.AddScoped<IDepositPackagesService, DepositPackagesService>();
         services.AddScoped<IMessagesService, MessagesService>();
         services.AddScoped<IModeratorsService, ModeratorsService>();
         services.AddScoped<IPersonalAccountsService, PersonalAccountsService>();
@@ -32,6 +34,7 @@ public static class ServicesExtension
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ICardNumberProvider, CardNumberProvider>();
         services.AddScoped<IAccNumberProvider, AccNumberProvider>();
+
         return services;
     }
 }

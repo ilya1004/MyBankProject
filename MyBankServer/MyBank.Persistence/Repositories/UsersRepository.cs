@@ -28,6 +28,8 @@ public class UsersRepository : IUsersRepository
         {
             query = query
                 .Include(u => u.Cards)
+                    .ThenInclude(c => c.PersonalAccount)
+                        .ThenInclude(c => c!.Currency)
                 .Include(u => u.PersonalAccounts)
                     .ThenInclude(pa => pa.Currency)
                 .Include(u => u.CreditAccounts)
@@ -46,7 +48,7 @@ public class UsersRepository : IUsersRepository
     {
         var userEntity = await _dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email == email && u.IsActive == true);
+            .FirstOrDefaultAsync(u => u.Email == email);
 
         return _mapper.Map<User>(userEntity);
     }
@@ -80,7 +82,13 @@ public class UsersRepository : IUsersRepository
     public async Task<bool> IsExistByEmail(string email)
     {
         return await _dbContext.Users
-            .AnyAsync(u => u.Email == email && u.IsActive == true);
+            .AnyAsync(u => u.Email == email);
+    }
+
+    public async Task<bool> IsExistByNickname(string nickname)
+    {
+        return await _dbContext.Users
+           .AnyAsync(u => u.Nickname == nickname && u.IsActive == true);
     }
 
     public async Task<bool> UpdatePassword(int id, string hashedPassword)

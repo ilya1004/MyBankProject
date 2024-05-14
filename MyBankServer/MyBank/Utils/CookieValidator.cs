@@ -24,9 +24,9 @@ public class CookieValidator : ICookieValidator
         {
             payloadBytes = Convert.FromBase64String(base64Payload);
         }
-        catch (FormatException e)
+        catch (FormatException)
         {
-            Console.WriteLine(e.ToString());
+            payloadBytes = null;
         }
         finally
         {
@@ -69,6 +69,6 @@ public class CookieValidator : ICookieValidator
             return (false, "Значение role не найдено.", 4, null, null);
         }
 
-        return (true, null, null, role, id);
+        return (true, null, null, role.ToLower(), id);
     }
 }

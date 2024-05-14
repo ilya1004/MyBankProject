@@ -45,23 +45,38 @@ public class ModeratorsController : ControllerBase
 
         if (serviceResponse.Status == false)
         {
-            return Results.Json(
-                new ErrorDto
-                {
-                    ControllerName = "ModeratorsController",
-                    Message = serviceResponse.Message
-                },
-                statusCode: 400
-            );
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "ModeratorsController",
+                Message = serviceResponse.Message
+            },
+            statusCode: 401);
         }
 
-        Response.Cookies.Append(
-            "my-cookie",
-            serviceResponse.Data.Item2,
-            new CookieOptions { SameSite = SameSiteMode.Lax }
-        );
+        Response.Cookies.Append("my-cookie", serviceResponse.Data.Item2, new CookieOptions { SameSite = SameSiteMode.Lax });
 
         return Results.Json(new { id = serviceResponse.Data.Item1 }, statusCode: 200);
+    }
+
+    [HttpPost]
+    [Authorize(Policy = AuthorizationPolicies.ModeratorPolicy)]
+    public IResult Logout()
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "ModeratorsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        Response.Cookies.Append("my-cookie", "", new CookieOptions { SameSite = SameSiteMode.Lax, Expires = DateTime.Now.AddDays(-1) });
+
+        return Results.Json(new { status = true }, statusCode: 200);
     }
 
     [HttpGet]

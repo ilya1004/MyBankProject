@@ -11,14 +11,13 @@ public interface IPersonalAccountsService
     Task<ServiceResponse<bool>> UpdateName(int id, string name);
     Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive);
     Task<ServiceResponse<bool>> UpdateTransfersStatus(int id, bool isForTransfersByNickname);
-    Task<ServiceResponse<bool>> MakeTransfer(
-        int personalAccountId,
-        string accountSenderNumber,
-        string userSenderNickname,
-        string? accountRecipientNumber,
-        string? cardRecipientNumber,
-        string? userRecipientNickname,
-        decimal amount
-    );
-    Task<ServiceResponse<bool>> UpdateNicknameTransfersState(int personalAccountId, bool state);
+    //Task<ServiceResponse<bool>> MakeTransfer(
+    //    int personalAccountId,
+    //    string accountSenderNumber,
+    //    string userSenderNickname,
+    //    string? accountRecipientNumber,
+    //    string? cardRecipientNumber,
+    //    string? userRecipientNickname,
+    //    decimal amount
+    //);
 }

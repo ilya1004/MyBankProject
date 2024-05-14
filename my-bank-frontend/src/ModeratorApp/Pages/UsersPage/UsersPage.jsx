@@ -1,8 +1,13 @@
 import axios from "axios";
-import { Flex, Typography, Table, Tag } from "antd";
+import { useEffect, useState } from "react";
+import { Card, Flex, Typography, Button, Input, Table, Tag } from "antd";
+import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { Link, useLoaderData, useNavigate, redirect } from "react-router-dom";
 import { BASE_URL } from "../../../Common/Store/constants";
-import { handleResponseError } from "../../../Common/Services/ResponseErrorHandler";
+import {
+  handleResponseError,
+  showMessageStc,
+} from "../../../Common/Services/ResponseErrorHandler";
 
 const { Column } = Table;
 const { Title, Text } = Typography;
@@ -13,7 +18,7 @@ const getUsersData = async () => {
     withCredentials: true,
   });
   try {
-    const res = await axiosInstance.get(`User/GetAllInfo?includeData=${true}`);
+    const res = await axiosInstance.get(`User/GetAllInfo?includeData=${false}`);
     return { usersData: res.data.list, error: null };
   } catch (err) {
     handleResponseError(err.response);
@@ -23,7 +28,7 @@ const getUsersData = async () => {
 
 export async function loader() {
   const { usersData, error } = await getUsersData();
-  if (!usersData) {
+	if (!usersData) {
     if (error.status === 401) {
       return redirect("/login");
     } else {
@@ -35,14 +40,24 @@ export async function loader() {
   return { usersData };
 }
 
-export function Users() {
+export function ModeratorUsersPage() {
   const navigate = useNavigate();
 
   const { usersData } = useLoaderData();
 
+  const convertCardAccNumber = (number) => {
+    let numStr = number.toString();
+    let res = "";
+    for (let i = 0; i < 28; i += 4) {
+      res += `${numStr.substring(i, i + 4)} `;
+    }
+    return res.trim();
+  };
+
   const convertDatetime = (datetime) => {
     let dt = new Date(datetime);
     let txt = `${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}`;
+
     return <Text>{txt}</Text>;
   };
 
@@ -52,11 +67,11 @@ export function Users() {
         align="center"
         justify="flex-start"
         vertical
-        style={{ minHeight: "82vh" }}
+        style={{ minHeight: "80vh", height: "fit-content" }}
       >
         <Flex
           justify="space-between"
-          style={{ width: "70%", margin: "0px 0px 10px 0px" }}
+          style={{ width: "80%", margin: "0px 0px 10px 0px" }}
         >
           <Title style={{ marginLeft: "10px" }} level={2}>
             Информация о пользователях
@@ -64,8 +79,7 @@ export function Users() {
         </Flex>
         <Table
           dataSource={usersData}
-          style={{ width: "70%" }}
-          pagination={{ position: ["none", "none"] }}
+          style={{ width: "80%" }}
         >
           <Column
             title="Номер"
@@ -127,15 +141,6 @@ export function Users() {
             }
           />
         </Table>
-        {/* <Flex justify="space-between" style={{ width: "80%" }}>
-          <Button
-            style={{ margin: "20px 0px 20px 10px" }}
-            type="primary"
-            onClick={handleUserInfo}
-          >
-            Добавить карту
-          </Button>
-        </Flex> */}
       </Flex>
     </>
   );

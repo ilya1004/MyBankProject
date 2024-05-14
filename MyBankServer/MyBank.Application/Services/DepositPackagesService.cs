@@ -58,9 +58,9 @@ public class DepositPackagesService : IDepositPackagesService
         };
     }
 
-    public async Task<ServiceResponse<List<DepositPackage>>> GetAll(bool includeData)
+    public async Task<ServiceResponse<List<DepositPackage>>> GetAll(bool includeData, bool onlyActive)
     {
-        var list = await _depositPackagesRepository.GetAll(includeData);
+        var list = await _depositPackagesRepository.GetAll(includeData, onlyActive);
 
         return new ServiceResponse<List<DepositPackage>>
         {

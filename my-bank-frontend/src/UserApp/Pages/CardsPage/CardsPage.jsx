@@ -1,7 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Card, Flex, Typography, Button, Input, Table, Tag } from "antd";
-import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
+import { Flex, Typography, Button, Table, Tag } from "antd";
 import { Link, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../Common/Store/constants";
 import {
@@ -69,43 +67,22 @@ export default function CardsPage() {
         align="center"
         justify="flex-start"
         vertical
-        style={{ minHeight: "82vh" }}
+        style={{ minHeight: "80vh", height: "fit-content" }}
       >
-        <Flex style={{ width: "80%" }}>
+        <Flex style={{ width: "70%" }}>
           <Title style={{ marginLeft: "20px" }} level={2}>
             Мои карты
           </Title>
         </Flex>
         <Table
           dataSource={cardsData}
-          style={{ width: "80%" }}
+          style={{ width: "70%" }}
           pagination={{ position: ["none", "none"] }}
         >
           <Column
-            title="Основная"
-            dataIndex="personalAccount"
-            key="personalAccount"
-            width={"100px"}
-            render={(personalAccount) => (
-              <Flex align="center" justify="center">
-                {personalAccount.isForTransfersByNickname === true ? (
-                  <CheckCircleTwoTone
-                    twoToneColor="#52c41a"
-                    style={{ fontSize: "20px" }}
-                  />
-                ) : (
-                  <CloseCircleTwoTone
-                    twoToneColor="red"
-                    style={{ fontSize: "20px" }}
-                  />
-                )}
-              </Flex>
-            )}
-          />
-          <Column
             title="Карта"
             key="name"
-            width={"130px"}
+            width="140px"
             dataIndex="name"
             render={(_, record) => <Text>{record.name}</Text>}
           />
@@ -162,7 +139,7 @@ export default function CardsPage() {
             }
           />
         </Table>
-        <Flex justify="space-between" style={{ width: "80%" }}>
+        <Flex justify="space-between" style={{ width: "70%" }}>
           <Button
             style={{ margin: "20px 0px 20px 10px" }}
             type="primary"

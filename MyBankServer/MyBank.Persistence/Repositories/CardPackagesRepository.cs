@@ -29,12 +29,16 @@ public class CardPackagesRepository : ICardPackagesRepository
         return _mapper.Map<CardPackage>(cardPackageEntity);
     }
 
-    public async Task<List<CardPackage>> GetAll()
+    public async Task<List<CardPackage>> GetAll(bool onlyActive)
     {
-        var cardPackageEntitiesList = await _dbContext.CardPackages
-            .AsNoTracking()
-            .Where(cp => cp.IsActive == true)
-            .ToListAsync();
+        IQueryable<CardPackageEntity> query = _dbContext.CardPackages.AsNoTracking();
+
+        if (onlyActive)
+        {
+            query = query.Where(cp => cp.IsActive == true);
+        }
+
+        var cardPackageEntitiesList = await query.ToListAsync();
 
         return _mapper.Map<List<CardPackage>>(cardPackageEntitiesList);
     }

@@ -7,11 +7,10 @@ import {
   Button,
   Col,
   Row,
-  Select,
   InputNumber,
   Input,
 } from "antd";
-import { useNavigate, useLoaderData } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../../Common/Store/constants";
 import {
   handleResponseError,
@@ -23,49 +22,13 @@ const { Text, Title } = Typography;
 const colTextWidth = "200px";
 const colInputWidth = "200px";
 
-const getPackagesData = async () => {
-  const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-    withCredentials: true,
-  });
-  try {
-    const res = await axiosInstance.get(`CardPackages/GetAllInfo`);
-    return { packagesData: res.data.list, error: null };
-  } catch (err) {
-    handleResponseError(err.response);
-    return { packagesData: null, error: err.response };
-  }
-};
-
-export async function loader() {
-  const { packagesData, error } = await getPackagesData();
-  if (!packagesData) {
-    throw new Response("", {
-      status: error.status,
-    });
-  }
-
-  const selectPackagesData = [];
-  for (let i = 0; i < packagesData.length; i++) {
-    selectPackagesData.push({
-      value: packagesData[i].id,
-      label: packagesData[i].name,
-    });
-  }
-
-  return { packagesData, selectPackagesData };
-}
-
-export default function EditPackagePage() {
-  const [packageId, setPackageId] = useState(-1);
+export default function AddCardPackagePage() {
   const [name, setName] = useState();
   const [price, setPrice] = useState();
   const [operationsNumber, setOperationsNumber] = useState();
   const [operationsSum, setOperationsSum] = useState();
 
   const navigate = useNavigate();
-
-  const { packagesData, selectPackagesData } = useLoaderData();
 
   const handleName = (e) => {
     setName(e.target.value);
@@ -93,7 +56,7 @@ export default function EditPackagePage() {
       withCredentials: true,
     });
     const data = {
-      id: packageId,
+      id: 0,
       name: name.trim(),
       price: price,
       operationsNumber: operationsNumber,
@@ -102,8 +65,8 @@ export default function EditPackagePage() {
       monthPayroll: 0,
     };
     try {
-      await axiosInstance.put(`CardPackages/UpdateInfo`, data);
-      showMessageStc("Пакет карт был успешно изменен", "success");
+      const res = await axiosInstance.post(`CardPackages/Add`, data);
+      showMessageStc("Пакет карт был успешно добавлен", "success");
       navigate("/admin/management");
     } catch (err) {
       handleResponseError(err.response);
@@ -114,15 +77,6 @@ export default function EditPackagePage() {
     addPackage();
   };
 
-  const handleSelectPackage = (id) => {
-    setPackageId(id);
-    let item = packagesData.find((item) => item.id === id);
-    setName(item.name);
-    setPrice(item.price);
-    setOperationsNumber(item.operationsNumber);
-    setOperationsSum(item.operationsSum);
-  };
-
   return (
     <>
       <Flex
@@ -130,12 +84,12 @@ export default function EditPackagePage() {
         align="center"
         justify="flex-start"
         style={{
-          minHeight: "90vh",
+          minHeight: "80vh",
+          height: "fit-content",
         }}
       >
-        <Flex align="center" gap={30} style={{ margin: "0px 0px 10px 0px" }}>
-          {/* <Button style={{ margin: "18px 0px 0px 20px" }}>Назад</Button> */}
-          <Title level={3}>Редактирование пакета карт</Title>
+        <Flex align="center" style={{ margin: "0px 0px 10px 0px" }}>
+          <Title level={3}>Добавление пакета карт</Title>
         </Flex>
         <Card
           title="Введите данные"
@@ -145,19 +99,6 @@ export default function EditPackagePage() {
           }}
         >
           <Flex vertical gap={16} style={{ width: "100%" }} align="center">
-            <Row gutter={[16, 16]}>
-              <Col style={{ width: colTextWidth }}>
-                <Text style={{ fontSize: "16px" }}>Выберите пакет:</Text>
-              </Col>
-              <Col style={{ width: colInputWidth }}>
-                <Select
-                  style={{ width: "200px" }}
-                  onChange={handleSelectPackage}
-                  options={selectPackagesData}
-                />
-              </Col>
-            </Row>
-
             <Row gutter={[16, 16]}>
               <Col style={{ width: colTextWidth }}>
                 <Text style={{ fontSize: "16px" }}>Название:</Text>
@@ -241,7 +182,7 @@ export default function EditPackagePage() {
           >
             <Button onClick={handleCancel}>Отмена</Button>
             <Button type="primary" onClick={handleEnter}>
-              Применить
+              Добавить
             </Button>
           </Flex>
         </Card>

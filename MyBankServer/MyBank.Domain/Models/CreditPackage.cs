@@ -21,7 +21,7 @@ public class CreditPackage
 
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public decimal CreditStartBalance { get; set; }
+    public decimal CreditStartBalance { get; set; } 
     public decimal CreditGrantedAmount { get; set; }
     public decimal InterestRate { get; set; }
     public string InterestCalculationType { get; set; } = string.Empty;  // "annuity", "differential"

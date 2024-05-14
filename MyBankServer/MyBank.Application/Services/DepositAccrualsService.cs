@@ -9,9 +9,30 @@ public class DepositAccrualsService : IDepositAccrualsService
         _depositAccrualsRepository = depositAccrualsRepository;
     }
 
-    public async Task<ServiceResponse<int>> Add() // TODO
+    public async Task<ServiceResponse<int>> Add()
     {
-        var depositAccrual = new DepositAccrual(0, 0, DateTime.UtcNow, DepositAccrualStatus.Ok);
+        var depositAccrual = new DepositAccrual
+        {
+            Id = 0,
+            AccrualAmount = 100,
+            Datetime = DateTime.UtcNow,
+            AccrualNumber = 1,
+            Status = true,
+            DepositAccountId = 1,
+            DepositAccount = null,
+        };
+
+
+
+
+
+
+
+
+
+
+
+
 
         var id = await _depositAccrualsRepository.Add(depositAccrual);
 

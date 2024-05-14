@@ -1,4 +1,6 @@
-﻿namespace MyBank.Application.Services;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace MyBank.Application.Services;
 
 public class CurrencyService : ICurrencyService
 {
@@ -78,11 +80,7 @@ public class CurrencyService : ICurrencyService
         };
     }
 
-    public async Task<ServiceResponse<bool>> UpdateRate(
-        int id,
-        DateTime lastRateUpdate,
-        decimal officialRate
-    )
+    public async Task<ServiceResponse<bool>> UpdateRate(int id, DateTime lastRateUpdate, decimal officialRate)
     {
         var status = await _currenciesRepository.UpdateRate(id, lastRateUpdate, officialRate);
 
@@ -101,6 +99,35 @@ public class CurrencyService : ICurrencyService
             Status = true,
             Message = "Success",
             Data = status
+        };
+    }
+
+    public async Task<ServiceResponse<bool>> UpdateRates(List<Currency> listCurr)
+    {
+        var list = new List<string> {"USD", "RUB", "EUR"};
+        foreach (var item in listCurr)
+        {
+            if (list.Contains(item.Code))
+            {
+                var status = await _currenciesRepository.UpdateRate(item.Code, DateTime.UtcNow, item.OfficialRate);
+
+                if (status == false)
+                {
+                    return new ServiceResponse<bool>
+                    {
+                        Status = false,
+                        Message = $"Unknown error. Maybe currency with given code ({item.Code}) not found",
+                        Data = default
+                    };
+                }
+            }
+        }
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = true
         };
     }
 

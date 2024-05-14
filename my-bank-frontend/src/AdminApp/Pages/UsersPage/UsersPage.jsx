@@ -1,13 +1,8 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Card, Flex, Typography, Button, Input, Table, Tag } from "antd";
-import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
+import { Flex, Typography, Table, Tag } from "antd";
 import { Link, useLoaderData, useNavigate, redirect } from "react-router-dom";
 import { BASE_URL } from "../../../Common/Store/constants";
-import {
-  handleResponseError,
-  showMessageStc,
-} from "../../../Common/Services/ResponseErrorHandler";
+import { handleResponseError } from "../../../Common/Services/ResponseErrorHandler";
 
 const { Column } = Table;
 const { Title, Text } = Typography;
@@ -18,7 +13,7 @@ const getUsersData = async () => {
     withCredentials: true,
   });
   try {
-    const res = await axiosInstance.get(`User/GetAllInfo?includeData=${false}`);
+    const res = await axiosInstance.get(`User/GetAllInfo?includeData=${true}`);
     return { usersData: res.data.list, error: null };
   } catch (err) {
     handleResponseError(err.response);
@@ -28,7 +23,7 @@ const getUsersData = async () => {
 
 export async function loader() {
   const { usersData, error } = await getUsersData();
-	if (!usersData) {
+  if (!usersData) {
     if (error.status === 401) {
       return redirect("/login");
     } else {
@@ -40,28 +35,14 @@ export async function loader() {
   return { usersData };
 }
 
-export function UsersInfo() {
+export function AdminUsersPage() {
   const navigate = useNavigate();
 
   const { usersData } = useLoaderData();
 
-  const convertCardAccNumber = (number) => {
-    let numStr = number.toString();
-    let res = "";
-    for (let i = 0; i < 28; i += 4) {
-      res += `${numStr.substring(i, i + 4)} `;
-    }
-    return res.trim();
-  };
-
-  const handleUserInfo = () => {
-    navigate("user-info");
-  };
-
   const convertDatetime = (datetime) => {
     let dt = new Date(datetime);
     let txt = `${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}`;
-
     return <Text>{txt}</Text>;
   };
 
@@ -75,7 +56,7 @@ export function UsersInfo() {
       >
         <Flex
           justify="space-between"
-          style={{ width: "80%", margin: "0px 0px 10px 0px" }}
+          style={{ width: "70%", margin: "0px 0px 10px 0px" }}
         >
           <Title style={{ marginLeft: "10px" }} level={2}>
             Информация о пользователях
@@ -83,7 +64,7 @@ export function UsersInfo() {
         </Flex>
         <Table
           dataSource={usersData}
-          style={{ width: "80%" }}
+          style={{ width: "70%" }}
           pagination={{ position: ["none", "none"] }}
         >
           <Column
@@ -146,15 +127,6 @@ export function UsersInfo() {
             }
           />
         </Table>
-        {/* <Flex justify="space-between" style={{ width: "80%" }}>
-          <Button
-            style={{ margin: "20px 0px 20px 10px" }}
-            type="primary"
-            onClick={handleUserInfo}
-          >
-            Добавить карту
-          </Button>
-        </Flex> */}
       </Flex>
     </>
   );

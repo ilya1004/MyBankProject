@@ -21,7 +21,7 @@ public class CreditPackagesController : ControllerBase
     {
         var serviceResponse = await _creditPackagesService.Add(
             new CreditPackage(0, dto.Name, dto.CreditStartBalance, dto.CreditGrantedAmount, dto.InterestRate,
-            dto.InterestCalculationType, dto.CreditTermInDays, dto.HasPrepaymentOption, false, dto.CurrencyId, null));
+            dto.InterestCalculationType, dto.CreditTermInDays, dto.HasPrepaymentOption, true, dto.CurrencyId, null));
 
         if (serviceResponse.Status == false)
         {
@@ -58,9 +58,9 @@ public class CreditPackagesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IResult> GetAllInfo(bool includeData)
+    public async Task<IResult> GetAllInfo(bool includeData, bool onlyActive)
     {
-        var serviceResponse = await _creditPackagesService.GetAll(includeData);
+        var serviceResponse = await _creditPackagesService.GetAll(includeData, onlyActive);
 
         if (serviceResponse.Status == false)
         {

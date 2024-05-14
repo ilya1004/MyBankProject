@@ -1,5 +1,6 @@
 import { Card, Flex, List, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
+import { heightCardAcc, widthCardAcc } from "../ProfilePage";
 
 const { Title, Text } = Typography;
 
@@ -16,15 +17,15 @@ export default function ListAccounts(props) {
 
   const listItemPersonalAccount = (item) => {
     return (
-      <List.Item key={item["id"]}>
+      <List.Item key={item.id}>
         <Card
           onClick={() => {
             navigate(`/accounts/${item.id}`);
           }}
           hoverable
           style={{
-            width: "310px",
-            height: "150px",
+            width: widthCardAcc,
+            height: heightCardAcc,
             backgroundColor: "#FFF5DF",
           }}
         >
@@ -41,12 +42,12 @@ export default function ListAccounts(props) {
                 margin: "0px 0px 10px 0px",
               }}
             >
-              {item["name"]}
+              {item.name}
             </Title>
-            <Text>{convertNumberAccount(item["number"])}</Text>
+            <Text>{convertNumberAccount(item.number)}</Text>
             <Text
               style={{ fontSize: "18px" }}
-            >{`${item["currentBalance"]} ${item["currency"]["code"]}`}</Text>
+            >{`${item.currentBalance} ${item.currency.code}`}</Text>
           </Flex>
         </Card>
       </List.Item>
@@ -66,15 +67,21 @@ export default function ListAccounts(props) {
         height: "240px",
       }}
     >
-      <List
-        itemLayout="horizontal"
-        grid={{
-          gutter: 0,
-          column: 2,
-        }}
-        dataSource={props.value}
-        renderItem={(item) => listItemPersonalAccount(item)}
-      ></List>
+      <Flex
+        align="center"
+        justify="flex-start"
+        style={{ width: "100%", margin: "0px 0px 0px 50px" }}
+      >
+        <List
+          itemLayout="horizontal"
+          grid={{
+            gutter: 90,
+            column: 2,
+          }}
+          dataSource={props.value}
+          renderItem={(item) => listItemPersonalAccount(item)}
+        ></List>
+      </Flex>
     </Card>
   );
 }

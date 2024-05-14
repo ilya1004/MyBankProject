@@ -14,11 +14,13 @@ public static class RepositoriesExtension
         services.AddScoped<ICardPackagesRepository, CardPackagesRepository>();
         services.AddScoped<ICardsRepository, CardsRepository>();
         services.AddScoped<ICreditAccountsRepository, CreditAccountsRepository>();
+        services.AddScoped<ICreditPackagesRepository, CreditPackagesRepository>();
         services.AddScoped<ICreditPaymentsRepository, CreditPaymentsRepository>();
         services.AddScoped<ICreditRequestsRepository, CreditRequestsRepository>();
         services.AddScoped<ICurrenciesRepository, CurrenciesRepository>();
         services.AddScoped<IDepositAccountsRepository, DepositAccountsRepository>();
         services.AddScoped<IDepositAccrualsRepository, DepositAccrualsRepository>();
+        services.AddScoped<IDepositPackagesRepository, DepositPackagesRepository>();
         services.AddScoped<IMessagesRepository, MessagesRepository>();
         services.AddScoped<IModeratorsRepository, ModeratorsRepository>();
         services.AddScoped<IPersonalAccountsRepository, PersonalAccountsRepository>();

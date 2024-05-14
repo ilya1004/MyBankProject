@@ -1,10 +1,13 @@
 import { Outlet } from "react-router-dom";
-import { Layout } from "antd";
-import "./App.css";
+import { Layout, Flex, Typography } from "antd";
+// import "./App.css";
 import NavigationBar from "../Components/NavigationBar.jsx";
 import { useState } from "react";
 
 const { Header, Footer, Content } = Layout;
+const { Text } = Typography;
+
+const backColor = "#F1F0EA";
 
 export default function UserApp() {
   const [loginState, setLoginState] = useState(
@@ -12,11 +15,13 @@ export default function UserApp() {
   );
 
   return (
-    <div className="app-main">
+    <>
       <Layout>
         <Header
           style={{
-            backgroundColor: "whitesmoke",
+            padding: "10px 0px 0px 0px",
+            height: "fit-content",
+            backgroundColor: backColor,
           }}
         >
           <NavigationBar
@@ -27,19 +32,21 @@ export default function UserApp() {
         <Content
           style={{
             padding: "10px 0px 0px 0px",
-            backgroundColor: "#F1F0E8",
+            backgroundColor: backColor,
           }}
         >
           <Outlet context={[loginState, setLoginState]} />
         </Content>
         <Footer
           style={{
-            backgroundColor: "wheat",
+            backgroundColor: "#F5DEBE",
           }}
         >
-          Footer
+          <Flex justify="center">
+            <Text>MyBank. 2024</Text>
+          </Flex>
         </Footer>
       </Layout>
-    </div>
+    </>
   );
 }

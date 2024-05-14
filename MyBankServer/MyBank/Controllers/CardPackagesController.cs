@@ -65,9 +65,9 @@ public class CardPackagesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IResult> GetAllInfo()
+    public async Task<IResult> GetAllInfo(bool onlyActive)
     {
-        var serviceResponse = await _cardPackagesService.GetAll();
+        var serviceResponse = await _cardPackagesService.GetAll(onlyActive);
 
         if (serviceResponse.Status == false)
         {

@@ -19,7 +19,7 @@ const getDepositsData = async () => {
   });
   try {
     const res = await axiosInstance.get(
-      `DepositAccounts/GetInfoByCurrentUser?includeData=true&onlyActive=true`
+      `DepositAccounts/GetAllInfoByCurrentUser?includeData=true&onlyActive=true`
     );
     return { depositsData: res.data.list, error: null };
   } catch (err) {
@@ -42,11 +42,35 @@ export async function loader() {
       });
     }
   }
-  return { depositsData };
+
+  const depositsDataTable = [];
+  for (let i = 0; i < depositsData.length; i++) {
+    depositsDataTable.push({
+      key: i.toString(),
+      id: depositsData[i].id,
+      name: depositsData[i].name,
+      number: depositsData[i].number,
+      currentBalance: depositsData[i].currentBalance,
+      depositStartBalance: depositsData[i].depositStartBalance,
+      creationDate: depositsData[i].creationDate,
+      interestRate: depositsData[i].interestRate,
+      depositTermInDays: depositsData[i].depositTermInDays,
+      totalAccrualsNumber: depositsData[i].totalAccrualsNumber,
+      madeAccrualsNumber: depositsData[i].madeAccrualsNumber,
+      isRevocable: depositsData[i].isRevocable,
+      hasCapitalisation: depositsData[i].hasCapitalisation,
+      hasInterestWithdrawalOption: depositsData[i].hasInterestWithdrawalOption,
+      isActive: depositsData[i].isActive,
+      user: depositsData[i].user,
+      currency: depositsData[i].currency,
+    });
+  }
+
+  return { depositsData, depositsDataTable };
 }
 
 export default function DepositsPage() {
-  const { depositsData } = useLoaderData();
+  const { depositsData, depositsDataTable } = useLoaderData();
 
   const navigate = useNavigate();
 
@@ -55,25 +79,26 @@ export default function DepositsPage() {
     return `${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}`;
   };
 
-  const convertInterestCalculationType = (interestCalculationType) => {
-    if (interestCalculationType === "annuity") {
-      return "Аннуитетный";
-    } else if (interestCalculationType === "differential") {
-      return "Дифференцированный";
-    } else {
-      return "";
-    }
-  };
-
   const convertMonths = (days) => {
-    let months = days / 30;
-    if (months.toString()[-1] === 1) {
-      return `${months} месяц`;
-    } else if (2 <= months.toString()[-1] && months.toString()[-1] <= 4) {
-      return `${months} месяца`;
+    let months = Math.floor(days / 30);
+    if (months < 24 || months % 12 !== 0) {
+      if (months % 10 === 1) {
+        return `${months} месяц`;
+      } else if (2 <= months % 10 && months % 10 <= 4 && months < 5) {
+        return `${months} месяца`;
+      } else {
+        return `${months} месяцев`;
+      }
     } else {
-      return `${months} месяцев`;
-    }
+      let years = months / 12;
+      if (years % 10 == 1) {
+        return `${years} год`;
+      } else if (2 <= years % 10 && years % 10 <= 4) {
+        return `${years} годa`;
+      } else {
+        return `${years} лет`;
+      }
+		}
   };
 
   const convertAccNumber = (number) => {
@@ -85,10 +110,10 @@ export default function DepositsPage() {
     return res.trim();
   };
 
-  const expandedRowRender = () => {
+  const expandedRowRender = (record) => {
     return (
       <Table
-        dataSource={depositsData}
+        dataSource={[record]}
         pagination={{ position: ["none", "none"] }}
       >
         <Column
@@ -159,7 +184,6 @@ export default function DepositsPage() {
             </Text>
           )}
         />
-
       </Table>
     );
   };
@@ -170,7 +194,7 @@ export default function DepositsPage() {
         align="center"
         justify="flex-start"
         vertical
-        style={{ minHeight: "82vh" }}
+        style={{ minHeight: "80vh", height: "fit-content" }}
       >
         <Flex style={{ width: "80%" }}>
           <Title style={{ marginLeft: "40px" }} level={2}>
@@ -179,9 +203,11 @@ export default function DepositsPage() {
         </Flex>
         <Flex align="center" justify="center" style={{ width: "100%" }}>
           <Table
-            dataSource={depositsData}
+            dataSource={depositsDataTable}
             style={{ width: "80%" }}
-            expandable={{ expandedRowRender, defaultExpandedRowKeys: ["0"] }}
+            expandable={{
+              expandedCreditsTable: expandedRowRender,
+            }}
             pagination={{ position: ["none", "none"] }}
           >
             <Column
@@ -211,15 +237,6 @@ export default function DepositsPage() {
                 <Text>{`${record.currentBalance} ${record.currency.code}`}</Text>
               )}
             />
-            {/* <Column
-              width="150px"
-              title="Общая сумма"
-              dataIndex="creditStartBalance"
-              key="creditStartBalance"
-              render={(_, record) => (
-                <Text>{`${record.creditStartBalance} ${record.currency.code}`}</Text>
-              )}
-            /> */}
             <Column
               width="180px"
               title="Дата создания"
@@ -235,7 +252,7 @@ export default function DepositsPage() {
           <Button
             style={{ margin: "20px 0px 20px 20px" }}
             type="primary"
-            onClick={() => navigate('add')}
+            onClick={() => navigate("add")}
           >
             Открыть вклад
           </Button>

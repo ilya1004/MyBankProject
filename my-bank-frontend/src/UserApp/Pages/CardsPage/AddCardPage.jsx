@@ -17,7 +17,7 @@ import { BASE_URL } from "../../../Common/Store/constants";
 import {
   handleResponseError,
   showMessageStc,
-} from "../../../Common/Services/ResponseErrorHandler";;
+} from "../../../Common/Services/ResponseErrorHandler";
 
 const { Text, Title } = Typography;
 
@@ -135,7 +135,7 @@ export default function AddCardPage() {
 
   const handleEnter = () => {
     if (pincode.length !== 4) {
-      showMessageStc("Пин-код должен иметь длину 4 цифры")
+      showMessageStc("Пин-код должен иметь длину 4 цифры");
       return;
     }
     addCard();
@@ -155,7 +155,6 @@ export default function AddCardPage() {
     };
     try {
       const res = await axiosInstance.post(`Cards/Add`, data);
-      console.log(res.data["status"]);
       showMessageStc("Карта была успешно добавлена", "success");
       navigate("/cards");
     } catch (err) {
@@ -169,9 +168,7 @@ export default function AddCardPage() {
         vertical
         align="center"
         justify="flex-start"
-        style={{
-          minHeight: "90vh",
-        }}
+        style={{ minHeight: "80vh", height: "fit-content" }}
       >
         <Flex align="center" gap={30} style={{ margin: "0px 0px 10px 0px" }}>
           <Link to="/cards">

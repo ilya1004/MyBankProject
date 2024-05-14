@@ -40,9 +40,9 @@ export default function LoginPage() {
       navigate("/profile", { replace: true });
     } catch (err) {
       if (err.response.status === 401) {
-        showMessageStc("Введена неверная электронная почта или пароль");
+        showMessageStc(err.response.data.message, "error");
       } else {
-        showMessageStc("Произошла неизвестная ошибка.");
+        showMessageStc("Произошла неизвестная ошибка.", "error");
       }
       console.error(err);
     }
@@ -117,7 +117,8 @@ export default function LoginPage() {
         justify="center"
         align="flex-start"
         style={{
-          height: "90vh",
+          minHeight: "80vh",
+          height: "fit-content"
         }}
       >
         <Card

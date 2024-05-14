@@ -28,19 +28,28 @@ export default function CurrencyConventer({ currenciesData }) {
   });
   const [values, setValues] = useState([0, 0, 0, 0]);
   const [items, setItems] = useState([]);
+  const [listCurrenciesData, setListCurrenciesData] = useState([
+    ...currenciesData,
+  ]);
+
+  const [reloadList, setReloadList] = useState(false);
 
   useEffect(() => {
+    console.log(listCurrenciesData);
     let lst = [];
-    for (let i = 0; i < currenciesData.length; i++) {
+    for (let i = 0; i < listCurrenciesData.length; i++) {
+      if (listCurrenciesData[i] == null) {
+        continue;
+      }
       lst.push({
         label: (
-          <Text>{`${currenciesData[i].Cur_Abbreviation} (${currenciesData[i].Cur_Name})`}</Text>
+          <Text>{`${listCurrenciesData[i].Cur_Abbreviation} (${listCurrenciesData[i].Cur_Name})`}</Text>
         ),
         key: `${i}`,
       });
     }
     setItems(lst);
-  }, [currenciesData]);
+  }, [listCurrenciesData, reloadList]);
 
   const handleChangeValue = (index, value) => {
     const updatedList = values.map((item, i) => {
@@ -99,16 +108,20 @@ export default function CurrencyConventer({ currenciesData }) {
   const onItemClick = ({ key }) => {
     setCurrencies((prevList) => [
       ...prevList,
-      [currencies.length, currenciesData[key].Cur_Abbreviation, false],
+      [currencies.length, listCurrenciesData[key].Cur_Abbreviation, false],
     ]);
     setValues((prevList) => [...prevList, 0]);
+    let q = listCurrenciesData[key].Cur_Abbreviation;
     setDctCurr((prevDict) => ({
       ...prevDict,
-      [Object.keys(dctCurr).length]: currenciesData[key].Cur_Abbreviation,
+      [Object.keys(dctCurr).length]: q,
     }));
+    listCurrenciesData[key] = null;
+    setReloadList(!reloadList);
   };
 
   const handleClickDelCurrency = (item) => {
+    console.log(item);
     let updCurrencies = [];
     let count = 0;
     for (let i = 0; i < currencies.length; i++) {
@@ -137,6 +150,8 @@ export default function CurrencyConventer({ currenciesData }) {
       }
     }
     setDctCurr(updDct);
+    listCurrenciesData[item[0] - 4] = currenciesData[item[0] - 4];
+    setReloadList(!reloadList);
   };
 
   const listItem = (item) => {
@@ -151,7 +166,7 @@ export default function CurrencyConventer({ currenciesData }) {
             min={0}
             value={values[item[0]]}
             placeholder="Введите значение"
-            precision={4}
+            precision={3}
             onChange={(itemChange) => handleChangeValue(item[0], itemChange)}
             style={{ width: "150px", margin: "0px 0px 0px 10px" }}
             changeOnWheel
@@ -186,12 +201,14 @@ export default function CurrencyConventer({ currenciesData }) {
       />
 
       <Dropdown
-        getPopupContainer={() => document.getElementById("container")}
+        destroyPopupOnHide={true}
         menu={{
           items,
           onClick: onItemClick,
         }}
         trigger={["click"]}
+        overlayStyle={{ height: "100px" }}
+        placement="bottomLeft"
       >
         <a onClick={(e) => e.preventDefault()}>
           <Space>

@@ -45,14 +45,24 @@ public class CurrenciesRepository : ICurrenciesRepository
         return _mapper.Map<List<Currency>>(currencyEntitiesList);
     }
 
-    public async Task<bool> UpdateRate(int id, DateTime lastRateUpdate, decimal officialRate)
+    public async Task<bool> UpdateRate(int id, DateTime lastDateRateUpdate, decimal officialRate)
     {
-        var number = await _dbContext
-            .Currencies.Where(c => c.Id == id)
-            .ExecuteUpdateAsync(s =>
-                s.SetProperty(c => c.LastRateUpdate, lastRateUpdate)
-                    .SetProperty(c => c.OfficialRate, officialRate)
-            );
+        var number = await _dbContext.Currencies
+            .Where(c => c.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(c => c.LastRateUpdate, lastDateRateUpdate)
+                .SetProperty(c => c.OfficialRate, officialRate));
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> UpdateRate(string code, DateTime lastDateRateUpdate, decimal officialRate)
+    {
+        var number = await _dbContext.Currencies
+            .Where(c => c.Code == code)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(c => c.LastRateUpdate, lastDateRateUpdate)
+                .SetProperty(c => c.OfficialRate, officialRate));
 
         return (number == 0) ? false : true;
     }

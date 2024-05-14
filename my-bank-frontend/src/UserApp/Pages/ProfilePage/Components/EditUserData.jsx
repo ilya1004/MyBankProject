@@ -35,30 +35,51 @@ export default function EditUserData({ userData, onSetIsEditing, onReload }) {
   );
 
   const handleNicknameEdit = (e) => {
+    if (e.target.value.length > 30) {
+      return;
+    }
     setNicknameEdit(e.target.value);
   };
 
   const handleNameEdit = (e) => {
+    if (e.target.value.length > 30) {
+      return;
+    }
     setNameEdit(e.target.value);
   };
 
   const handleSurnameEdit = (e) => {
+    if (e.target.value.length > 30) {
+      return;
+    }
     setSurnameEdit(e.target.value);
   };
 
   const handlePatronymicEdit = (e) => {
+    if (e.target.value.length > 30) {
+      return;
+    }
     setPatronymicEdit(e.target.value);
   };
 
   const handlePhoneNumberEdit = (e) => {
+    if (e.target.value.length > 20) {
+      return;
+    }
     setPhoneNumberEdit(e.target.value);
   };
 
   const handlePassportSeriesEdit = (e) => {
+    if (e.target.value.length > 10) {
+      return;
+    }
     setPassportSeriesEdit(e.target.value);
   };
 
   const handlePassportNumberEdit = (e) => {
+    if (e.target.value.length > 20) {
+      return;
+    }
     setPassportNumberEdit(e.target.value);
   };
 
@@ -90,7 +111,6 @@ export default function EditUserData({ userData, onSetIsEditing, onReload }) {
         `User/UpdatePersonalInfoCurr`,
         data
       );
-      console.log(res.data["status"]);
       onReload();
       showMessageStc("Данные были успешно изменены", "success");
     } catch (err) {

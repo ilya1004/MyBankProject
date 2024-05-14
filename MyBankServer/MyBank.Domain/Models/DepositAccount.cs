@@ -4,7 +4,7 @@ public class DepositAccount
 {
     public DepositAccount() { }
 
-    public DepositAccount(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime? closingDate, bool isActive, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption, int? userId, User? user, int? currencyId, Currency? currency)
+    public DepositAccount(int id, string name, string number, decimal currentBalance, decimal depositStartBalance, DateTime creationDate, DateTime? closingDate, decimal interestRate, int depositTermInDays, int totalAccrualsNumber, int madeAccrualsNumber, bool isRevocable, bool hasCapitalisation, bool hasInterestWithdrawalOption, bool isActive, int? userId, User? user, int? currencyId, Currency? currency)
     {
         Id = id;
         Name = name;
@@ -13,7 +13,6 @@ public class DepositAccount
         DepositStartBalance = depositStartBalance;
         CreationDate = creationDate;
         ClosingDate = closingDate;
-        IsActive = isActive;
         InterestRate = interestRate;
         DepositTermInDays = depositTermInDays;
         TotalAccrualsNumber = totalAccrualsNumber;
@@ -21,6 +20,7 @@ public class DepositAccount
         IsRevocable = isRevocable;
         HasCapitalisation = hasCapitalisation;
         HasInterestWithdrawalOption = hasInterestWithdrawalOption;
+        IsActive = isActive;
         UserId = userId;
         User = user;
         CurrencyId = currencyId;
@@ -34,7 +34,6 @@ public class DepositAccount
     public decimal DepositStartBalance { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     public DateTime? ClosingDate { get; set; } = null;
-    public bool IsActive { get; set; }
     public decimal InterestRate { get; set; }
     public int DepositTermInDays { get; set; }
     public int TotalAccrualsNumber { get; set; }
@@ -42,6 +41,7 @@ public class DepositAccount
     public bool IsRevocable { get; set; }
     public bool HasCapitalisation { get; set; }
     public bool HasInterestWithdrawalOption { get; set; }
+    public bool IsActive { get; set; }
     public int? UserId { get; set; }
     public User? User { get; set; } = null;
     public int? CurrencyId { get; set; }

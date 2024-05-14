@@ -1,4 +1,6 @@
-﻿namespace MyBank.Persistence.Repositories;
+﻿using MyBank.Domain.Models;
+
+namespace MyBank.Persistence.Repositories;
 
 public class CreditAccountsRepository : ICreditAccountsRepository
 {
@@ -77,6 +79,28 @@ public class CreditAccountsRepository : ICreditAccountsRepository
         return _mapper.Map<List<CreditAccount>>(creditAccountEntitiesList);
     }
 
+    public async Task<List<CreditAccount>> GetAll(bool includeData, bool onlyActive)
+    {
+        IQueryable<CreditAccountEntity> query = _dbContext.CreditAccounts.AsNoTracking();
+
+        if (includeData)
+        {
+            query = query.Include(c => c.User)
+                         .Include(c => c.Currency)
+                         .Include(c => c.ModeratorApproved)
+                         .Include(c => c.Payments);
+        }
+
+        if (onlyActive)
+        {
+            query = query.Where(c => c.IsActive == true);
+        }
+
+        var creditAccountEntitiesList = await query.ToListAsync();
+
+        return _mapper.Map<List<CreditAccount>>(creditAccountEntitiesList);
+    }
+
     public async Task<bool> UpdateName(int id, string name)
     {
         var number = await _dbContext.CreditAccounts
@@ -99,6 +123,19 @@ public class CreditAccountsRepository : ICreditAccountsRepository
             .Where(pa => pa.Id == id)
             .ExecuteUpdateAsync(s => s
                 .SetProperty(ca => ca.CurrentBalance, delta));
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> UpdateClosingInfo(int id, decimal currentBalance, int madePaymentsNumber, DateTime closingDate, bool isActive)
+    {
+        var number = await _dbContext.CreditAccounts
+            .Where(ca => ca.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(ca => ca.CurrentBalance, currentBalance)
+                .SetProperty(ca => ca.MadePaymentsNumber, madePaymentsNumber)
+                .SetProperty(ca => ca.ClosingDate, closingDate)
+                .SetProperty(ca => ca.IsActive, isActive));
 
         return (number == 0) ? false : true;
     }

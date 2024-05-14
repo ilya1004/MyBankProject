@@ -15,7 +15,7 @@ export default function ListDeposits(props) {
 
   const listItemDepositAccount = (item) => {
     return (
-      <List.Item key={item["id"]}>
+      <List.Item key={item.id}>
         <Card
           hoverable
           style={{
@@ -39,12 +39,12 @@ export default function ListDeposits(props) {
                 margin: "0px 0px 10px 0px",
               }}
             >
-              {item["name"]}
+              {item.name}
             </Title>
-            <Text>{convertNumberAccount(item["number"])}</Text>
+            <Text>{convertNumberAccount(item.number)}</Text>
             <Text
               style={{ fontSize: "18px" }}
-            >{`${item["currentBalance"]} ${item["currency"]["code"]}`}</Text>
+            >{`${item.currentBalance} ${item.currency.code}`}</Text>
           </Flex>
         </Card>
       </List.Item>
@@ -61,19 +61,24 @@ export default function ListDeposits(props) {
       type="inner"
       style={{
         width: "90%",
-        height: "300px",
+        height: "240px",
       }}
     >
-      <List
-        itemLayout="horizontal"
-        grid={{
-          gutter: 15,
-          // column: userData["cards"].length,
-          column: 3,
-        }}
-        dataSource={props.value}
-        renderItem={(item) => listItemDepositAccount(item)}
-      ></List>
+      <Flex
+        align="center"
+        justify="flex-start"
+        style={{ width: "100%", margin: "0px 0px 0px 50px" }}
+      >
+        <List
+          itemLayout="horizontal"
+          grid={{
+            gutter: 90,
+            column: 2,
+          }}
+          dataSource={props.value}
+          renderItem={(item) => listItemDepositAccount(item)}
+        ></List>
+      </Flex>
     </Card>
   );
 }

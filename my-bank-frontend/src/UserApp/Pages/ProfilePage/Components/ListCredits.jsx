@@ -1,9 +1,11 @@
 import { Card, Flex, List, Typography } from "antd";
 import { widthCardAcc, heightCardAcc } from "../ProfilePage";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 export default function ListCredits(props) {
+  const navigate = useNavigate();
   const convertNumberAccount = (number) => {
     let numStr = number.toString();
     let res = "";
@@ -14,20 +16,22 @@ export default function ListCredits(props) {
   };
 
   const listItemCreditAccount = (item) => {
+    let colors = ["#C9D6AD", "#E3E0B8"];
     return (
-      <List.Item key={item["id"]}>
+      <List.Item key={item.id}>
         <Card
           hoverable
+          onClick={() => {
+            navigate(`/credits/${item.id}`);
+          }}
           style={{
             width: widthCardAcc,
             height: heightCardAcc,
-            backgroundColor: "#FFF5DF",
+            backgroundColor: colors[0],
           }}
         >
           <Flex
             gap={10}
-            // justify="flex-start"
-            // align="center"
             vertical
             style={{
               width: "100%",
@@ -39,12 +43,12 @@ export default function ListCredits(props) {
                 margin: "0px 0px 10px 0px",
               }}
             >
-              {item["name"]}
+              {item.name}
             </Title>
-            <Text>{convertNumberAccount(item["number"])}</Text>
+            <Text>{convertNumberAccount(item.number)}</Text>
             <Text
               style={{ fontSize: "18px" }}
-            >{`${item["currentBalance"]} ${item["currency"]["code"]}`}</Text>
+            >{`${item.currentBalance} ${item.currency.code}`}</Text>
           </Flex>
         </Card>
       </List.Item>
@@ -63,16 +67,21 @@ export default function ListCredits(props) {
         height: "240px",
       }}
     >
-      <List
-        itemLayout="horizontal"
-        grid={{
-          gutter: 15,
-          // column: userData["cards"].length,
-          column: 3,
-        }}
-        dataSource={props.value}
-        renderItem={(item) => listItemCreditAccount(item)}
-      ></List>
+      <Flex
+        align="center"
+        justify="flex-start"
+        style={{ width: "100%", margin: "0px 0px 0px 50px" }}
+      >
+        <List
+          itemLayout="horizontal"
+          grid={{
+            gutter: 90,
+            column: 2,
+          }}
+          dataSource={props.value}
+          renderItem={(item) => listItemCreditAccount(item)}
+        ></List>
+      </Flex>
     </Card>
   );
 }

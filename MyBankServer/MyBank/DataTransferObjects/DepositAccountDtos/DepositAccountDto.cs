@@ -10,4 +10,5 @@ public record DepositAccountDto
     public bool HasCapitalisation { get; set; }
     public bool HasInterestWithdrawalOption { get; set; }
     public int CurrencyId { get; set; }
+    public int PersonalAccountId { get; set; }
 }

@@ -7,11 +7,8 @@ import {
   Flex,
   Typography,
   Select,
-  message,
   DatePicker,
-  Upload,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../Common/Store/constants";
 import axios from "axios";
@@ -22,7 +19,7 @@ import dayjs from "dayjs";
 
 const { Text, Title } = Typography;
 
-const inputWidth = "200px";
+const inputWidth = "220px";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -37,7 +34,6 @@ export default function SignUpPage() {
   const [birthdayDate, setBirthdayDate] = useState(null);
   const [citizenship, setCitizenship] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  // const [avatarFile, setAvatarFile] = useState("");
   const navigate = useNavigate();
 
   const handleChangeEmail = (e) => {
@@ -134,13 +130,14 @@ export default function SignUpPage() {
       justify="center"
       align="flex-start"
       style={{
-        height: "105vh",
+        minHeight: "80vh",
+        height: "fit-content",
       }}
     >
       <Card
         style={{
-          margin: "30px 0px 0px 0px",
-          width: "550px",
+          margin: "10px 0px 20px 0px",
+          width: "600px",
         }}
         title={
           <Title style={{ margin: "0px" }} level={4}>
@@ -183,6 +180,10 @@ export default function SignUpPage() {
               {
                 required: true,
                 message: "Введите пароль!",
+              },
+              {
+                min: 6,
+                message: "Длина пароля должна быть 6 и более символов!",
               },
             ]}
             hasFeedback
@@ -390,7 +391,6 @@ export default function SignUpPage() {
               onChange={handleBirthdayDate}
             />
           </Form.Item>
-
           <Form.Item
             label="Гражданство:"
             name="citizenship"
@@ -410,19 +410,6 @@ export default function SignUpPage() {
               options={listCountries}
             />
           </Form.Item>
-          {/* <Form.Item label="Загрузите аватар:" name="avatar">
-            <Upload
-              style={{ marginLeft: "5px" }}
-              action={`${BASE_URL}User/UploadAvatarFileRegistration`}
-              // onChange={handleChangeFileState}
-              beforeUpload={handleBeforeUploadFile}
-              listType="picture"
-              maxCount={1}
-            >
-              <Button icon={<UploadOutlined />}>Загрузить изображение</Button>
-            </Upload>
-          </Form.Item> */}
-
           <Form.Item>
             <Flex justify="center" align="center">
               <Button

@@ -360,6 +360,9 @@ namespace MyBank.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int?>("CreditPackageId")
                         .HasColumnType("integer");
 
@@ -501,15 +504,17 @@ namespace MyBank.Persistence.Migrations
                     b.Property<decimal>("AccrualAmount")
                         .HasColumnType("money");
 
+                    b.Property<int>("AccrualNumber")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("Datetime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DepositAccountId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -537,6 +542,10 @@ namespace MyBank.Persistence.Migrations
 
                     b.Property<int>("RecepientId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("RecepientNickname")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("RecepientRole")
                         .IsRequired()

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Flex, Typography, Button, Table } from "antd";
+import { CheckCircleTwoTone } from "@ant-design/icons";
 import { Link, useLoaderData, useNavigate, redirect } from "react-router-dom";
 import { BASE_URL } from "../../../Common/Store/constants";
 import { handleResponseError } from "../../../Common/Services/ResponseErrorHandler";
@@ -64,7 +65,7 @@ export default function AccountsPage() {
         align="center"
         justify="flex-start"
         vertical
-        style={{ minHeight: "82vh" }}
+        style={{ minHeight: "80vh", height: "fit-content" }}
       >
         <Flex justify="space-between" style={{ width: "70%" }}>
           <Title style={{ marginLeft: "10px" }} level={2}>
@@ -76,6 +77,22 @@ export default function AccountsPage() {
           style={{ width: "70%" }}
           pagination={{ position: ["none", "none"] }}
         >
+          <Column
+            title="Основной"
+            dataIndex="isForTransfersByNickname"
+            key="isForTransfersByNickname"
+            width="100px"
+            render={(state) => (
+              <Flex align="center" justify="center">
+                {state === true ? (
+                  <CheckCircleTwoTone
+                    twoToneColor="#52c41a"
+                    style={{ fontSize: "20px" }}
+                  />
+                ) : null}
+              </Flex>
+            )}
+          />
           <Column title="Название" dataIndex="name" key="name" width="150px" />
           <Column
             title="Номер"
@@ -106,7 +123,7 @@ export default function AccountsPage() {
             type="primary"
             onClick={handleAddAccount}
           >
-            Добавить счёт
+            Открыть счёт
           </Button>
         </Flex>
       </Flex>

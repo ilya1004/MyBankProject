@@ -125,7 +125,7 @@ public class CreditAccountsController : ControllerBase
             );
         }
 
-        return Results.Json(new { item = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { item = MyJsonConverter<CreditAccount>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
@@ -146,7 +146,28 @@ public class CreditAccountsController : ControllerBase
             );
         }
 
-        return Results.Json(new { list = serviceResponse.Data }, statusCode: 200);
+        return Results.Json(new { list = MyJsonConverter<List<CreditAccount>>.Convert(serviceResponse.Data) }, statusCode: 200);
+    }
+
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
+    public async Task<IResult> GetAllInfo(bool includeData, bool onlyActive)
+    {
+        var serviceResponse = await _creditAccountsService.GetAll(includeData, onlyActive);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { list = MyJsonConverter<List<CreditAccount>>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
@@ -180,6 +201,39 @@ public class CreditAccountsController : ControllerBase
         }
 
         return Results.Json(new { item = MyJsonConverter<CreditPayment>.Convert(serviceResponse.Data) }, statusCode: 200);
+    }
+
+    [HttpPut]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> MakePrepayment(int creditAccountId, int personalAccountId)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "CreditAccountsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _creditAccountsService.MakePrepayment(creditAccountId, personalAccountId);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "CreditAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 
     [HttpPut]

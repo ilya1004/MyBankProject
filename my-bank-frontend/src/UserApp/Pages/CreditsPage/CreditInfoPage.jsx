@@ -136,12 +136,14 @@ const infoLabelWidth = "220px";
 const infoValueWidth = "280px";
 
 export default function CreditInfoPage() {
+  const [isSettingsOpened, setIsSettingsOpened] = useState(false);
   const [openModalCloseAcc, setOpenModalCloseAcc] = useState(false);
   const [accName, setAccName] = useState();
   const [isAccountClosable, setIsAccountClosable] = useState(false);
   const [modalText, setModalText] = useState("");
   const [isChangingName, setIsChangingName] = useState(false);
   const [isMakingPayment, setIsMakingPayment] = useState(false);
+  const [isMakingPrepayment, setIsMakingPrepayment] = useState(false);
   const [personalAccountId, setPersonalAccountId] = useState(-1);
 
   const revalidator = useRevalidator();
@@ -229,6 +231,7 @@ export default function CreditInfoPage() {
       } else {
         showMessageStc(res.data.message, "error");
       }
+      setPersonalAccountId(-1);
       setIsMakingPayment(false);
     } catch (err) {
       handleResponseError(err.response);
@@ -277,15 +280,18 @@ export default function CreditInfoPage() {
     setOpenModalCloseAcc(false);
   };
 
-  const handleCloseAccount = () => {
-    if (creditData.currentBalance !== 0) {
-      setModalText("На счете ненулевой баланс");
-      setIsAccountClosable(false);
-    } else {
-      setModalText("Вы действительно хотите закрыть этот счет?");
-      setIsAccountClosable(true);
-    }
-    setOpenModalCloseAcc(true);
+  const handleMakePrepayment = () => {
+    // if (creditData.currentBalance !== 0) {
+    //   setModalText("На счете ненулевой баланс");
+    //   setIsAccountClosable(false);
+    // } else {
+    //   setModalText("Вы действительно хотите закрыть этот счет?");
+    //   setIsAccountClosable(true);
+    // }
+    // setOpenModalCloseAcc(true);
+    isMakingPrepayment === false
+      ? setIsMakingPrepayment(true)
+      : setIsMakingPrepayment(false);
   };
 
   const convertDate = (date) => {
@@ -293,17 +299,41 @@ export default function CreditInfoPage() {
   };
 
   const convertMonths = (days) => {
-    let months = days / 30;
-    if (months.toString()[-1] === 1) {
-      return `${months} месяц`;
-    } else if (2 <= months.toString()[-1] && months.toString()[-1] <= 4) {
-      return `${months} месяца`;
+    let months = Math.floor(days / 30);
+    if (months < 24 || months % 12 !== 0) {
+      if (months % 10 === 1) {
+        return `${months} месяц`;
+      } else if (2 <= months % 10 && months % 10 <= 4 && months < 5) {
+        return `${months} месяца`;
+      } else {
+        return `${months} месяцев`;
+      }
     } else {
-      return `${months} месяцев`;
+      let years = months / 12;
+      if (years % 10 === 1) {
+        return `${years} год`;
+      } else if (2 <= years % 10 && years % 10 <= 4) {
+        return `${years} годa`;
+      } else {
+        return `${years} лет`;
+      }
     }
   };
 
   const handleAddPayment = () => {
+    let currDate = new Date();
+    let paymentDate = new Date(paymentData.datetime);
+    if (paymentDate - currDate >= 0) {
+      let diffDate = new Date(paymentDate - currDate);
+      let diffInMonths = diffDate.getUTCMonth();
+      if (diffInMonths >= 1) {
+        showMessageStc(
+          "Вы уже делали выплату по кредиту в этом месяце",
+          "info"
+        );
+        return;
+      }
+    }
     isMakingPayment === true
       ? setIsMakingPayment(false)
       : setIsMakingPayment(true);
@@ -335,13 +365,68 @@ export default function CreditInfoPage() {
     }
   };
 
+  const handleOpenSettings = () => {
+    isSettingsOpened === false
+      ? setIsSettingsOpened(true)
+      : setIsSettingsOpened(false);
+  };
+
+  const handleCloseSettings = () => {
+    setIsSettingsOpened(false);
+  };
+
+  const makePrepayment = async () => {
+    const axiosInstance = axios.create({
+      baseURL: BASE_URL,
+      withCredentials: true,
+    });
+    try {
+      const res = await axiosInstance.put(
+        `CreditAccounts/MakePrepayment?creditAccountId=${creditData.id}&personalAccountId=${personalAccountId}`
+      );
+      if (res.data.status == true) {
+        showMessageStc("Кредит был успешно досрочно выплачен", "success");
+        navigate("/credits");
+      } else {
+        showMessageStc(res.data.message, "error");
+      }
+      setPersonalAccountId(-1);
+      setIsMakingPrepayment(false);
+    } catch (err) {
+      handleResponseError(err.response);
+    }
+  };
+
+  const handleCancelPrepayment = () => {
+    setIsMakingPrepayment(false);
+  };
+
+  const handleEnterPrepayment = () => {
+    if (personalAccountId === -1) {
+      showMessageStc("Вы не выбрали лицевой счет для снятия средств", "error");
+      return;
+    }
+    if (
+      accountsData.find((item) => item.id === personalAccountId)
+        .currentBalance >= creditData.currentBalance
+    ) {
+      makePrepayment();
+    } else {
+      showMessageStc(
+        "На выбранном лицевом счете недостаточно средств",
+        "error"
+      );
+    }
+  };
+
   return (
     <Flex
       align="center"
       justify="flex-start"
       style={{
         margin: "0px 15px",
-        height: "100vh",
+        minHeight: "80vh",
+        height: "fit-content",
       }}
       vertical
     >
@@ -446,15 +531,23 @@ export default function CreditInfoPage() {
                   <Text>{convertDate(paymentData.datetime)}</Text>
                 </Col>
               </Row>
+              <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
+                <Col style={{ width: infoLabelWidth }}>
+                  <Text type="secondary" style={{ fontSize: "14px" }}>
+                    Досрочное погашение:
+                  </Text>
+                </Col>
+                <Col style={{ width: infoValueWidth }}>
+                  {creditData.hasPrepaymentOption === true ? (
+                    <Tag color="green">Да</Tag>
+                  ) : (
+                    <Tag color="red">Нет</Tag>
+                  )}
+                </Col>
+              </Row>
             </Card>
-            <Flex justify="center" gap={20}>
-              <Button onClick={handleAddPayment} type="primary">
-                Сделать выплату
-              </Button>
-              <Button onClick={handleChangeName}>Изменить имя</Button>
-              <Button onClick={handleCloseAccount} danger>
-                Закрыть кредит
-              </Button>
+            <Flex justify="center">
+              <Button onClick={handleOpenSettings}>Управление кредитом</Button>
             </Flex>
           </Flex>
         </Flex>
@@ -483,7 +576,170 @@ export default function CreditInfoPage() {
             width: "60%",
           }}
         >
-          {isChangingName === false && isMakingPayment === false ? (
+          {isSettingsOpened === true ? (
+            <Flex vertical gap={20}>
+              <Card style={{ width: "450px", margin: "0px 0px 0px 0px" }}>
+                <Flex justify="center" gap={50}>
+                  <Flex align="center" gap={30} vertical>
+                    <Button onClick={handleChangeName}>Изменить имя</Button>
+                    <Button onClick={handleCloseSettings}>Закрыть</Button>
+                  </Flex>
+                  <Flex align="center" gap={30} vertical>
+                    <Button onClick={handleAddPayment} type="primary">
+                      Сделать выплату
+                    </Button>
+                    <Button
+                      type="primary"
+                      disabled={!creditData.hasPrepaymentOption}
+                      onClick={handleMakePrepayment}
+                    >
+                      Погасить досрочно
+                    </Button>
+                  </Flex>
+                </Flex>
+              </Card>
+              {isMakingPrepayment === true ? (
+                <Card style={{ width: "450px", margin: "0px 0px 0px 0px" }}>
+                  <Flex
+                    vertical
+                    align="center"
+                    justify="center"
+                    gap={25}
+                    style={{ width: "100%" }}
+                  >
+                    <Flex vertical align="center" justify="center" gap={20}>
+                      <Select
+                        defaultValue=""
+                        style={{ minWidth: "170px" }}
+                        onChange={handlePersonalAccount}
+                        options={selectAccountsData}
+                      />
+                      <Flex gap={5}>
+                        <Text>Остаток на счету:</Text>
+                        <Text strong>
+                          {personalAccountId !== -1
+                            ? `${
+                                accountsData.find(
+                                  (item) => item.id === personalAccountId
+                                ).currentBalance
+                              } ${
+                                accountsData.find(
+                                  (item) => item.id === personalAccountId
+                                ).currency.code
+                              }`
+                            : ""}
+                        </Text>
+                      </Flex>
+                      <Flex gap={10}>
+                        <Text style={{ fontSize: "16px" }}>
+                          Размер выплаты:
+                        </Text>
+                        <Input
+                          disabled={true}
+                          defaultValue={creditData.currentBalance}
+                          style={{
+                            width: "120px",
+                            height: "28px",
+                          }}
+                        />
+                      </Flex>
+                    </Flex>
+
+                    <Flex gap={20} align="center" justify="center">
+                      <Button onClick={handleCancelPrepayment}>Отмена</Button>
+                      <Button type="primary" onClick={handleEnterPrepayment}>
+                        Выплатить досрочно
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </Card>
+              ) : null}
+              {isChangingName === true ? (
+                <Card style={{ width: "450px", margin: "0px 0px 0px 0px" }}>
+                  <Flex
+                    vertical
+                    align="center"
+                    justify="center"
+                    gap={25}
+                    style={{ width: "100%" }}
+                  >
+                    <Flex align="center" justify="center" gap={20}>
+                      <Text style={{ width: "185px", fontSize: "16px" }}>
+                        Новое название счета:
+                      </Text>
+                      <Input
+                        maxLength={30}
+                        style={{ width: "180px" }}
+                        onChange={handleNewAccNameEdit}
+                      />
+                    </Flex>
+                    <Flex gap={20} align="center" justify="center">
+                      <Button onClick={handleCancelName}>Отмена</Button>
+                      <Button type="primary" onClick={handleEnterName}>
+                        Применить
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </Card>
+              ) : null}
+              {isMakingPayment === true ? (
+                <Card style={{ width: "450px", margin: "0px 0px 0px 0px" }}>
+                  <Flex
+                    vertical
+                    align="center"
+                    justify="center"
+                    gap={25}
+                    style={{ width: "100%" }}
+                  >
+                    <Flex vertical align="center" justify="center" gap={20}>
+                      <Select
+                        defaultValue=""
+                        style={{ minWidth: "170px" }}
+                        onChange={handlePersonalAccount}
+                        options={selectAccountsData}
+                      />
+                      <Flex gap={5}>
+                        <Text>Остаток на счету:</Text>
+                        <Text strong>
+                          {personalAccountId !== -1
+                            ? `${
+                                accountsData.find(
+                                  (item) => item.id === personalAccountId
+                                ).currentBalance
+                              } ${
+                                accountsData.find(
+                                  (item) => item.id === personalAccountId
+                                ).currency.code
+                              }`
+                            : ""}
+                        </Text>
+                      </Flex>
+                      <Flex gap={10}>
+                        <Text style={{ fontSize: "16px" }}>
+                          Размер выплаты:
+                        </Text>
+                        <Input
+                          disabled={true}
+                          defaultValue={paymentData.paymentAmount.toFixed(2)}
+                          style={{
+                            width: "120px",
+                            height: "28px",
+                          }}
+                        />
+                      </Flex>
+                    </Flex>
+
+                    <Flex gap={20} align="center" justify="center">
+                      <Button onClick={handleCancelPayment}>Отмена</Button>
+                      <Button type="primary" onClick={handleEnterPayment}>
+                        Сделать выплату
+                      </Button>
+                    </Flex>
+                  </Flex>
+                </Card>
+              ) : null}
+            </Flex>
+          ) : (
             <Table
               dataSource={creditData.payments}
               title={() => (
@@ -528,96 +784,13 @@ export default function CreditInfoPage() {
                 render={(datetime) => convertDatetime(datetime)}
               />
               <Column
-                // width="150px"
                 title="Статус выплаты"
                 dataIndex="status"
                 key="status"
                 render={(operStatus) => convertOperStatus(operStatus)}
               />
             </Table>
-          ) : null}
-          {isChangingName === true ? (
-            <Card style={{ width: "450px", margin: "0px 0px 0px 0px" }}>
-              <Flex
-                vertical
-                align="center"
-                justify="center"
-                gap={25}
-                style={{ width: "100%" }}
-              >
-                <Flex align="center" justify="center" gap={20}>
-                  <Text style={{ width: "185px", fontSize: "16px" }}>
-                    Новое название счета:
-                  </Text>
-                  <Input
-                    maxLength={30}
-                    style={{ width: "180px" }}
-                    onChange={handleNewAccNameEdit}
-                  />
-                </Flex>
-                <Flex gap={20} align="center" justify="center">
-                  <Button onClick={handleCancelName}>Отмена</Button>
-                  <Button type="primary" onClick={handleEnterName}>
-                    Применить
-                  </Button>
-                </Flex>
-              </Flex>
-            </Card>
-          ) : null}
-          {isMakingPayment === true ? (
-            <Card style={{ width: "450px", margin: "0px 0px 0px 0px" }}>
-              <Flex
-                vertical
-                align="center"
-                justify="center"
-                gap={25}
-                style={{ width: "100%" }}
-              >
-                <Flex vertical align="center" justify="center" gap={20}>
-                  <Select
-                    defaultValue=""
-                    style={{ minWidth: "170px" }}
-                    onChange={handlePersonalAccount}
-                    options={selectAccountsData}
-                  />
-                  <Flex gap={5}>
-                    <Text>Остаток на счету:</Text>
-                    <Text strong>
-                      {personalAccountId !== -1
-                        ? `${
-                            accountsData.find(
-                              (item) => item.id === personalAccountId
-                            ).currentBalance
-                          } ${
-                            accountsData.find(
-                              (item) => item.id === personalAccountId
-                            ).currency.code
-                          }`
-                        : ""}
-                    </Text>
-                  </Flex>
-                  <Flex gap={10}>
-                    <Text style={{ fontSize: "16px" }}>Размер выплаты:</Text>
-                    <Input
-                      disabled={true}
-                      defaultValue={paymentData.paymentAmount.toFixed(2)}
-                      style={{
-                        width: "120px",
-                        height: "28px",
-                      }}
-                    />
-                  </Flex>
-                </Flex>
-
-                <Flex gap={20} align="center" justify="center">
-                  <Button onClick={handleCancelPayment}>Отмена</Button>
-                  <Button type="primary" onClick={handleEnterPayment}>
-                    Сделать выплату
-                  </Button>
-                </Flex>
-              </Flex>
-            </Card>
-          ) : null}
+          )}
         </Flex>
       </Flex>
     </Flex>

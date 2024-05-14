@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const { Title, Text } = Typography;
 
 export default function ListCards(props) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const convertDate = (date) => {
     let dateObj = new Date(date);
@@ -28,14 +28,16 @@ export default function ListCards(props) {
     let colors = ["#C9D6AD", "#E3E0B8"];
     return (
       <List.Item
-        key={item["id"]}
+        key={item.id}
         style={{
           width: "300px",
           height: "100px",
         }}
       >
         <Card
-          onClick={() => {navigate(`/cards/${item.id}`)}} 
+          onClick={() => {
+            navigate(`/cards/${item.id}`);
+          }}
           hoverable
           bordered={false}
           style={{
@@ -46,8 +48,6 @@ export default function ListCards(props) {
         >
           <Flex
             gap={10}
-            // justify="flex-start"
-            // align="center"
             vertical
             style={{
               width: "100%",
@@ -59,10 +59,10 @@ export default function ListCards(props) {
                 margin: "0px 0px 10px 0px",
               }}
             >
-              {item["name"]}
+              {item.name}
             </Title>
-            <Text>{convertNumberCard(item["number"])}</Text>
-            <Text>{convertDate(item["expirationDate"])}</Text>
+            <Text>{convertNumberCard(item.number)}</Text>
+            <Text>{convertDate(item.expirationDate)}</Text>
           </Flex>
         </Card>
       </List.Item>
@@ -82,15 +82,17 @@ export default function ListCards(props) {
         height: "240px",
       }}
     >
-      <List
-        itemLayout="horizontal"
-        grid={{
-          gutter: 15,
-          column: 3,
-        }}
-        dataSource={props.value}
-        renderItem={(item) => listItemCard(item)}
-      ></List>
+      <Flex align="center" justify="flex-start" style={{ width: "100%" }}>
+        <List
+          itemLayout="horizontal"
+          grid={{
+            gutter: 30,
+            column: 3,
+          }}
+          dataSource={props.value}
+          renderItem={(item) => listItemCard(item)}
+        ></List>
+      </Flex>
     </Card>
   );
 }

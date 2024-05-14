@@ -11,12 +11,14 @@ public class DepositAccountsController : ControllerBase
     private readonly IDepositAccountsService _depositAccountsService;
     private readonly IMapper _mapper;
     private readonly ICookieValidator _cookieValidator;
+    private readonly IDepositAccrualsService _depositAccrualsService;
 
-    public DepositAccountsController(IDepositAccountsService depositAccountsService, IMapper mapper, ICookieValidator cookieValidator)
+    public DepositAccountsController(IDepositAccountsService depositAccountsService, IMapper mapper, ICookieValidator cookieValidator, IDepositAccrualsService depositAccrualsService)
     {
         _depositAccountsService = depositAccountsService;
         _mapper = mapper;
         _cookieValidator = cookieValidator;
+        _depositAccrualsService = depositAccrualsService;
     }
 
     [HttpPost]
@@ -29,14 +31,14 @@ public class DepositAccountsController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "CreditAccountsController",
+                ControllerName = "DepositAccountsController",
                 Message = message!
             },
             statusCode: 400);
         }
 
         var serviceResponse = await _depositAccountsService.Add(id!.Value, dto.Name, dto.DepositStartBalance, dto.InterestRate, 
-            dto.DepositTermInDays, dto.IsRevocable, dto.HasCapitalisation, dto.HasInterestWithdrawalOption, dto.CurrencyId);
+            dto.DepositTermInDays, dto.IsRevocable, dto.HasCapitalisation, dto.HasInterestWithdrawalOption, dto.CurrencyId, dto.PersonalAccountId);
 
         if (serviceResponse.Status == false)
         {
@@ -54,7 +56,7 @@ public class DepositAccountsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    public async Task<IResult> GetInfoByCurrentUser(bool includeData, bool onlyActive)
+    public async Task<IResult> GetAllInfoByCurrentUser(bool includeData, bool onlyActive)
     {
         var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
 
@@ -62,7 +64,7 @@ public class DepositAccountsController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "CreditAccountsController",
+                ControllerName = "DepositAccountsController",
                 Message = message!
             },
             statusCode: 400);
@@ -75,7 +77,7 @@ public class DepositAccountsController : ControllerBase
             return Results.Json(
                 new ErrorDto
                 {
-                    ControllerName = "CreditAccountsController",
+                    ControllerName = "DepositAccountsController",
                     Message = serviceResponse.Message,
                 },
                 statusCode: 400
@@ -83,6 +85,39 @@ public class DepositAccountsController : ControllerBase
         }
 
         return Results.Json(new { list = MyJsonConverter<List<DepositAccount>>.Convert(serviceResponse.Data) }, statusCode: 200);
+    }
+
+    [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    public async Task<IResult> GetInfoByCurrentUser(int depositAccountId, bool includeData)
+    {
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "DepositAccountsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _depositAccountsService.GetById(depositAccountId, includeData);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(
+                new ErrorDto
+                {
+                    ControllerName = "DepositAccountsController",
+                    Message = serviceResponse.Message,
+                },
+                statusCode: 400
+            );
+        }
+
+        return Results.Json(new { item = MyJsonConverter<DepositAccount>.Convert(serviceResponse.Data) }, statusCode: 200);
     }
 
     [HttpGet]
@@ -95,7 +130,7 @@ public class DepositAccountsController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "CreditAccountsController",
+                ControllerName = "DepositAccountsController",
                 Message = message!
             },
             statusCode: 400);
@@ -128,7 +163,7 @@ public class DepositAccountsController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "CreditAccountsController",
+                ControllerName = "DepositAccountsController",
                 Message = message!
             },
             statusCode: 400);
@@ -161,7 +196,7 @@ public class DepositAccountsController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "CreditAccountsController",
+                ControllerName = "DepositAccountsController",
                 Message = message!
             },
             statusCode: 400);
@@ -194,7 +229,7 @@ public class DepositAccountsController : ControllerBase
         {
             return Results.Json(new ErrorDto
             {
-                ControllerName = "CreditAccountsController",
+                ControllerName = "DepositAccountsController",
                 Message = message!
             },
             statusCode: 400);
@@ -221,10 +256,19 @@ public class DepositAccountsController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> WithdrawInterests(int depositAccountId, int personalAccountId)
     {
-        var serviceResponse = await _depositAccountsService.WithdrawInterests(
-            depositAccountId,
-            personalAccountId
-        );
+        var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+        if (status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "DepositAccountsController",
+                Message = message!
+            },
+            statusCode: 400);
+        }
+
+        var serviceResponse = await _depositAccountsService.WithdrawInterests(depositAccountId, personalAccountId);
 
         if (serviceResponse.Status == false)
         {
@@ -240,4 +284,36 @@ public class DepositAccountsController : ControllerBase
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
+
+    //[HttpPost]
+    //[Authorize(Policy = AuthorizationPolicies.UserPolicy)]
+    //public async Task<IResult> AddAccrual()
+    //{
+    //    var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
+
+    //    if (status == false)
+    //    {
+    //        return Results.Json(new ErrorDto
+    //        {
+    //            ControllerName = "DepositAccountsController",
+    //            Message = message!
+    //        },
+    //        statusCode: 400);
+    //    }
+
+    //    var serviceResponse = await _depositAccrualsService.Add();
+
+    //    if (serviceResponse.Status == false)
+    //    {
+    //        return Results.Json(
+    //            new ErrorDto
+    //            {
+    //                ControllerName = "DepositAccountsController",
+    //                Message = serviceResponse.Message,
+    //            },
+    //            statusCode: 400
+    //        );
+    //    }
+    //    return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
+    //}
 }

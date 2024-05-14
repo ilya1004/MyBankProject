@@ -4,7 +4,7 @@ public interface ICardPackagesRepository
 {
     Task<int> Add(CardPackage cardPackage);
     Task<CardPackage> GetById(int id);
-    Task<List<CardPackage>> GetAll();
+    Task<List<CardPackage>> GetAll(bool onlyActive);
     Task<bool> UpdateInfo(int id, string name, decimal price, int operationsNumber, decimal operationsSum, decimal averageAccountBalance, decimal monthPayroll);
     Task<bool> UpdateStatus(int id, bool isActive);
     Task<bool> Delete(int id);
