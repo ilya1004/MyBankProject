@@ -112,7 +112,7 @@ export default function CreditsPage() {
   const expandedRowRender = (record) => {
     return (
       <Table
-        dataSource={[record]}
+        dataSource={[record]} 
         // pagination={{ position: ["none", "none"] }}
         pagination={false}
       >

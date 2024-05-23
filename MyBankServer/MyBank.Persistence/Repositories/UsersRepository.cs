@@ -39,7 +39,7 @@ public class UsersRepository : IUsersRepository
                 .Include(u => u.CreditRequests)
                 .Include(u => u.Messages);
         }
-        var userEntity = await query.FirstOrDefaultAsync(u => u.Id == id && u.IsActive == true);
+        var userEntity = await query.FirstOrDefaultAsync(u => u.Id == id);
 
         return _mapper.Map<User>(userEntity);
     }
@@ -107,6 +107,16 @@ public class UsersRepository : IUsersRepository
             .Where(u => u.Id == id)
             .ExecuteUpdateAsync(s => s
             .SetProperty(u => u.Email, email));
+
+        return (number == 0) ? false : true;
+    }
+
+    public async Task<bool> UpdateCreditRequestRejected(int id, int creditRequestRejectedNumber)
+    {
+        var number = await _dbContext.Users
+            .Where(u => u.Id == id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(u => u.CreditRequestsRejected, creditRequestRejectedNumber));
 
         return (number == 0) ? false : true;
     }

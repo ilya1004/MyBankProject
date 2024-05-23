@@ -36,10 +36,12 @@ public class ModeratorsRepository : IModeratorsRepository
                 .AsNoTracking()
                 .Include(m => m.Messages)
                 .Include(m => m.CreditRequestsReplied)
+                    .ThenInclude(cr => cr.CreditPackage)
+                        .ThenInclude(cp => cp!.Currency)
                 .Include(m => m.CreditsApproved)
-                    .ThenInclude(cr => cr.Currency)
+                    .ThenInclude(c => c.Currency)
                 .Include(m => m.CreditsApproved)
-                    .ThenInclude(cr => cr.User)
+                    .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id) :
             await _dbContext.Moderators
                 .AsNoTracking()

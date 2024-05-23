@@ -92,7 +92,7 @@ export default function CreditRequests() {
         `CreditRequests/UpdateState?creditRequestId=${id}&isApproved=${state}`
       );
       if (state == false) {
-        showMessageStc("Запрос на кредит был успешно отклонен", "success");
+        showMessageStc("Запрос на кредит был успешно отклонен", "info");
       } else {
         showMessageStc("Запрос на кредит был успешно одобрен", "success");
       }
@@ -106,8 +106,8 @@ export default function CreditRequests() {
     setCreditRequestApprovedState(creditRequestId, true);
   };
 
-  const handleRejectCredit = (e) => {
-    console.log(e);
+  const handleRejectCredit = (creditRequestId) => {
+    setCreditRequestApprovedState(creditRequestId, false);
   };
 
   const expandedRowRender = () => {
@@ -184,8 +184,15 @@ export default function CreditRequests() {
           dataSource={requestsData}
           style={{ width: "80%" }}
           expandable={{ expandedCreditsTable: expandedRowRender, defaultExpandedRowKeys: ["0"] }}
-          pagination={{ position: ["none", "none"] }}
+          pagination={{ pageSize: 8 }}
         >
+          <Column
+            title="Номер"
+            dataIndex="id"
+            key="id"
+            width={"100px"}
+            render={(id) => <Text>{id.toString().padStart(5, "0")}</Text>}
+          />
           <Column
             width="180px"
             title="Пользователь"
@@ -245,15 +252,6 @@ export default function CreditRequests() {
             )}
           />
         </Table>
-        <Flex justify="space-between" style={{ width: "80%" }}>
-          <Button
-            style={{ margin: "20px 0px 20px 10px" }}
-            type="primary"
-            // onClick={handleAddCard}
-          >
-            Добавить карту
-          </Button>
-        </Flex>
       </Flex>
     </>
   );

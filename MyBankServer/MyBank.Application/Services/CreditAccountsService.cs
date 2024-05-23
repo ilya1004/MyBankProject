@@ -1,7 +1,4 @@
-﻿using MyBank.Domain.Models;
-using System.Xml.Linq;
-
-namespace MyBank.Application.Services;
+﻿namespace MyBank.Application.Services;
 
 public class CreditAccountsService : ICreditAccountsService
 {
@@ -352,6 +349,33 @@ public class CreditAccountsService : ICreditAccountsService
             Status = true,
             Message = "Success",
             Data = status
+        };
+    }
+
+    public async Task<ServiceResponse<bool>> MonthUpdateCreditsBalance()
+    {
+        var credits = await _creditAccountsRepository.GetAllByCreationDate(true, true, DateTime.UtcNow);
+
+        foreach (var credit in credits)
+        {
+            var monthInterestRate = (credit.InterestRate / 12) / 100;
+            var monthPercents = credit.CurrentBalance * monthInterestRate;
+            var status = await _creditAccountsRepository.UpdateBalanceDelta(credit.Id, monthPercents);
+            if (status == false)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Status = false,
+                    Message = $"Произошла ошибка при ежемесячном обновлении баланса кредитов",
+                    Data = default
+                };
+            }
+        }
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = true,
         };
     }
 }

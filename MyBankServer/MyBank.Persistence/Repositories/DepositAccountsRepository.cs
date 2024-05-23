@@ -135,6 +135,29 @@ public class DepositAccountsRepository : IDepositAccountsRepository
         return (number == 0) ? false : true;
     }
 
+    public async Task<List<DepositAccount>> GetAllByCreationDate(bool includeData, bool onlyActive, DateTime creationDate)
+    {
+        IQueryable<DepositAccountEntity> query = _dbContext.DepositAccounts.AsNoTracking();
+
+        if (includeData)
+        {
+            query = query.Include(c => c.User)
+                         .Include(c => c.Currency)
+                         .Include(c => c.Accruals);
+        }
+
+        if (onlyActive)
+        {
+            query = query.Where(c => c.IsActive == true);
+        }
+
+        query = query.Where(c => c.CreationDate.Date == creationDate.Date);
+
+        var depositAccountEntitiesList = await query.ToListAsync();
+
+        return _mapper.Map<List<DepositAccount>>(depositAccountEntitiesList);
+    }
+
     public async Task<bool> Delete(int id)
     {
         var number = await _dbContext.DepositAccounts.Where(da => da.Id == id).ExecuteDeleteAsync();

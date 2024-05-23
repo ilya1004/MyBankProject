@@ -92,9 +92,9 @@ export default function ModeratorInfoPage() {
     return res.trim();
   };
 
-  const expandedRowRender = () => {
+  const expandedRowRender = (record) => {
     return (
-      <Table dataSource={creditAccountsData} pagination={false}>
+      <Table dataSource={[record]} pagination={false}>
         <Column
           width="170px"
           title="Сумма для выплаты"
@@ -134,7 +134,9 @@ export default function ModeratorInfoPage() {
           title="Выполненные платежи"
           dataIndex="payments"
           key="payments"
-          render={(_, record) => <Text>{`${record.madePaymentsNumber}/${record.totalPaymentsNumber}`}</Text>}
+          render={(_, record) => (
+            <Text>{`${record.madePaymentsNumber}/${record.totalPaymentsNumber}`}</Text>
+          )}
         />
         <Column
           width="240px"
@@ -243,7 +245,7 @@ export default function ModeratorInfoPage() {
               key="startBalance"
               render={(_, record) => (
                 <Text>
-                  `${record.startBalance} ${record.currency.code}`
+                  {`${record.creditPackage.creditStartBalance} ${record.creditPackage.currency.code}`}
                 </Text>
               )}
             />
@@ -252,15 +254,21 @@ export default function ModeratorInfoPage() {
               title="Процентная ставка"
               dataIndex="interestRate"
               key="interestRate"
-              render={(interestRate) => <Text>`${interestRate} %`</Text>}
+              render={(_, record) => (
+                <Text>{`${record.creditPackage.interestRate} %`}</Text>
+              )}
             />
             <Column
               width="190px"
               title="Способ начисления процентов"
               dataIndex="interestCalculationType"
               key="interestCalculationType"
-              render={(value) => (
-                <Text>{convertInterestCalculationType(value)}</Text>
+              render={(_, record) => (
+                <Text>
+                  {convertInterestCalculationType(
+                    record.creditPackage.interestCalculationType
+                  )}
+                </Text>
               )}
             />
             <Column
@@ -268,16 +276,20 @@ export default function ModeratorInfoPage() {
               title="Срок выдачи кредита"
               dataIndex="creditTermInDays"
               key="creditTermInDays"
-              render={(days) => <Text>{convertMonths(days)}</Text>}
+              render={(_, record) => (
+                <Text>
+                  {convertMonths(record.creditPackage.creditTermInDays)}
+                </Text>
+              )}
             />
             <Column
               width="240px"
               title="Возможность досрочного погашения"
               dataIndex="hasPrepaymentOption"
               key="hasPrepaymentOption"
-              render={(hasPrepaymentOption) => (
+              render={(_, record) => (
                 <Text>
-                  {hasPrepaymentOption === true ? (
+                  {record.creditPackage.hasPrepaymentOption === true ? (
                     <Tag color="green">Да</Tag>
                   ) : (
                     <Tag color="red">Нет</Tag>
@@ -294,8 +306,8 @@ export default function ModeratorInfoPage() {
                 <Text>
                   {isApproved === true ? (
                     <CheckCircleTwoTone
-                      twoToneColor="green"
-                      style={{ fontSize: "18px" }}
+                      twoToneColor="#52c41a"
+                      style={{ fontSize: "20px" }}
                     />
                   ) : (
                     <CloseCircleTwoTone
@@ -315,7 +327,9 @@ export default function ModeratorInfoPage() {
           <Table
             dataSource={creditAccountsData}
             style={{ width: "90%" }}
-            expandable={{ expandedCreditsTable: expandedRowRender, defaultExpandedRowKeys: ["0"] }}
+            expandable={{
+              expandedRowRender: (record) => expandedRowRender(record),
+            }}
           >
             <Column
               width="80px"

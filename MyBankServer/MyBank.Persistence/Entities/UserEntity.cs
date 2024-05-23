@@ -4,7 +4,7 @@ public class UserEntity
 {
     public UserEntity() { }
 
-    public UserEntity(int id, string email, string hashedPassword, string nickname, bool isActive, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, DateTime registrationDate, DateTime birthdayDate, string citizenship, string avatarImagePath)
+    public UserEntity(int id, string email, string hashedPassword, string nickname, bool isActive, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, DateTime registrationDate, DateTime birthdayDate, string citizenship, int creditRequestsRejected, string avatarImagePath)
     {
         Id = id;
         Email = email;
@@ -20,6 +20,7 @@ public class UserEntity
         RegistrationDate = registrationDate;
         BirthdayDate = birthdayDate;
         Citizenship = citizenship;
+        CreditRequestsRejected = creditRequestsRejected;
         AvatarImagePath = avatarImagePath;
     }
 
@@ -37,6 +38,7 @@ public class UserEntity
     public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
     public DateTime BirthdayDate { get; set; }
     public string Citizenship { get; set; } = string.Empty;
+    public int CreditRequestsRejected { get; set; } = 0;
     public string AvatarImagePath {  get; set; } = string.Empty;
     public List<PersonalAccountEntity> PersonalAccounts { get; set; } = [];
     public List<CreditAccountEntity> CreditAccounts { get; set; } = [];

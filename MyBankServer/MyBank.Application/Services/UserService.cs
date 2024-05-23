@@ -122,6 +122,18 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<ServiceResponse<bool>> IsExistByEmail(string email)
+    {
+        var isExist = await _userRepository.IsExistByEmail(email);
+
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = isExist
+        };
+    }
+
     public async Task<ServiceResponse<bool>> UploadAvatarFile(IFormFile file, int id)
     {
         if (file == null || file.Length == 0)

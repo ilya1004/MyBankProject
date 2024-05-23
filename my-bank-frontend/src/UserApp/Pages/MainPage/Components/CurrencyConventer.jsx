@@ -15,10 +15,10 @@ const { Text } = Typography;
 
 export default function CurrencyConventer({ currenciesData }) {
   const [currencies, setCurrencies] = useState([
-    [0, "USD", true],
-    [1, "EUR", true],
-    [2, "BYN", true],
-    [3, "RUB", true],
+    [0, "USD", true, 0],
+    [1, "EUR", true, 1],
+    [2, "BYN", true, 2],
+    [3, "RUB", true, 3],  // номер в таблице, ..., ..., номер в общем списке валют 
   ]);
   const [dctCurr, setDctCurr] = useState({
     0: "USD",
@@ -35,7 +35,6 @@ export default function CurrencyConventer({ currenciesData }) {
   const [reloadList, setReloadList] = useState(false);
 
   useEffect(() => {
-    console.log(listCurrenciesData);
     let lst = [];
     for (let i = 0; i < listCurrenciesData.length; i++) {
       if (listCurrenciesData[i] == null) {
@@ -108,8 +107,9 @@ export default function CurrencyConventer({ currenciesData }) {
   const onItemClick = ({ key }) => {
     setCurrencies((prevList) => [
       ...prevList,
-      [currencies.length, listCurrenciesData[key].Cur_Abbreviation, false],
+      [currencies.length, listCurrenciesData[key].Cur_Abbreviation, false, parseInt(key)],
     ]);
+    console.log([currencies.length, listCurrenciesData[key].Cur_Abbreviation, false, parseInt(key)])
     setValues((prevList) => [...prevList, 0]);
     let q = listCurrenciesData[key].Cur_Abbreviation;
     setDctCurr((prevDict) => ({
@@ -121,14 +121,14 @@ export default function CurrencyConventer({ currenciesData }) {
   };
 
   const handleClickDelCurrency = (item) => {
-    console.log(item);
+    
     let updCurrencies = [];
     let count = 0;
     for (let i = 0; i < currencies.length; i++) {
       if (currencies[i][1] === item[1]) {
         continue;
       } else {
-        updCurrencies.push([count, currencies[i][1], currencies[i][2]]);
+        updCurrencies.push([count, currencies[i][1], currencies[i][2], currencies[i][3]]);
         count++;
       }
     }
@@ -150,7 +150,7 @@ export default function CurrencyConventer({ currenciesData }) {
       }
     }
     setDctCurr(updDct);
-    listCurrenciesData[item[0] - 4] = currenciesData[item[0] - 4];
+    listCurrenciesData[item[3]] = currenciesData[item[3]];
     setReloadList(!reloadList);
   };
 

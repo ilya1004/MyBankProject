@@ -101,6 +101,30 @@ public class CreditAccountsRepository : ICreditAccountsRepository
         return _mapper.Map<List<CreditAccount>>(creditAccountEntitiesList);
     }
 
+    public async Task<List<CreditAccount>> GetAllByCreationDate(bool includeData, bool onlyActive, DateTime creationDate)
+    {
+        IQueryable<CreditAccountEntity> query = _dbContext.CreditAccounts.AsNoTracking();
+
+        if (includeData)
+        {
+            query = query.Include(c => c.User)
+                         .Include(c => c.Currency)
+                         .Include(c => c.ModeratorApproved)
+                         .Include(c => c.Payments);
+        }
+
+        if (onlyActive)
+        {
+            query = query.Where(c => c.IsActive == true);
+        }
+
+        query = query.Where(c => c.CreationDate.Date == creationDate.Date);
+
+        var creditAccountEntitiesList = await query.ToListAsync();
+
+        return _mapper.Map<List<CreditAccount>>(creditAccountEntitiesList);
+    }
+
     public async Task<bool> UpdateName(int id, string name)
     {
         var number = await _dbContext.CreditAccounts

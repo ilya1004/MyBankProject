@@ -116,12 +116,12 @@ export default function NavigationBar({ loginState, setLoginState }) {
                 <Text
                   style={{
                     fontSize: "20px",
-                    padding: "1px 0px 0px 0px",
+                    padding: "2px 0px 0px 0px",
                   }}
                 >
                   Другое
                 </Text>
-                <DownOutlined style={{margin: "6px 0px 0px 7px"}}/>
+                <DownOutlined style={{margin: "7px 0px 0px 7px"}}/>
               </Flex>
             }
           >

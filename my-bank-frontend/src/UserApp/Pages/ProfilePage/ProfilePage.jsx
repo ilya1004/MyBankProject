@@ -61,13 +61,27 @@ const getUserAvatar = async (imgExt) => {
   });
   try {
     const res = await axiosInstance.get(`User/GetAvatarCurrent`, {
-      responseType: "arraybuffer",
+      // responseType: "arraybuffer",
+      responseType: "blob",
+      headers: {
+        "Cache-Control": "no-store",
+      },
     });
     // const imageBlob1 = new Blob([res.data], { type: `image/${imgExt}` });
     // const avatarUrl1 = URL.createObjectURL(imageBlob1);
+
     const imageBlob = new Blob([res.data], { type: `image/${imgExt}` });
-    URL.revokeObjectURL(URL.createObjectURL(imageBlob));
     const avatarUrl = URL.createObjectURL(imageBlob);
+    // URL.revokeObjectURL(avatarUrl);
+    // const avatarUrl = URL.createObjectURL(imageBlob);
+    // URL.revokeObjectURL(URL.createObjectURL(imageBlob));
+
+    // try {
+    //   fetch(avatarUrl); // или любой другой способ доступа к URL
+    //   console.log("URL доступен"); // Если доступ к URL не вызывает ошибку
+    // } catch (error) {
+    //   console.log("URL недоступен"); // Если доступ к URL вызывает ошибку
+    // }
     return { avatarUrl, error: null };
   } catch (err) {
     if (err.response.status === 401) {
@@ -257,7 +271,7 @@ export default function ProfilePage() {
           align="center"
           style={{
             width: "65%",
-            margin: "0px 0px 10px 0px"
+            margin: "0px 0px 10px 0px",
           }}
         >
           <Card

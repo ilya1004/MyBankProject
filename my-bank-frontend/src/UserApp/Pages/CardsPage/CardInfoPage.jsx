@@ -627,7 +627,7 @@ export default function CardInfoPage() {
           }
           style={{
             height: "210px",
-            width: "340px",
+            width: "360px",
           }}
           styles={{ header: { padding: "0px" } }}
         >
@@ -658,8 +658,10 @@ export default function CardInfoPage() {
                   Сумма операций:
                 </Text>
               </Col>
-              <Col style={{ width: "100px" }}>
-                <Text>{`${transSum}/${cardData.cardPackage.operationsSum} ${cardData.personalAccount.currency.code}`}</Text>
+              <Col style={{ width: "fit-content" }}>
+                <Text>{`${transSum.toFixed(2)}/${
+                  cardData.cardPackage.operationsSum
+                } ${cardData.personalAccount.currency.code}`}</Text>
               </Col>
             </Row>
             <Row gutter={[16, 16]} style={{ marginBottom: "5px" }}>
@@ -859,7 +861,11 @@ export default function CardInfoPage() {
               <Button onClick={exportToCSV}>Экспорт в csv</Button>
             </Flex>
           </Card>
-          <Table dataSource={transData} style={{ width: "100%" }}>
+          <Table
+            dataSource={transData}
+            style={{ width: "100%" }}
+            pagination={{ pageSize: 5 }}
+          >
             <Column
               width="80px"
               title="Номер"

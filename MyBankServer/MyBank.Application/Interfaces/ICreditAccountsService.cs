@@ -13,4 +13,5 @@ public interface ICreditAccountsService
     Task<ServiceResponse<bool>> UpdatePaymentNumber(int id, int deltaNumber);
     Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive);
     Task<ServiceResponse<bool>> MakePrepayment(int creditAccountId, int personalAccountId);
+    Task<ServiceResponse<bool>> MonthUpdateCreditsBalance();
 }

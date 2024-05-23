@@ -83,6 +83,23 @@ public class CreditPaymentsService : ICreditPaymentsService
             };
         }
 
+        var credit = await _creditAccountsRepository.GetById(creditAccountId, false);
+
+        if (credit.MadePaymentsNumber == credit.TotalPaymentsNumber && credit.CurrentBalance == 0)
+        {
+            await _creditAccountsRepository.UpdateClosingInfo(creditAccountId, 0, credit.TotalPaymentsNumber, DateTime.UtcNow, false);
+            
+            if (status == false)
+            {
+                return new ServiceResponse<int>
+                {
+                    Status = false,
+                    Message = $"Произошла ошибка при закрытии кредита",
+                    Data = default
+                };
+            }
+        }
+
         return new ServiceResponse<int>
         {
             Status = true,

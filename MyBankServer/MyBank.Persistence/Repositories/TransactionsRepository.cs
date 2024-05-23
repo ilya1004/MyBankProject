@@ -35,6 +35,9 @@ public class TransactionsRepository : ITransactionsRepository
 
     public async Task<List<Transaction>> GetAllByPersonalAccountDate(string personalAccountNumber, DateTime dateTimeStart, DateTime dateTimeEnd)
     {
+        //await Console.Out.WriteLineAsync(personalAccountNumber);
+        //await Console.Out.WriteLineAsync(dateTimeStart.ToString());
+        //await Console.Out.WriteLineAsync(dateTimeEnd.ToString());
         var transationEntitiesList = await _dbContext.Transactions
             .AsNoTracking()
             .Where(t => (t.AccountSenderNumber == personalAccountNumber || t.AccountRecipientNumber == personalAccountNumber)

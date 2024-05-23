@@ -130,6 +130,7 @@ export default function AdminUserInfoPage() {
       } else {
         showMessageStc("Пользователь был успешно разблокирован", "success");
       }
+      revalidator.revalidate();
     } catch (err) {
       handleResponseError(err.response);
     }

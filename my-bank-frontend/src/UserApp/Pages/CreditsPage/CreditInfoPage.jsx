@@ -7,15 +7,12 @@ import {
   Row,
   Tag,
   Table,
-  DatePicker,
-  Modal,
   Input,
   Select,
 } from "antd";
 import { useState } from "react";
 import {
   useLoaderData,
-  Link,
   useRevalidator,
   useNavigate,
   redirect,
@@ -26,9 +23,8 @@ import {
   handleResponseError,
   showMessageStc,
 } from "../../../Common/Services/ResponseErrorHandler";
-import dayjs from "dayjs";
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 const { Column } = Table;
 
 const getCreditData = async (accountId) => {
@@ -78,7 +74,6 @@ const getAccountsData = async () => {
     const res = await axiosInstance.get(
       `PersonalAccounts/GetAllInfoByCurrentUser?includeData=${true}`
     );
-    console.log(res.data.list);
     return { accountsData: res.data.list, error: null };
   } catch (err) {
     if (err.response.status === 401) {
@@ -137,10 +132,7 @@ const infoValueWidth = "280px";
 
 export default function CreditInfoPage() {
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
-  const [openModalCloseAcc, setOpenModalCloseAcc] = useState(false);
   const [accName, setAccName] = useState();
-  const [isAccountClosable, setIsAccountClosable] = useState(false);
-  const [modalText, setModalText] = useState("");
   const [isChangingName, setIsChangingName] = useState(false);
   const [isMakingPayment, setIsMakingPayment] = useState(false);
   const [isMakingPrepayment, setIsMakingPrepayment] = useState(false);
@@ -161,27 +153,6 @@ export default function CreditInfoPage() {
     return res.trim();
   };
 
-  // const closeAcc = async () => {
-  //   const axiosInstance = axios.create({
-  //     baseURL: BASE_URL,
-  //     withCredentials: true,
-  //   });
-  //   try {
-  //     const res = await axiosInstance.put(
-  //       `PersonalAccounts/CloseAccount?personalAccountId=${creditData.id}`
-  //     );
-  //     console.log(res.data["status"]);
-  //     if (res.data.status == true) {
-  //       showMessageStc("Счет был успешно закрыт", "success");
-  //       navigate("/accounts");
-  //     } else {
-  //       showMessageStc(res.data.message, "success");
-  //     }
-  //   } catch (err) {
-  //     handleResponseError(err.response);
-  //   }
-  // };
-
   const setAccNewName = async () => {
     const axiosInstance = axios.create({
       baseURL: BASE_URL,
@@ -191,7 +162,7 @@ export default function CreditInfoPage() {
       const res = await axiosInstance.put(
         `CreditAccounts/UpdateName?creditAccountId=${creditData.id}&name=${accName}`
       );
-      if (res.data.status == true) {
+      if (res.data.status === true) {
         showMessageStc("Название кредита было успешно изменено", "success");
         revalidator.revalidate();
       } else {
@@ -222,17 +193,29 @@ export default function CreditInfoPage() {
     };
     try {
       const res = await axiosInstance.post(`CreditPayments/Add`, data);
-      if (res.data.status == true) {
-        showMessageStc(
-          "Выплата по кредиту была успешно осуществлена",
-          "success"
+      if (res.status === 200) {
+        const res = await axiosInstance.get(
+          `CreditAccounts/GetInfoByCurrentUser?creditAccountId=${
+            creditData.id
+          }&includeData=${true}`
         );
-        revalidator.revalidate();
+        let credit = res.data.item;
+        if (credit.currentBalance === 0 && credit.isActive === false) {
+          showMessageStc("Кредит был успешно выплачен", "success");
+          navigate("/credits", { replace: true });
+        } else {
+          showMessageStc(
+            "Выплата по кредиту была успешно осуществлена",
+            "success"
+          );
+        }
+        revalidator.revalidate()
       } else {
         showMessageStc(res.data.message, "error");
       }
       setPersonalAccountId(-1);
       setIsMakingPayment(false);
+      setIsSettingsOpened(false);
     } catch (err) {
       handleResponseError(err.response);
     }
@@ -271,24 +254,7 @@ export default function CreditInfoPage() {
     setIsChangingName(false);
   };
 
-  const handleOkModalCloseAcc = () => {
-    setOpenModalCloseAcc(false);
-    // closeAcc();
-  };
-
-  const handleCancelModalCloseAcc = () => {
-    setOpenModalCloseAcc(false);
-  };
-
   const handleMakePrepayment = () => {
-    // if (creditData.currentBalance !== 0) {
-    //   setModalText("На счете ненулевой баланс");
-    //   setIsAccountClosable(false);
-    // } else {
-    //   setModalText("Вы действительно хотите закрыть этот счет?");
-    //   setIsAccountClosable(true);
-    // }
-    // setOpenModalCloseAcc(true);
     isMakingPrepayment === false
       ? setIsMakingPrepayment(true)
       : setIsMakingPrepayment(false);
@@ -384,9 +350,9 @@ export default function CreditInfoPage() {
       const res = await axiosInstance.put(
         `CreditAccounts/MakePrepayment?creditAccountId=${creditData.id}&personalAccountId=${personalAccountId}`
       );
-      if (res.data.status == true) {
+      if (res.data.status === true) {
         showMessageStc("Кредит был успешно досрочно выплачен", "success");
-        navigate("/credits");
+        navigate("/credits", { replace: true });
       } else {
         showMessageStc(res.data.message, "error");
       }
@@ -551,23 +517,6 @@ export default function CreditInfoPage() {
             </Flex>
           </Flex>
         </Flex>
-
-        <Modal
-          title={
-            isAccountClosable === true
-              ? "Закрытие кредита"
-              : "Вы не можете закрыть этот кредит"
-          }
-          open={openModalCloseAcc}
-          onOk={handleOkModalCloseAcc}
-          onCancel={handleCancelModalCloseAcc}
-          okButtonProps={{ type: "primary", disabled: !isAccountClosable }}
-          okType="danger"
-          okText="Закрыть"
-          cancelText="Отмена"
-        >
-          <Text style={{ fontSize: "16px" }}>{modalText}</Text>
-        </Modal>
 
         <Flex
           justify="center"
@@ -742,6 +691,7 @@ export default function CreditInfoPage() {
           ) : (
             <Table
               dataSource={creditData.payments}
+              pagination={{ pageSize: 7 }}
               title={() => (
                 <Text
                   strong

@@ -7,6 +7,7 @@ public interface IUserService
     Task<ServiceResponse<int>> Register(string email, string password, string nickname, string name, string surname, string patronymic, string phoneNumber, string passportSeries, string passportNumber, string citizenship);
     Task<ServiceResponse<(int, string)>> Login(string email, string password);
     Task<ServiceResponse<bool>> UploadAvatarFile(IFormFile file, int id);
+    Task<ServiceResponse<bool>> IsExistByEmail(string email);
     Task<ServiceResponse<User>> GetById(int id, bool includeData);
     Task<ServiceResponse<List<User>>> GetAll(bool includeData);
     Task<ServiceResponse<string>> GetAvatarImagePath(int id);

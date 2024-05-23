@@ -101,9 +101,13 @@ export default function AccountInfoPage() {
     try {
       let dateS = dateStart.toJSON();
       let dateE = dateEnd.toJSON();
+      console.log(dateS);
+      console.log(dateE);
+      console.log(accData.number);
       const res = await axiosInstance.get(
         `Transactions/GetAllInfoByPersonalAccountNumber?accountNumber=${accData.number}&dateStart=${dateS}&dateEnd=${dateE}`
       );
+      console.log(res.data.list);
       return res.data.list;
     } catch (err) {
       handleResponseError(err.response);
@@ -328,14 +332,12 @@ export default function AccountInfoPage() {
       vertical
     >
       <Flex align="center" gap={30} style={{ margin: "0px 0px 20px 0px" }}>
-        <Link to="/accounts">
-          <Button
-            style={{ margin: "18px 0px 0px 20px" }}
-            onClick={() => navigate(-1)}
-          >
-            Назад
-          </Button>
-        </Link>
+        <Button
+          style={{ margin: "18px 0px 0px 20px" }}
+          onClick={() => navigate(-1)}
+        >
+          Назад
+        </Button>
         <Title level={3}>Детальная информация по счету</Title>
       </Flex>
       <Flex align="flex-start" justify="center" gap={70}>
@@ -604,23 +606,38 @@ export default function AccountInfoPage() {
                 presets={[
                   {
                     label: "Последние 7 дней",
-                    value: [dayjs().startOf("day").add(-7, "d"), dayjs().startOf("day")],
+                    value: [
+                      dayjs().startOf("day").add(-7, "d"),
+                      dayjs().startOf("day"),
+                    ],
                   },
                   {
                     label: "Последние 14 дней",
-                    value: [dayjs().startOf("day").add(-14, "d"), dayjs().startOf("day")],
+                    value: [
+                      dayjs().startOf("day").add(-14, "d"),
+                      dayjs().startOf("day"),
+                    ],
                   },
                   {
                     label: "Последние 30 дней",
-                    value: [dayjs().startOf("day").add(-30, "d"), dayjs().startOf("day")],
+                    value: [
+                      dayjs().startOf("day").add(-30, "d"),
+                      dayjs().startOf("day"),
+                    ],
                   },
                   {
                     label: "Последние 3 месяца",
-                    value: [dayjs().startOf("day").add(-3, "M"), dayjs().startOf("day")],
+                    value: [
+                      dayjs().startOf("day").add(-3, "M"),
+                      dayjs().startOf("day"),
+                    ],
                   },
                   {
                     label: "Последние 6 месяцев",
-                    value: [dayjs().startOf("day").add(-6, "M"), dayjs().startOf("day")],
+                    value: [
+                      dayjs().startOf("day").add(-6, "M"),
+                      dayjs().startOf("day"),
+                    ],
                   },
                 ]}
               />
@@ -634,7 +651,11 @@ export default function AccountInfoPage() {
               <Button onClick={exportToCSV}>Экспорт в csv</Button>
             </Flex>
           </Card>
-          <Table dataSource={transData} style={{ width: "100%" }}>
+          <Table
+            dataSource={transData}
+            style={{ width: "100%" }}
+            pagination={{ pageSize: 5 }}
+          >
             <Column
               width="80px"
               title="Номер"

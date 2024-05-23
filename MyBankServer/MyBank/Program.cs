@@ -17,18 +17,14 @@ services.AddControllers().AddJsonOptions(options => options.JsonSerializerOption
 
 services.AddAutoMapper(
     typeof(MappingProfileDatabase).Assembly,
-    typeof(MappingProfileDtos).Assembly
-);
+    typeof(MappingProfileDtos).Assembly);
 
 services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
-services.AddDbContext<MyBankDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(MyBankDbContext)))
-);
+services.AddDbContext<MyBankDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(MyBankDbContext))));
 
-services.AddSwaggerGen(c =>
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyBank API", Version = "v1" })
-);
+services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyBank API", Version = "v1" }));
 
 services.AddApiAuthentication(builder.Configuration);
 services.AddApiAuthorization();

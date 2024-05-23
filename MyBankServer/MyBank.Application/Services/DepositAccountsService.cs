@@ -343,4 +343,48 @@ public class DepositAccountsService : IDepositAccountsService
             Data = status
         };
     }
+    public async Task<ServiceResponse<bool>> MonthUpdateDepositsBalance()
+    {
+        var deposits = await _depositAccountsRepository.GetAllByCreationDate(true, true, DateTime.UtcNow);
+
+        foreach (var deposit in deposits)
+        {
+            if (deposit.HasCapitalisation)
+            {
+                var monthInterestRate = (deposit.InterestRate / 12) / 100;
+                var monthPercents = deposit.CurrentBalance * monthInterestRate;
+                var status = await _depositAccountsRepository.UpdateBalanceDelta(deposit.Id, monthPercents);
+                if (status == false)
+                {
+                    return new ServiceResponse<bool>
+                    {
+                        Status = false,
+                        Message = $"Произошла ошибка при ежемесячном обновлении баланса депозитов",
+                        Data = default
+                    };
+                }
+            } 
+            else
+            {
+                var monthInterestRate = (deposit.InterestRate / 12) / 100;
+                var monthPercents = deposit.DepositStartBalance * monthInterestRate;
+                var status = await _depositAccountsRepository.UpdateBalanceDelta(deposit.Id, monthPercents);
+                if (status == false)
+                {
+                    return new ServiceResponse<bool>
+                    {
+                        Status = false,
+                        Message = $"Произошла ошибка при ежемесячном обновлении баланса депозитов",
+                        Data = default
+                    };
+                }
+            }
+        }
+        return new ServiceResponse<bool>
+        {
+            Status = true,
+            Message = "Success",
+            Data = true,
+        };
+    }
 }

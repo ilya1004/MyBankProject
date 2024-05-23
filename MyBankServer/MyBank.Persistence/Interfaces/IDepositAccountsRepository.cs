@@ -1,4 +1,5 @@
-﻿namespace MyBank.Persistence.Interfaces;
+﻿
+namespace MyBank.Persistence.Interfaces;
 
 public interface IDepositAccountsRepository
 {
@@ -12,4 +13,5 @@ public interface IDepositAccountsRepository
     Task<bool> Delete(int id);
     Task<bool> UpdateClosingInfo(int id, int newBalance, DateTime dateTime, bool isActive);
     Task<bool> SetAccountNumber(int id, string accNumber);
+    Task<List<DepositAccount>> GetAllByCreationDate(bool includeData, bool onlyActive, DateTime creationDate);
 }

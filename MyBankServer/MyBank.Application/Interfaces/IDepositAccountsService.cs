@@ -12,4 +12,5 @@ public interface IDepositAccountsService
     Task<ServiceResponse<bool>> UpdateStatus(int id, bool isActive);
     Task<ServiceResponse<bool>> RevokeDeposit(int depositAccountId, int personalAccountId);
     Task<ServiceResponse<bool>> WithdrawInterests(int depositAccountId, int personalAccountId);
+    Task<ServiceResponse<bool>> MonthUpdateDepositsBalance();
 }

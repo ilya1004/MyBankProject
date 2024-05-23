@@ -6,6 +6,7 @@ public interface ICreditAccountsRepository
     Task<CreditAccount> GetById(int id, bool includeData);
     Task<List<CreditAccount>> GetAllByUser(int userId, bool includeData, bool onlyActive);
     Task<List<CreditAccount>> GetAll(bool includeData, bool onlyActive);
+    Task<List<CreditAccount>> GetAllByCreationDate(bool includeData, bool onlyActive, DateTime creationDate);
     Task<bool> UpdateName(int id, string name);
     Task<bool> UpdateBalanceDelta(int id, decimal deltaNumber);
     Task<bool> UpdateClosingInfo(int id, decimal currentBalance, int madePaymentsNumber, DateTime closingDate, bool isActive);

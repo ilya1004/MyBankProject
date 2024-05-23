@@ -1,4 +1,5 @@
-﻿using MyBank.Domain.Models;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using MyBank.Domain.Models;
 
 namespace MyBank.Application.Services;
 
@@ -6,11 +7,13 @@ public class CreditRequestsService : ICreditRequestsService
 {
     private readonly ICreditRequestsRepository _creditRequestsRepository;
     private readonly ICreditAccountsService _creditAccountsService;
+    private readonly IUsersRepository _usersRepository;
 
-    public CreditRequestsService(ICreditRequestsRepository creditRequestsRepository, ICreditAccountsService creditAccountsService)
+    public CreditRequestsService(ICreditRequestsRepository creditRequestsRepository, ICreditAccountsService creditAccountsService, IUsersRepository usersRepository)
     {
         _creditRequestsRepository = creditRequestsRepository;
         _creditAccountsService = creditAccountsService;
+        _usersRepository = usersRepository;
     }
 
     public async Task<ServiceResponse<int>> Add(string name, int creditPackageId, int userId)
@@ -100,10 +103,12 @@ public class CreditRequestsService : ICreditRequestsService
             };
         }
 
+        var creditRequest = await _creditRequestsRepository.GetById(id, true);
+
+        var user = await _usersRepository.GetById(creditRequest.UserId!.Value, false);
+
         if (isApproved)
         {
-            var creditRequest = await _creditRequestsRepository.GetById(id, true);
-
             var creditAccount = new CreditAccount
             {
                 Id = 0,
@@ -127,6 +132,59 @@ public class CreditRequestsService : ICreditRequestsService
             };
 
             await _creditAccountsService.Add(creditAccount);
+
+            status = await _usersRepository.UpdateCreditRequestRejected(user.Id, 0);
+
+            if (status == false)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Status = false,
+                    Message = $"Произошла ошибка при обновлении количества отказов в кредите с id = {user.Id}",
+                    Data = default
+                };
+            }
+        }
+        else
+        {
+            status = await _usersRepository.UpdateCreditRequestRejected(user.Id, user.CreditRequestsRejected + 1);
+
+            if (status == false)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Status = false,
+                    Message = $"Произошла ошибка при обновлении количества отказов в кредите с id = {user.Id}",
+                    Data = default
+                };
+            }
+
+            if (user.CreditRequestsRejected == 5)
+            {
+                status = await _usersRepository.UpdateStatus(user.Id, false);
+
+                if (status == false)
+                {
+                    return new ServiceResponse<bool>
+                    {
+                        Status = false,
+                        Message = $"Произошла ошибка при блокировке пользователя с id = {user.Id}",
+                        Data = default
+                    };
+                }
+
+                status = await _usersRepository.UpdateCreditRequestRejected(user.Id, 0);
+
+                if (status == false)
+                {
+                    return new ServiceResponse<bool>
+                    {
+                        Status = false,
+                        Message = $"Произошла ошибка при обновлении количества отказов в кредите с id = {user.Id}",
+                        Data = default
+                    };
+                }
+            }
         }
 
         return new ServiceResponse<bool>

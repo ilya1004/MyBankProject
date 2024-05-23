@@ -1,9 +1,13 @@
 import { Card, Flex, Image, List, Typography, Button } from "antd";
 import { widthCardAcc, heightCardAcc } from "../ProfilePage";
+import { useNavigate } from "react-router-dom";
 
 const { Text, Title } = Typography;
 
 export default function ListDeposits(props) {
+
+  const navigate = useNavigate();
+
   const convertNumberAccount = (number) => {
     let numStr = number.toString();
     let res = "";
@@ -18,6 +22,9 @@ export default function ListDeposits(props) {
       <List.Item key={item.id}>
         <Card
           hoverable
+          onClick={() => {
+            navigate(`/deposits/${item.id}`);
+          }}
           style={{
             width: widthCardAcc,
             height: heightCardAcc,

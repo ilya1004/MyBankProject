@@ -118,7 +118,7 @@ export default function LoginPage() {
         align="flex-start"
         style={{
           minHeight: "80vh",
-          height: "fit-content"
+          height: "fit-content",
         }}
       >
         <Card

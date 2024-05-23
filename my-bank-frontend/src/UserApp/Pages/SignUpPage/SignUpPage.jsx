@@ -103,7 +103,7 @@ export default function SignUpPage() {
       phoneNumber: phoneNumber.trim(),
       passportSeries: passportSeries.trim(),
       passportNumber: passportNumber.trim(),
-      birthdayDate: birthdayDate.toJSON().substring(0, 10),
+      birthdayDate: birthdayDate.toJSON(),
       citizenship: citizenship.trim(),
     };
     try {
@@ -123,6 +123,50 @@ export default function SignUpPage() {
 
   const filterOption = (input, option) => {
     return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+  };
+
+  const emailValidator = async (rule, value) => {
+    if (!value) {
+      throw new Error("Пожалуйста, введите вашу электронную почту!");
+    }
+
+    const emailPattern =
+      /^[a-zA-Z0-9._\-!?#$&'*+=^]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,6}$/;
+    if (value && !emailPattern.test(value)) {
+      return Promise.reject("Вы ввели неверную электронную почту!");
+    }
+
+    const axiosInstance = axios.create({ baseURL: BASE_URL });
+    try {
+      const res = await axiosInstance.get(`User/IsExistByEmail?email=${email}`);
+      if (res.data.status === true) {
+        return Promise.reject(
+          "Пользователь с данной электронной почтой уже существует!"
+        );
+      }
+    } catch (err) {
+      handleResponseError(err.response);
+    }
+
+    return Promise.resolve();
+  };
+
+  const passwordValidator = (rule, value) => {
+    let reg1 = /[a-zA-Z]+/;
+    let reg2 = /[0-9]+/;
+    if (!value) {
+      return Promise.reject("Пожалуйста, введите пароль!");
+    }
+    if (!reg1.test(value)) {
+      return Promise.reject("В пароле должно быть минимум одна буква!");
+    }
+    if (!reg2.test(value)) {
+      return Promise.reject("В пароле должно быть минимум одна цифра!");
+    }
+    if (value.length < 8) {
+      return Promise.reject("Длина пароля должна быть 8 и более символов!");
+    }
+    return Promise.resolve();
   };
 
   return (
@@ -154,14 +198,11 @@ export default function SignUpPage() {
           <Form.Item
             label="Электронная почта:"
             name="email"
+            validateDebounce={1000}
+            validateTrigger="onBlur"
             rules={[
               {
-                required: true,
-                message: "Введите электронную почту!",
-              },
-              {
-                type: "email",
-                message: "Вы ввели неверную электронную почту",
+                validator: emailValidator,
               },
             ]}
             hasFeedback
@@ -178,12 +219,7 @@ export default function SignUpPage() {
             name="password"
             rules={[
               {
-                required: true,
-                message: "Введите пароль!",
-              },
-              {
-                min: 6,
-                message: "Длина пароля должна быть 6 и более символов!",
+                validator: passwordValidator,
               },
             ]}
             hasFeedback
@@ -209,9 +245,7 @@ export default function SignUpPage() {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(
-                    new Error("Введенные пароли не совпадают!")
-                  );
+                  return Promise.reject("Введенные пароли не совпадают!");
                 },
               }),
             ]}

@@ -268,7 +268,7 @@ export default function AddCreditPage() {
           >
             <Button onClick={handleCancel}>Отмена</Button>
             <Button type="primary" onClick={handleEnter}>
-              Отправить запрос на оформление
+              Отправить запрос
             </Button>
           </Flex>
         </Card>

@@ -109,6 +109,24 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    public async Task<IResult> IsExistByEmail(string email)
+    {
+        var serviceResponse = await _userService.IsExistByEmail(email);
+
+        if (serviceResponse.Status == false)
+        {
+            return Results.Json(new ErrorDto
+            {
+                ControllerName = "UsersController",
+                Message = serviceResponse.Message
+            },
+            statusCode: 400);
+        }
+
+        return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
+    }
+
+    [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.ModeratorAndAdminPolicy)]
     public async Task<IResult> GetInfoById(int userId, bool includeData)
     {

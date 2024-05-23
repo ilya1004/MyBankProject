@@ -222,10 +222,7 @@ public class TransactionsService : ITransactionsService
 
     public async Task<ServiceResponse<List<Transaction>>> GetAllByPersonalAccountNumber(string personalAccountNumber, DateTime dateStart, DateTime dateEnd)
     {
-        await Console.Out.WriteLineAsync(dateStart.ToString());
-        await Console.Out.WriteLineAsync(dateEnd.AddDays(1).ToString());
-
-        var list = await _transactionsRepository.GetAllByPersonalAccountDate(personalAccountNumber, dateEnd, dateEnd.AddDays(1));
+        var list = await _transactionsRepository.GetAllByPersonalAccountDate(personalAccountNumber, dateStart, dateEnd.AddDays(1));
 
         return new ServiceResponse<List<Transaction>>
         {
