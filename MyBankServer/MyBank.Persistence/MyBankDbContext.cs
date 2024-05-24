@@ -8,7 +8,6 @@ public class MyBankDbContext : DbContext
         : base(options) { }
 
     public DbSet<AdminEntity> Admins { get; set; }
-    public DbSet<BankSettingsEntity> BankSettings { get; set; }
     public DbSet<CardEntity> Cards { get; set; }
     public DbSet<CardPackageEntity> CardPackages { get; set; }
     public DbSet<CreditAccountEntity> CreditAccounts { get; set; }
@@ -28,7 +27,6 @@ public class MyBankDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new AdminConfiguration());
-        modelBuilder.ApplyConfiguration(new BankSettingsConfiguration());
         modelBuilder.ApplyConfiguration(new CardConfiguration());
         modelBuilder.ApplyConfiguration(new CardPackageConfiguration());
         modelBuilder.ApplyConfiguration(new CreditAccountConfiguration());
@@ -53,4 +51,4 @@ public class MyBankDbContext : DbContext
 /*
 dotnet ef migrations add 'migration-name' -s MyBank -p MyBank.Persistence
 dotnet ef database update -s MyBank -p MyBank.Persistence
- */
+*/

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using MyBank.Persistence.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MyBank.Persistence.Repositories;
 
 namespace MyBank.Persistence.Extensions;
