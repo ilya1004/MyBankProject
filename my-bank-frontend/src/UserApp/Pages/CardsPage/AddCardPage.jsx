@@ -96,8 +96,8 @@ export default function AddCardPage() {
   const [cardName, setCardName] = useState("");
   const [pincode, setPincode] = useState("");
   const [durationInYears, setDurationInYears] = useState(3);
-  const [cardPackageId, setCardPackageId] = useState();
-  const [personalAccountId, setPersonalAccountId] = useState();
+  const [cardPackageId, setCardPackageId] = useState(-1);
+  const [personalAccountId, setPersonalAccountId] = useState(-1);
   const navigate = useNavigate();
 
   const { cardPackagesData, userAccountsData } = useLoaderData();
@@ -134,8 +134,20 @@ export default function AddCardPage() {
   };
 
   const handleEnter = () => {
+    if (cardName.length === 0 || cardName === null) {
+      showMessageStc("Имя карты не может быть пустым", "error");
+      return;
+    }
     if (pincode.length !== 4) {
-      showMessageStc("Пин-код должен иметь длину 4 цифры");
+      showMessageStc("Пин-код должен иметь длину 4 цифры", "error");
+      return;
+    }
+    if (cardPackageId === -1) {
+      showMessageStc("Вы не выбрали пакет карт для использования", "error");
+      return;
+    }
+    if (personalAccountId === -1) {
+      showMessageStc("Вы не выбрали лицевой счет для привязки", "error");
       return;
     }
     addCard();

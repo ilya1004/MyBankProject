@@ -8,13 +8,11 @@ namespace MyBank.API.Controllers;
 public class CardsController : ControllerBase
 {
     private readonly ICardsService _cardsService;
-    private readonly IMapper _mapper;
     private readonly ICookieValidator _cookieValidator;
 
-    public CardsController(ICardsService cardsService, IMapper mapper, ICookieValidator cookieValidator)
+    public CardsController(ICardsService cardsService, ICookieValidator cookieValidator)
     {
         _cardsService = cardsService;
-        _mapper = mapper;
         _cookieValidator = cookieValidator;
     }
 
@@ -34,7 +32,8 @@ public class CardsController : ControllerBase
             statusCode: 400);
         }
 
-        var serviceResponse = await _cardsService.Add(id!.Value, dto.Name, dto.Pincode, dto.DurationInYears, dto.CardPackageId!.Value, dto.PersonalAccountId!.Value);
+        var serviceResponse = await _cardsService.Add(id!.Value, dto.Name, dto.Pincode, 
+            dto.DurationInYears, dto.CardPackageId!.Value, dto.PersonalAccountId!.Value);
 
         if (serviceResponse.Status == false)
         {

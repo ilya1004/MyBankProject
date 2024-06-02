@@ -2,5 +2,5 @@
 
 public interface IAccNumberProvider
 {
-    string GenerateIBAN(int accountId);
+    public string GenerateIBAN(int accountId);
 }

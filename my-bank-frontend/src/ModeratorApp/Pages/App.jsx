@@ -10,38 +10,38 @@ import { handleResponseError } from "../../Common/Services/ResponseErrorHandler.
 const { Header, Footer, Content } = Layout;
 const { Text } = Typography;
 
-// const getModeratorData = async () => {
-//   const axiosInstance = axios.create({
-//     baseURL: BASE_URL,
-//     withCredentials: true,
-//   });
-//   try {
-//     const res = await axiosInstance.get(
-//       `Moderators/GetInfoCurrent?includeData=${false}`
-//     );
-//     return { moderatorData: res.data.item, error: null };
-//   } catch (err) {
-//     if (err.response.status === 401 || err.response.status) {
-//       return { moderatorData: null, error: err.response };
-//     }
-//     handleResponseError(err.response);
-//     return { moderatorData: null, error: err.response };
-//   }
-// };
+const getModeratorData = async () => {
+  const axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
+  });
+  try {
+    const res = await axiosInstance.get(
+      `Moderators/GetInfoCurrent?includeData=${false}`
+    );
+    return { moderatorData: res.data.item, error: null };
+  } catch (err) {
+    if (err.response.status === 401 || err.response.status) {
+      return { moderatorData: null, error: err.response };
+    }
+    handleResponseError(err.response);
+    return { moderatorData: null, error: err.response };
+  }
+};
 
-// export async function loader() {
-//   const { moderatorData, error } = await getModeratorData();
-//   if (!moderatorData) {
-//     if (error.status === 401 || error.status === 403) {
-//       return redirect("/login");
-//     } else {
-//       throw new Response("", {
-//         status: error.status,
-//       });
-//     }
-//   }
-//   return { moderatorData };
-// }
+export async function loader() {
+  const { moderatorData, error } = await getModeratorData();
+  if (!moderatorData) {
+    if (error.status === 401 || error.status === 403) {
+      return redirect("/login");
+    } else {
+      throw new Response("", {
+        status: error.status,
+      });
+    }
+  }
+  return { moderatorData };
+}
 
 const backColor = "#F1F0EA";
 

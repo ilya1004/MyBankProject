@@ -49,7 +49,7 @@ export async function loader() {
 
 export default function AddAccountPage() {
   const [name, setName] = useState();
-  const [currencyId, setCurrencyId] = useState();
+  const [currencyId, setCurrencyId] = useState(-1);
 
   const { currenciesData } = useLoaderData();
 
@@ -87,6 +87,14 @@ export default function AddAccountPage() {
   };
 
   const handleEnter = () => {
+    if (name.length === 0 || name === null) {
+      showMessageStc("Имя счета не может быть пустым", "error");
+      return;
+    }
+    if (currencyId === -1) {
+      showMessageStc("Вы не выбрали валюту счета", "error");
+      return;
+    }
     addAccount();
   };
 

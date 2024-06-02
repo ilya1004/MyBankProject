@@ -13,20 +13,7 @@ public class CardsRepository : ICardsRepository
 
     public async Task<int> Add(Card card)
     {
-        var cardPackageEntity = await _dbContext.CardPackages
-            .FirstOrDefaultAsync(cp => cp.Id == card.CardPackageId);
-
-        var userEntity = await _dbContext.Users.
-            FirstOrDefaultAsync(u => u.Id == card.UserId);
-
-        var personalAccountEntity = await _dbContext.PersonalAccounts
-            .FirstOrDefaultAsync(pa => pa.Id == card.PersonalAccountId);
-
         var cardEntity = _mapper.Map<CardEntity>(card);
-
-        cardEntity.CardPackage = cardPackageEntity;
-        cardEntity.User = userEntity;
-        cardEntity.PersonalAccount = personalAccountEntity;
 
         var item = await _dbContext.Cards.AddAsync(cardEntity);
         await _dbContext.SaveChangesAsync();
@@ -35,17 +22,17 @@ public class CardsRepository : ICardsRepository
 
     public async Task<Card> GetById(int id, bool includeData)
     {
-        var cardEntity = includeData == true ? 
-            await _dbContext.Cards
-                .AsNoTracking()
-                .Include(c => c.CardPackage)
-                .Include(c => c.PersonalAccount)
-                    .ThenInclude(pa => pa!.Currency)
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(c => c.Id == id) :
-            await _dbContext.Cards
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+        IQueryable<CardEntity> query = _dbContext.Cards.AsNoTracking();
+
+        if (includeData)
+        {
+            query = query.Include(c => c.CardPackage)
+                         .Include(c => c.PersonalAccount)
+                             .ThenInclude(pa => pa!.Currency)
+                         .Include(c => c.User);
+        }
+
+        var cardEntity = await query.FirstOrDefaultAsync(c => c.Id == id);
 
         return _mapper.Map<Card>(cardEntity);
     }

@@ -104,19 +104,11 @@ export async function loader({ params }) {
       });
     }
   }
-
-  console.log(transactionsData);
-
   let transNum = transactionsData.length;
   let transSum = 0;
-
   for (let i = 0; i < transactionsData.length; i++) {
     transSum += transactionsData[i].paymentAmount;
   }
-
-  console.log(transNum);
-  console.log(transSum);
-
   return { cardData, transNum, transSum };
 }
 
@@ -187,8 +179,6 @@ export default function CardInfoPage() {
     try {
       let dateS = dateStart.toJSON();
       let dateE = dateEnd.toJSON();
-      console.log(dateS);
-      console.log(dateE);
       const res = await axiosInstance.get(
         `Transactions/GetAllInfoByPersonalAccountNumber?accountNumber=${cardData.personalAccount.number}&dateStart=${dateS}&dateEnd=${dateE}`
       );
@@ -280,12 +270,10 @@ export default function CardInfoPage() {
     };
     try {
       const res = await axiosInstance.put(`Cards/UpdatePincode`, data);
-      console.log(res.data["status"]);
       showMessageStc("Пин-код был успешно изменен", "success");
       revalidator.revalidate();
     } catch (err) {
-      let sts = handleResponseError(err.response);
-      showMessageStc(sts[0], sts[1]);
+      handleResponseError(err.response);
     }
   };
 
@@ -298,7 +286,6 @@ export default function CardInfoPage() {
       const res = await axiosInstance.put(
         `Cards/UpdateName?cardId=${cardData.id}&name=${cardName}`
       );
-      console.log(res.data["status"]);
       showMessageStc("Название карты было успешно изменено", "success");
       revalidator.revalidate();
     } catch (err) {

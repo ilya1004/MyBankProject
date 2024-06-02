@@ -233,7 +233,7 @@ const routers = createBrowserRouter([
     path: "/moderator",
     element: <ModeratorApp />,
     errorElement: <ErrorPage />,
-    // loader: appModeratorLoader,
+    loader: appModeratorLoader,
     children: [
       {
         path: "credit-requests",
@@ -276,7 +276,7 @@ const routers = createBrowserRouter([
     path: "/admin",
     element: <AdminApp />,
     errorElement: <ErrorPage />,
-    // loader: adminAppLoader,
+    loader: adminAppLoader,
     children: [
       {
         path: "management",

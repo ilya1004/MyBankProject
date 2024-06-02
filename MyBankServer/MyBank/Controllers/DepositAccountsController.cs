@@ -284,36 +284,4 @@ public class DepositAccountsController : ControllerBase
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
-
-    //[HttpPost]
-    //[Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    //public async Task<IResult> AddAccrual()
-    //{
-    //    var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
-
-    //    if (status == false)
-    //    {
-    //        return Results.Json(new ErrorDto
-    //        {
-    //            ControllerName = "DepositAccountsController",
-    //            Message = message!
-    //        },
-    //        statusCode: 400);
-    //    }
-
-    //    var serviceResponse = await _depositAccrualsService.Add();
-
-    //    if (serviceResponse.Status == false)
-    //    {
-    //        return Results.Json(
-    //            new ErrorDto
-    //            {
-    //                ControllerName = "DepositAccountsController",
-    //                Message = serviceResponse.Message,
-    //            },
-    //            statusCode: 400
-    //        );
-    //    }
-    //    return Results.Json(new { id = serviceResponse.Data }, statusCode: 200);
-    //}
 }

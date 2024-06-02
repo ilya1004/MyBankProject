@@ -44,7 +44,6 @@ services.AddCors(options =>
         policyBuilder =>
         {
             policyBuilder.WithOrigins("http://localhost:3000");
-            policyBuilder.WithOrigins("http://192.168.242.249:3000");
             policyBuilder.AllowAnyMethod();
             policyBuilder.AllowAnyHeader();
             policyBuilder.AllowCredentials();

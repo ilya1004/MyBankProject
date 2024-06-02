@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using System.Xml;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.EntityFrameworkCore.Query;
-using MyBank.API.DataTransferObjects.CreditRequestDtos;
+﻿using MyBank.API.DataTransferObjects.CreditRequestDtos;
 
 namespace MyBank.API.Controllers;
 

@@ -40,7 +40,6 @@ public class CreditAccountsController : ControllerBase
         return Results.Json(new { creditAccountId = serviceResponse.Data }, statusCode: 200);
     }
 
-
     [HttpGet]
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> GetInfoByCurrentUser(int creditAccountId, bool includeData)
@@ -268,7 +267,6 @@ public class CreditAccountsController : ControllerBase
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
-
 
     [HttpPut]
     [Authorize(Policy = AuthorizationPolicies.UserAndAdminPolicy)]

@@ -175,41 +175,6 @@ public class PersonalAccountsController : ControllerBase
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
 
-    //[HttpPut]
-    //[Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    //public async Task<IResult> UpdateBalance(int personalAccountId)
-    //{
-    //    var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
-
-    //    if (status == false)
-    //    {
-    //        return Results.Json(new ErrorDto
-    //        {
-    //            ControllerName = "PersonalAccountsController",
-    //            Message = message!
-    //        },
-    //        statusCode: 400);
-    //    }
-
-    //    decimal q = 123.234M;
-
-    //    var serviceResponse = await _personalAccountsService.UpdateBalance(personalAccountId, q);
-
-    //    if (serviceResponse.Status == false)
-    //    {
-    //        return Results.Json(
-    //            new ErrorDto
-    //            {
-    //                ControllerName = "PersonalAccountsController",
-    //                Message = serviceResponse.Message,
-    //            },
-    //            statusCode: 400
-    //        );
-    //    }
-
-    //    return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
-    //}
-
     [HttpPut]
     [Authorize(Policy = AuthorizationPolicies.UserPolicy)]
     public async Task<IResult> UpdateNicknameTransfersState(int personalAccountId, bool state)
@@ -275,45 +240,4 @@ public class PersonalAccountsController : ControllerBase
 
         return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
     }
-
-    //[HttpPost]
-    //[Authorize(Policy = AuthorizationPolicies.UserPolicy)]
-    //public async Task<IResult> MakeTransfer([FromBody] TransferDto dto)
-    //{
-    //    var (status, message, errorCode, role, id) = _cookieValidator.HandleCookie(Request.Headers.Cookie[0]!);
-
-    //    if (status == false)
-    //    {
-    //        return Results.Json(new ErrorDto
-    //        {
-    //            ControllerName = "PersonalAccountsController",
-    //            Message = message!
-    //        },
-    //        statusCode: 400);
-    //    }
-
-    //    var serviceResponse = await _personalAccountsService.MakeTransfer(
-    //        dto.PersonalAccountId,
-    //        dto.AccountSenderNumber,
-    //        dto.UserSenderNickname,
-    //        dto.AccountRecipientNumber,
-    //        dto.CardRecipientNumber,
-    //        dto.UserRecipientNickname,
-    //        dto.Amount
-    //    );
-
-    //    if (serviceResponse.Status == false)
-    //    {
-    //        return Results.Json(
-    //            new ErrorDto
-    //            {
-    //                ControllerName = "PersonalAccountsController",
-    //                Message = serviceResponse.Message,
-    //            },
-    //            statusCode: 400
-    //        );
-    //    }
-
-    //    return Results.Json(new { status = serviceResponse.Data }, statusCode: 200);
-    //}
 }
